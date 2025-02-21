@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:vm="using:EBISX_POS.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="EBISX_POS.Views.OrderSummaryView"
+             x:DataType="vm:OrderSummaryViewModel">
+	<Grid>
+		<!-- Headers -->
+		<Grid ColumnDefinitions="Auto, *, Auto" Margin="5,5,5,20">
+			<TextBlock Text="QTY" Grid.Column="0" FontWeight="Bold" Margin="0,0,20,0" HorizontalAlignment="Center"/>
+			<TextBlock Text="NAME" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Left"/>
+			<TextBlock Text="PRICE" Grid.Column="2" FontWeight="Bold" Margin="0,0,20,0" HorizontalAlignment="Right"/>
+		</Grid>
+
+		<!-- Order Items -->
+		<ScrollViewer Margin="5,30,5,20">
+			<ItemsControl ItemsSource="{Binding OrderItems}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Margin="0,0,0,20">
+							<ItemsControl ItemsSource="{Binding DisplaySubOrders}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Grid ColumnDefinitions="Auto, *, Auto">
+											<!-- Show Quantity only for the first SubOrder -->
+											<TextBlock Text="{Binding Quantity}"
+													   Grid.Column="0"
+                                                       HorizontalAlignment="Center"
+                                                       IsVisible="{Binding IsFirstItem}"/>
+											<TextBlock Text="{Binding DisplayName}" Grid.Column="1" Margin="30,0,0,0" HorizontalAlignment="Left"/>
+											<TextBlock Text="{Binding Price, StringFormat='₱ {0:F2}'}" Grid.Column="2"
+                                                       Margin="0,0,10,0" HorizontalAlignment="Right"/>
+										</Grid>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</StackPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+	</Grid>
+	
+</UserControl>
