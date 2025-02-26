@@ -94,7 +94,7 @@
 						</Grid>
 
 						<!-- Second Row: 3 Buttons (Left) and 2 Buttons (Right) -->
-						<Grid Grid.Row="1" ColumnDefinitions="Auto, Auto,Auto,*, Auto,  Auto">
+						<Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, Auto,*, Auto,  Auto">
 							<!-- Left side -->
 							<Button FontSize="18" Content="8" Grid.Column="0" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Content="9" Grid.Column="1" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
