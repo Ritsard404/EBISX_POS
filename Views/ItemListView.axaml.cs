@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace EBISX_POS.Views
 {
-    public partial class ItemCardView : UserControl
+    public partial class ItemListView : UserControl
     {
-        public ItemCardView()
+        public ItemListView()
         {
             InitializeComponent();
         }

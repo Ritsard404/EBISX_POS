@@ -11,6 +11,7 @@ namespace EBISX_POS.Models
         public int Id { get; set; }
         public required string ItemName { get; set; }
         public required decimal Price { get; set; }
-        public byte[]? ItemImage { get; set; }
+        public string? ItemImage { get; set; }
+        //public byte[]? ItemImage { get; set; }
     }
 }

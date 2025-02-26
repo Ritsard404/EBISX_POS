@@ -1,23 +1,17 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:EBISX_POS.ViewModels"
+			 xmlns:vm="using:EBISX_POS.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="EBISX_POS.Views.ItemCardView"
-             xmlns:models="clr-namespace:EBISX_POS.Models"
-             x:DataType="models:ItemMenu">
+             x:Class="EBISX_POS.Views.ItemCardView">
 
-
-	
-	
-	
 	<Border BorderBrush="Orange" BorderThickness="3">
 		<Grid>
-			 <!--Image--> 
+			<!-- Image -->
 			<Image Source="avares://EBISX_POS/Assets/Images/Burgers/burger.png" MaxWidth="300" />
 
-			 Price Overlay (Top-Right Corner) 
+			<!-- Price Overlay (Top-Right Corner) -->
 			<TextBlock Text="$5.99"
 					   Background="Black"
 					   Foreground="White"
@@ -29,15 +23,15 @@
 					   FontSize="18"
 					   Opacity="0.8"/>
 
-			 <!--Middle Border--> 
+			<!-- Middle Border -->
 			<Border BorderBrush="Orange" BorderThickness="0,3,0,0"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Bottom"
 					Height="3"
 					Margin="0,0,0,30"/>
-			 <!--Adjust margin to control spacing--> 
+			<!-- Adjust margin to control spacing -->
 
-			 <!--Item Name (Below the Middle Border)--> 
+			<!-- Item Name (Below the Middle Border) -->
 			<TextBlock Text="Burger Deluxe"
 					   HorizontalAlignment="Center"
 					   VerticalAlignment="Bottom"
