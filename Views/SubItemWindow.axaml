@@ -4,10 +4,15 @@
         xmlns:views="using:EBISX_POS.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="550"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="750"
         x:Class="EBISX_POS.Views.SubItemWindow"
         Title="Sub Items">
-    <StackPanel Margin="10">
-        <views:OptionsView />
-    </StackPanel>
+	
+	<ScrollViewer   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+		<StackPanel Margin="10">
+			<views:OptionsView />
+			<views:OptionsView />
+		</StackPanel>
+	</ScrollViewer>
+
 </Window>

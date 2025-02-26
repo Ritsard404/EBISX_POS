@@ -22,7 +22,7 @@
 						<TextBlock Text="Drinks" FontWeight="Bold" VerticalAlignment="Center" FontSize="18"/>
 					</StackPanel>
 
-					<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+					<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Name="OptionsGroup">
 						<ToggleButton Content="Cold Drinks"
 									  Width="130" Height="30"
 									  FontWeight="SemiBold"
@@ -41,10 +41,11 @@
 					</StackPanel>
 				</Grid>
 			</StackPanel>
+				
+			<!-- Option Items -->
+			<ScrollViewer Grid.Row="1" Margin="0,10,0,10" HorizontalAlignment="Left" VerticalAlignment="Center">
 
-			<ScrollViewer Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center">
-
-				<ItemsControl ItemsSource="{Binding OptionItems}">
+				<ItemsControl x:Name="ItemsList" ItemsSource="{Binding OptionItems}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
 							<WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -52,11 +53,12 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<ToggleButton Click="ToggleButton_Click"
-									Margin="5"
-									Padding="0"
-									Width="135"
-									Background="Transparent">
+							<ToggleButton
+								Margin="5"
+								Padding="0"
+								Width="135"
+								Background="Transparent"
+								Click="ToggleButton_Click">
 								<views:ItemCardView DataContext="{Binding}" />
 							</ToggleButton>
 						</DataTemplate>
@@ -71,7 +73,7 @@
 				<Grid ColumnDefinitions="*, *" Margin="0,0,0,10">
 						<TextBlock Grid.Column="0" Text="Size:" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="18"/>
 
-					<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+					<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right"  Name="SizeGroup">
 						<ToggleButton Content="Regular"
 									  Width="130" Height="40"
 									  FontWeight="SemiBold"

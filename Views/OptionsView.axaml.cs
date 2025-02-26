@@ -1,15 +1,22 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using EBISX_POS.Models;
 using EBISX_POS.ViewModels;
 using System.Diagnostics;
+using System.Linq;
 
 namespace EBISX_POS.Views
 {
     public partial class OptionsView : UserControl
     {
-        public string SelectedSize { get; private set; } = string.Empty; // Store selected button content
+        private ToggleButton? _selectedOptionButton; // Stores selected option (Cold Drinks / Hot Drinks)
+        private ToggleButton? _selectedItemButton;   // Stores selected menu item
+        private ToggleButton? _selectedSizeButton;   // Stores selected size (Regular / Medium / Large)
+
+        private string? _selectedOption;  // Store selected option text
+        private string? _selectedItem;    // Store selected menu item text
+        private string? _selectedSize;    // Store selected size text
 
         public OptionsView()
         {
@@ -21,34 +28,49 @@ namespace EBISX_POS.Views
         {
             if (sender is ToggleButton clickedButton)
             {
-                // Store the selected button's content (e.g., "Small", "Medium", "Large")
-                SelectedSize = clickedButton.Content.ToString();
+                var parentStackPanel = clickedButton.Parent as StackPanel;
 
-                foreach (var child in (clickedButton.Parent as StackPanel).Children)
+                // Determine which group this button belongs to
+                if (parentStackPanel != null)
                 {
-                    if (child is ToggleButton button && button != clickedButton)
+                    if (parentStackPanel.Name == "OptionsGroup")
                     {
-                        button.IsChecked = false;
+                        HandleSelection(ref _selectedOptionButton, clickedButton, ref _selectedOption);
+                        Debug.WriteLine($"Selected Option: {_selectedOption}");
+                    }
+                    else if (parentStackPanel.Name == "SizeGroup")
+                    {
+                        HandleSelection(ref _selectedSizeButton, clickedButton, ref _selectedSize);
+                        Debug.WriteLine($"Selected Size: {_selectedSize}");
                     }
                 }
-
-                // Debugging (Optional)
-                Debug.WriteLine($"Selected Size: {SelectedSize}");
+                else if (clickedButton.DataContext is ItemMenu item)
+                {
+                    HandleSelection(ref _selectedItemButton, clickedButton, ref _selectedItem);
+                    Debug.WriteLine($"Selected Item: {item.ItemName}");
+                }
             }
         }
 
-        private void ToggleButton_IsCheckedChanged(object sender, AvaloniaPropertyChangedEventArgs e)
+        private void HandleSelection(ref ToggleButton? selectedButton, ToggleButton clickedButton, ref string? selectedValue)
         {
-            if (sender is ToggleButton clickedButton && clickedButton.IsChecked == true)
+            if (selectedButton == clickedButton)
             {
-                foreach (var child in (clickedButton.Parent as StackPanel).Children)
+                clickedButton.IsChecked = false;
+                selectedButton = null;
+                selectedValue = null;
+            }
+            else
+            {
+                if (selectedButton != null)
                 {
-                    if (child is ToggleButton button && button != clickedButton)
-                    {
-                        button.IsChecked = false;
-                    }
+                    selectedButton.IsChecked = false;
                 }
+
+                clickedButton.IsChecked = true;
+                selectedButton = clickedButton;
+                selectedValue = clickedButton.Content?.ToString();
             }
         }
     }
-};
+}
