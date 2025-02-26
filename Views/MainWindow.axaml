@@ -119,7 +119,7 @@
 			<Grid Grid.Column="2" Width="350" RowDefinitions="*, Auto">
 				<!-- Content Area Inside Menu -->
 				<Border Grid.Row="0" BorderBrush="Orange" BorderThickness="0,0,0,3">
-					<!--<views:OrderSummaryView DataContext="{Binding OrderSummaryViewModel}"/>-->
+					<views:OrderSummaryView DataContext="{Binding OrderSummaryViewModel}"/>
 
 				</Border>
 

@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using EBISX_POS.ViewModels; // Ensure this is added
+
 
 namespace EBISX_POS.ViewModels
 {
@@ -15,5 +17,11 @@ namespace EBISX_POS.ViewModels
             "Add Ons",
             "Combo Meals",
         };
+        public OrderSummaryViewModel OrderSummaryViewModel { get; } // ✅ Add this property
+
+        public MainWindowViewModel()
+        {
+            OrderSummaryViewModel = new OrderSummaryViewModel(); // ✅ Initialize it
+        }
     }
 }

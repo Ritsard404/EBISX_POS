@@ -136,6 +136,10 @@ namespace EBISX_POS.ViewModels
         public int Quantity { get; set; } = 0; // Store Quantity for first item
 
         public string DisplayName => string.IsNullOrEmpty(Size) ? Name : $"{Name} ({Size})";
+
+        // ✅ Opacity Property (Replaces Converter)
+        public double Opacity => IsFirstItem ? 1.0 : 0.0;
     }
+
 }
 
