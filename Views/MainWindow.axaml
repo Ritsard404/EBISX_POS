@@ -77,6 +77,7 @@
 			<!-- Content Area -->
 			<Grid Grid.Column="1" RowDefinitions="*, Auto">
 				<Border Grid.Row="0" BorderBrush="Orange" BorderThickness="0,0,3,3">
+					<views:ItemListView />
 				</Border>
 
 				<!-- Bottom Keyboard -->

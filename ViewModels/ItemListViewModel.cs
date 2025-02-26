@@ -15,10 +15,20 @@ namespace EBISX_POS.ViewModels
         {
             // Sample data
             MenuItems = new ObservableCollection<ItemMenu>
-        {
-            new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ItemImage = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-            new ItemMenu { Id = 2, ItemName = "French Fries", Price = 2.99m, ItemImage = "avares://EBISX_POS/Assets/Images/Burgers/fries.png" }
-        };
+            {
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
+                new ItemMenu { Id = 2, ItemName = "French Fries", Price = 2.99m, ImagePath  = "avares://EBISX_POS/Assets/Images/Burgers/Yumburger-Solo.png" }
+            };
 
             ItemClickCommand = new RelayCommand<ItemMenu>(OnItemClick);
         }
@@ -28,8 +38,10 @@ namespace EBISX_POS.ViewModels
             if (item != null)
             {
                 Console.WriteLine($"Clicked: {item.ItemName}, Price: {item.Price}");
+                System.Diagnostics.Debug.WriteLine($"Clicked: {item.ItemName}, Price: {item.Price}"); // Debugging
             }
         }
+
 
     }
 }

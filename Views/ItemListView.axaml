@@ -3,8 +3,33 @@
              xmlns:vm="clr-namespace:EBISX_POS.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:EBISX_POS.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="EBISX_POS.Views.ItemListView"
              x:DataType="vm:ItemListViewModel">
-	hello
+
+	<Grid>
+		<!-- Center Content -->
+		<ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center">
+			<ItemsControl ItemsSource="{Binding MenuItems}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Button Click="OnItemClicked"
+                                Margin="5"
+                                Padding="0"
+                                Width="135"
+                                Background="Transparent">
+							<views:ItemCardView DataContext="{Binding}" />
+						</Button>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+	</Grid>
+	
 </UserControl>
