@@ -50,21 +50,22 @@
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="*"/>
 							</Grid.RowDefinitions>
-							<StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="5" HorizontalAlignment="Stretch">
-								<ItemsControl ItemsSource="{Binding ButtonList}">
+							<StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="5" HorizontalAlignment="Stretch" >
+								<ItemsControl  x:Name="MenuGroup" ItemsSource="{Binding ButtonList}">
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
-											<Button FontSize="14"
+											<ToggleButton FontSize="14"
                                                     HorizontalAlignment="Stretch"
                                                     VerticalContentAlignment="Center"
                                                     FontWeight="SemiBold"
                                                     Padding="10"
-                                                    Margin="7">
+                                                    Margin="7"
+													Click="ToggleButton_Click">
 												<TextBlock Text="{Binding}"
                                                            TextWrapping="Wrap"
                                                            TextAlignment="Center"
                                                            HorizontalAlignment="Center"/>
-											</Button>
+											</ToggleButton>
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
 								</ItemsControl>

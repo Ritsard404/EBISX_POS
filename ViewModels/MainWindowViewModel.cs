@@ -17,11 +17,11 @@ namespace EBISX_POS.ViewModels
             "Add Ons",
             "Combo Meals",
         };
-        public OrderSummaryViewModel OrderSummaryViewModel { get; } // ✅ Add this property
+        public OrderSummaryViewModel OrderSummaryViewModel { get; } // Add this property
 
         public MainWindowViewModel()
         {
-            OrderSummaryViewModel = new OrderSummaryViewModel(); // ✅ Initialize it
+            OrderSummaryViewModel = new OrderSummaryViewModel(); // Initialize it
         }
     }
 }

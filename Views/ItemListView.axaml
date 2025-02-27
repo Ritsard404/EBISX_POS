@@ -8,10 +8,10 @@
              x:Class="EBISX_POS.Views.ItemListView"
              x:DataType="vm:ItemListViewModel">
 
-	<Grid>
+	<Grid VerticalAlignment="Stretch">
 		<!-- Center Content -->
-		<ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center">
-			<ItemsControl ItemsSource="{Binding MenuItems}">
+		<ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Stretch">
+			<ItemsControl x:Name="ItemsList" ItemsSource="{Binding MenuItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -19,13 +19,14 @@
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Button Click="OnItemClicked"
+						<ToggleButton Click="OnItemClicked"
                                 Margin="5"
                                 Padding="0"
                                 Width="135"
-                                Background="Transparent">
+                                Background="Transparent"
+								CornerRadius="10">
 							<views:ItemCardView DataContext="{Binding}" />
-						</Button>
+						</ToggleButton>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>

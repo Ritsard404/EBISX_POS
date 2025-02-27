@@ -6,10 +6,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="750"
         x:Class="EBISX_POS.Views.SubItemWindow"
-        Title="Sub Items">
+        Title="Sub Items"
+		x:DataType="vm:SubItemWindowViewModel">
 	
 	<ScrollViewer   HorizontalAlignment="Stretch" VerticalAlignment="Center">
 		<StackPanel Margin="10">
+
+			<TextBlock Text="{Binding Item.ItemName}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+
 			<views:OptionsView />
 			<views:OptionsView />
 		</StackPanel>
