@@ -36,9 +36,10 @@
 
 				<ComboBox ItemsSource="{Binding Cashiers}"
 						  HorizontalAlignment="Center"
-						  Width="260"
+						 Width="260"
 						 FontFamily="{StaticResource NunitoFont}"
 						 MaxDropDownHeight="300"
+						 Height="30"
 						 Background="#FFF8DC"
 						 Foreground="#8B4513"
 						 BorderBrush="#D2691E"
@@ -49,7 +50,7 @@
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
 				</ComboBox>
-				
+
 				<Button Content="Sign In"
 						HorizontalAlignment="Stretch"
 						HorizontalContentAlignment="Center"
@@ -60,15 +61,15 @@
 						Foreground="White"
 						VerticalContentAlignment="Center"
 						CornerRadius="5"/>
-				
+
 				<TextBlock
 				Text="error message"
 						   Foreground="Red"
 						   TextAlignment="Center"/>
 
-			<ProgressBar IsIndeterminate="True"  IsVisible="{Binding IsLoading}"/>
-						
-				
+				<ProgressBar IsIndeterminate="True"  IsVisible="{Binding IsLoading}"/>
+
+
 			</StackPanel>
 		</Border>
 	</Grid>

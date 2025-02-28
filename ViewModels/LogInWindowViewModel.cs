@@ -40,6 +40,7 @@ namespace EBISX_POS.ViewModels
             }
             catch (Exception ex)
             {
+                IsLoading = true;
                 Console.WriteLine($"Error: {ex.Message}");
             }
             finally
