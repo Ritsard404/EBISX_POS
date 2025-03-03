@@ -42,7 +42,7 @@
                       VerticalAlignment="Bottom"
                       Margin="5,40,5,5"
                       FontWeight="Bold"
-                      FontSize="16"/>
+                      FontSize="16" />
 		</Grid>
 	</Border>
 </UserControl>
