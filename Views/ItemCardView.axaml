@@ -7,13 +7,13 @@
              x:Class="EBISX_POS.Views.ItemCardView"
              xmlns:models="clr-namespace:EBISX_POS.Models"
              x:DataType="models:ItemMenu">
-    <Border BorderBrush="Orange" BorderThickness="3" IsHitTestVisible="False" CornerRadius="10">
-        <Grid>
-            <!--Image--> 
-            <Image Source="{Binding ItemImage}" Width="100"/>
-            <!--<Image Source="avares://EBISX_POS/Assets/Images/Burgers/burger.png" MaxWidth="100" />-->
+	<Border BorderBrush="Orange" BorderThickness="3" IsHitTestVisible="False" CornerRadius="10">
+		<Grid>
+			<!--Image-->
+			<Image Source="{Binding ItemImage}" Width="100"/>
+			<!--<Image Source="avares://EBISX_POS/Assets/Images/Burgers/burger.png" MaxWidth="100" />-->
 
-            <!--Price Overlay (Top-Right Corner)-->
+			<!--Price Overlay (Top-Right Corner)-->
 			<Border Background="Red"
                 CornerRadius="10"
                 Padding="5"
@@ -28,21 +28,21 @@
 			</Border>
 
 
-			<!--Middle Border--> 
-            <Border BorderBrush="Orange" BorderThickness="0,3,0,0"
+			<!--Middle Border-->
+			<Border BorderBrush="Orange" BorderThickness="0,3,0,0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Bottom"
                     Height="3"
                     Margin="0,125,0,30"/>
-            <!--Adjust margin to control spacing--> 
+			<!--Adjust margin to control spacing-->
 
-            <!--Item Name (Below the Middle Border)--> 
-            <TextBlock Text="{Binding ItemName}"
+			<!--Item Name (Below the Middle Border)-->
+			<TextBlock Text="{Binding ItemName}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
                       Margin="5,40,5,5"
                       FontWeight="Bold"
                       FontSize="16"/>
-        </Grid>
-    </Border>
+		</Grid>
+	</Border>
 </UserControl>

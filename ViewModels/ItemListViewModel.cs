@@ -3,45 +3,42 @@ using EBISX_POS.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using EBISX_POS.API.Models; // Ensure this is added
+using EBISX_POS.Services;
+using System.Threading.Tasks; // Ensure this is added
+using System.Diagnostics; // Ensure this is added
 
 namespace EBISX_POS.ViewModels
 {
     public class ItemListViewModel : ViewModelBase
     {
-        public ObservableCollection<ItemMenu> MenuItems { get; set; }
+        private readonly MenuService _menuService;
+
+        public ObservableCollection<ItemMenu> MenuItems { get; } = new();
         public ICommand ItemClickCommand { get; }
 
-        public ItemListViewModel()
+        public ItemListViewModel(MenuService menuService) // Ensure this constructor is public
         {
-            // Sample data
-            MenuItems = new ObservableCollection<ItemMenu>
-            {
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 1, ItemName = "Burger Deluxe", Price = 5.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Burgers/burger.png" },
-                new ItemMenu { Id = 2, ItemName = "French Fries", Price = 2.99m, ImagePath  = "avares://EBISX_POS/Assets/Images/Burgers/Yumburger-Solo.png" }
-            };
-
+            _menuService = menuService;
             ItemClickCommand = new RelayCommand<ItemMenu>(OnItemClick);
+        }
+
+        public async Task LoadMenusAsync(int categoryId)
+        {
+            Debug.WriteLine($"Loading menus for category ID: {categoryId}");
+            var menus = await _menuService.GetMenusAsync(categoryId);
+            MenuItems.Clear();
+            menus.ForEach(menu => MenuItems.Add(menu));
+            Debug.WriteLine($"Loaded {menus.Count} menus for category ID: {categoryId}");
+            Debug.WriteLine($"{menus}"); // Debugging
         }
 
         private void OnItemClick(ItemMenu? item)
         {
             if (item != null)
             {
-                Console.WriteLine($"Clicked: {item.ItemName}, Price: {item.Price}");
-                System.Diagnostics.Debug.WriteLine($"Clicked: {item.ItemName}, Price: {item.Price}"); // Debugging
+                Debug.WriteLine($"Clicked: {item.Id}, Price: {item.Price}"); // Debugging
             }
         }
-
-
     }
 }

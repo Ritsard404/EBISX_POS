@@ -6,6 +6,7 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using EBISX_POS.Services;
+using EBISX_POS.State;
 using EBISX_POS.ViewModels;
 using EBISX_POS.Views;
 using Microsoft.Extensions.Configuration;
@@ -16,8 +17,11 @@ namespace EBISX_POS
 {
     public partial class App : Application
     {
+        // Provides a strongly-typed access to the current instance of App.
         public new static App Current => (App)Application.Current!;
-        public IServiceProvider Services { get; private set; }
+
+        // The DI container
+        public IServiceProvider Services { get; private set; } = null!;
 
         public override void Initialize()
         {
@@ -26,6 +30,7 @@ namespace EBISX_POS
 
         public override void OnFrameworkInitializationCompleted()
         {
+            // Configure and build the DI container.
             Services = ConfigureServices();
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -33,7 +38,8 @@ namespace EBISX_POS
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
-                desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
+                desktop.MainWindow = Services.GetRequiredService<MainWindow>();
+                //desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -56,20 +62,22 @@ namespace EBISX_POS
         {
             var services = new ServiceCollection();
 
+            // State Management
+            services.AddSingleton<CashierState>();
+
             // Register services
             services.AddSingleton<AuthService>();
-            //services.AddSingleton<TokenService>();
+            services.AddSingleton<MenuService>(); // Register MenuService
 
             // Register ViewModels
             services.AddTransient<LogInWindowViewModel>();
-            //services.AddSingleton<MainWindowViewModel>();
-            //services.AddTransient<LoginWindowViewModel>();
-            //services.AddTransient<HomeViewModel>();
-            //services.AddTransient<PeopleViewModel>();
-            //services.AddTransient<TodoViewModel>();
+            services.AddTransient<MainViewModel>(); // Register MainViewModel
+            services.AddTransient<ItemListViewModel>(); // Register ItemListViewModel
 
             // Register Views
             services.AddTransient<LogInWindow>();
+            services.AddTransient<MainWindow>(); // Register MainWindow
+            services.AddTransient<ItemListView>(provider => new ItemListView(provider.GetRequiredService<MenuService>())); // Register ItemListView
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)

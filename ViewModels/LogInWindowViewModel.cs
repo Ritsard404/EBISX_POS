@@ -1,34 +1,44 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using EBISX_POS.API.Services.DTO.Auth;
 using EBISX_POS.Services;
-using EBISX_POS.Services.DTO.Auth;
+using EBISX_POS.State;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EBISX_POS.ViewModels
 {
-    public class LogInWindowViewModel : ViewModelBase
+    public partial class LogInWindowViewModel : ViewModelBase
     {
+        private readonly CashierState _cashierState;
+
+        [ObservableProperty]
         private bool _isLoading;
+
+        [ObservableProperty]
+        private string _errorMessage; 
+        
+        [ObservableProperty]
+        private CashierDTO? _selectedCashier;
+
+        [ObservableProperty]
+        private string _managerEmail;
+
+        public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
         private readonly AuthService _authService;
         public ObservableCollection<CashierDTO> Cashiers { get; } = new();
-        public bool IsLoading
-        {
-            get => _isLoading;
-            private set => SetProperty(ref _isLoading, value);
-        }
 
-        public LogInWindowViewModel(AuthService authService)
+        public LogInWindowViewModel(AuthService authService, CashierState cashierState)
         {
             _authService = authService;
+            _cashierState = cashierState;
             LoadCashiers();
         }
 
-        public async void LoadCashiers()
+        public async Task LoadCashiers()
         {
             try
             {
@@ -40,8 +50,54 @@ namespace EBISX_POS.ViewModels
             }
             catch (Exception ex)
             {
-                IsLoading = true;
                 Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        // #TODO: Implement Transition to POS Dashboard
+        [RelayCommand]
+        private async Task LogIn()
+        {
+            try
+            {
+                ErrorMessage = "";
+                IsLoading = true;
+
+                if (SelectedCashier == null)
+                {
+                    ErrorMessage = "Please select a cashier.";
+                    OnPropertyChanged(nameof(HasError));
+                    return;
+                }
+
+                var logInDTO = new LogInDTO
+                {
+                    CashierEmail = SelectedCashier.Email,
+                    ManagerEmail = ManagerEmail
+                };
+
+                var (success, message) = await _authService.LogInAsync(logInDTO);
+
+                if (!success)
+                {
+                    ErrorMessage = message;
+                    OnPropertyChanged(nameof(HasError));
+                    return;
+                }
+
+                // Set Cashier Name in Global State
+                _cashierState.CashierName = message;
+                Debug.WriteLine($"Log in success: {message}"); // Debug line
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                ErrorMessage = "An unexpected error occurred.";
+                OnPropertyChanged(nameof(HasError));
             }
             finally
             {

@@ -10,14 +10,14 @@ namespace EBISX_POS.Models
         public required string ItemName { get; set; }
         public required decimal Price { get; set; }
 
-        private string _imagePath;
-        public string ImagePath
+        private string? _imagePath;
+        public string? ImagePath
         {
             get => _imagePath;
             set
             {
                 _imagePath = value;
-                ItemImage = LoadBitmap(value);
+                ItemImage = string.IsNullOrEmpty(value) ? null : LoadBitmap(value);
             }
         }
 
@@ -27,13 +27,21 @@ namespace EBISX_POS.Models
         {
             try
             {
+                if (string.IsNullOrEmpty(path))
+                {
+                    return null;
+                }
+
                 var uri = new Uri(path);
                 var assets = AssetLoader.Open(uri);
                 return new Bitmap(assets);
             }
+            catch (ArgumentNullException ex)
+            {
+                return null;
+            }
             catch (Exception ex)
             {
-                Console.WriteLine($"Image loading error: {ex.Message}");
                 return null;
             }
         }

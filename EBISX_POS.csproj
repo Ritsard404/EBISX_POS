@@ -49,6 +49,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Sess\" />
     <Folder Include="Services\API\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EBISX_POS.API\EBISX_POS.API.csproj" />
   </ItemGroup>
 </Project>
