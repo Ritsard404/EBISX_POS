@@ -25,12 +25,9 @@ namespace EBISX_POS.ViewModels
 
         public async Task LoadMenusAsync(int categoryId)
         {
-            Debug.WriteLine($"Loading menus for category ID: {categoryId}");
             var menus = await _menuService.GetMenusAsync(categoryId);
             MenuItems.Clear();
             menus.ForEach(menu => MenuItems.Add(menu));
-            Debug.WriteLine($"Loaded {menus.Count} menus for category ID: {categoryId}");
-            Debug.WriteLine($"{menus}"); // Debugging
         }
 
         private void OnItemClick(ItemMenu? item)

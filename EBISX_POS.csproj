@@ -13,6 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaXaml Remove="Sess\**" />
+    <Compile Remove="Sess\**" />
+    <EmbeddedResource Remove="Sess\**" />
+    <None Remove="Sess\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AvaloniaXaml Remove="Assets\Icons.axaml" />
   </ItemGroup>
 
@@ -49,7 +56,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Sess\" />
     <Folder Include="Services\API\" />
   </ItemGroup>
 

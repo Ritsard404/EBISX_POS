@@ -10,11 +10,11 @@
 
     <Grid VerticalAlignment="Stretch">
         <!-- Center Content -->
-        <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Stretch">
+        <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Stretch">
             <ItemsControl x:Name="ItemsList" ItemsSource="{Binding MenuItems}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>

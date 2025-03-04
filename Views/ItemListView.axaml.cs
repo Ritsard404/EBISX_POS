@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity; // Add this line
 using EBISX_POS.Models;
 using EBISX_POS.ViewModels;
 using EBISX_POS.Services; // Ensure this is added
@@ -19,6 +20,17 @@ namespace EBISX_POS.Views
         {
             InitializeComponent();
             DataContext = new ItemListViewModel(menuService); // Set initial DataContext
+            this.Loaded += OnLoaded; // Add this line
+        }
+
+        private void OnLoaded(object? sender, RoutedEventArgs e) // Update the event handler signature
+        {
+            if (ItemsList.ItemContainerGenerator.ContainerFromIndex(0) is ToggleButton firstButton)
+            {
+                firstButton.IsChecked = true;
+                _selectedItemButton = firstButton;
+                _selectedItem = firstButton.Content?.ToString();
+            }
         }
 
         public async Task LoadMenusAsync(int categoryId)

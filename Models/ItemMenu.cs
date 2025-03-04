@@ -9,6 +9,9 @@ namespace EBISX_POS.Models
         public int Id { get; set; }
         public required string ItemName { get; set; }
         public required decimal Price { get; set; }
+        public string? Size { get; set; }
+        public bool HasSize { get; set; }
+        public bool IsSolo { get; set; }
 
         private string? _imagePath;
         public string? ImagePath

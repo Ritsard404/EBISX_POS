@@ -84,7 +84,10 @@ namespace EBISX_POS.Services
                     Id = menu.Id,
                     ItemName = menu.MenuName ?? "Unknown",
                     Price = menu.MenuPrice,
-                    ImagePath = menu.MenuImagePath ?? string.Empty
+                    ImagePath = menu.MenuImagePath ?? string.Empty,
+                    Size = menu.Size?.ToString() ?? string.Empty,
+                    HasSize = menu.Size != null,
+                    IsSolo = !menu.HasDrink && menu.DrinkType == null && menu.IsAddOn == false
                 }).ToList();
             }
             catch (HttpRequestException ex)
