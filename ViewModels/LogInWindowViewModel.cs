@@ -46,11 +46,11 @@ namespace EBISX_POS.ViewModels
                 var cashiers = await _authService.GetCashiersAsync();
                 Cashiers.Clear();
                 cashiers.ForEach(cashier => Cashiers.Add(cashier));
-                Debug.WriteLine($"Loaded {Cashiers.Count} cashiers."); // Debug line
+                Debug.WriteLine($"Loaded {Cashiers.Count} cashiers.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                Debug.WriteLine($"Error: {ex.Message}");
             }
             finally
             {

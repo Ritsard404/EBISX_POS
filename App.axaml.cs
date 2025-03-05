@@ -64,6 +64,7 @@ namespace EBISX_POS
 
             // State Management
             services.AddSingleton<CashierState>();
+            services.AddSingleton<OrderState>();
 
             // Register services
             services.AddSingleton<AuthService>();
@@ -73,6 +74,8 @@ namespace EBISX_POS
             services.AddTransient<LogInWindowViewModel>();
             services.AddTransient<MainViewModel>(); // Register MainViewModel
             services.AddTransient<ItemListViewModel>(); // Register ItemListViewModel
+            services.AddTransient<OrderSummaryViewModel>(); 
+            services.AddTransient<SubItemWindowViewModel>(); 
 
             // Register Views
             services.AddTransient<LogInWindow>();

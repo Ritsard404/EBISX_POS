@@ -8,17 +8,22 @@ using EBISX_POS.ViewModels;
 using EBISX_POS.Services; // Ensure this is added
 using System.Diagnostics;
 using System.Threading.Tasks;
+using EBISX_POS.State;
 
 namespace EBISX_POS.Views
 {
     public partial class ItemListView : UserControl
     {
+        private readonly MenuService _menuService;
+
+
         private ToggleButton? _selectedItemButton;
         private string? _selectedItem;
 
         public ItemListView(MenuService menuService) // Ensure this constructor is public
         {
             InitializeComponent();
+            _menuService = menuService;
             DataContext = new ItemListViewModel(menuService); // Set initial DataContext
             this.Loaded += OnLoaded; // Add this line
         }
@@ -53,9 +58,12 @@ namespace EBISX_POS.Views
                 HandleSelection(ref _selectedItemButton, clickedButton, ref _selectedItem);
                 Debug.WriteLine($"Selected Item: {item.ItemName}");
 
-                var detailsWindow = new SubItemWindow
+                if (item.IsSolo || item.IsAddOn)
+                    return;
+
+                var detailsWindow = new SubItemWindow(item, _menuService)
                 {
-                    DataContext = new SubItemWindowViewModel(item)
+                    DataContext = new SubItemWindowViewModel(item, _menuService)
                 };
 
                 await detailsWindow.ShowDialog((Window)this.VisualRoot);

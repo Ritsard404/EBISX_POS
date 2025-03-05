@@ -11,6 +11,7 @@
 	
 	<ScrollViewer   HorizontalAlignment="Stretch" VerticalAlignment="Center">
 		<StackPanel Margin="10">
+			<!-- #TODO: Make this work by the data from the API-->
 
 			<TextBlock Text="{Binding Item.ItemName}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
 

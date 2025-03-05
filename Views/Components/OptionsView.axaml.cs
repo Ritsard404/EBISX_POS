@@ -21,7 +21,7 @@ namespace EBISX_POS.Views
         public OptionsView()
         {
             InitializeComponent();
-            DataContext = new OptionsViewModel();
+            DataContext = new SubItemWindowViewModel();
         }
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)

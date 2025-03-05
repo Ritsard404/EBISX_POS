@@ -39,7 +39,7 @@ namespace EBISX_POS.Models
 
         public string DisplayName => string.IsNullOrEmpty(Size) ? Name : $"{Name} ({Size})";
 
-        // ✅ Opacity Property (Replaces Converter)
+        //  Opacity Property (Replaces Converter)
         public double Opacity => IsFirstItem ? 1.0 : 0.0;
     }
 }
