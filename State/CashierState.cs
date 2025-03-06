@@ -2,9 +2,8 @@
 
 namespace EBISX_POS.State
 {
-    public partial class CashierState: ObservableObject
+    public static class CashierState
     {
-        [ObservableProperty]
-        private string _cashierName;
+        public static string? CashierName;
     }
 }

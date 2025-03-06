@@ -5,12 +5,12 @@ using EBISX_POS.State;
 using System.Threading.Tasks;
 using EBISX_POS.Services;
 using System.Diagnostics;
+using System.Linq;
 
 namespace EBISX_POS.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        private readonly CashierState _cashierState;
         private readonly MenuService _menuService;
 
         public ObservableCollection<Category> ButtonList { get; } = new();
@@ -18,24 +18,23 @@ namespace EBISX_POS.ViewModels
         public OrderSummaryViewModel OrderSummaryViewModel { get; } // Add this property
         public ItemListViewModel ItemListViewModel { get; } // Add this property
 
-        public MainWindowViewModel(CashierState cashierState, MenuService menuService)
+        public MainWindowViewModel(MenuService menuService)
         {
-            _cashierState = cashierState;
             _menuService = menuService;
             OrderSummaryViewModel = new OrderSummaryViewModel(); // Initialize it
             ItemListViewModel = new ItemListViewModel(menuService); // Initialize it
 
-            LoadCategories();
+            _ = LoadCategories();
         }
 
-        public string CashierName => _cashierState.CashierName;
+        public string CashierName => CashierState.CashierName ?? "Developer";
 
         private async Task LoadCategories()
         {
             var categories = await _menuService.GetCategoriesAsync();
             ButtonList.Clear();
             categories.ForEach(category => ButtonList.Add(category));
-        }
+         }
 
         public async Task LoadMenusAsync(int categoryId)
         {

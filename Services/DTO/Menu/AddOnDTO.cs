@@ -57,6 +57,7 @@ namespace EBISX_POS.Services.DTO.Menu
         /// Optional size specification for the add-on
         /// </summary>
         public string? Size { get; set; }
+        public bool HasSize { get; set; } = false;
         
         /// <summary>
         /// Price of the add-on item

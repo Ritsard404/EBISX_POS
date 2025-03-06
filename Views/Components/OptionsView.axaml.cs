@@ -2,26 +2,33 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using EBISX_POS.Models;
+using EBISX_POS.Services.DTO.Menu;
+using EBISX_POS.State;
 using EBISX_POS.ViewModels;
 using System.Diagnostics;
-using System.Linq;
 
 namespace EBISX_POS.Views
 {
     public partial class OptionsView : UserControl
     {
-        private ToggleButton? _selectedOptionButton; // Stores selected option (Cold Drinks / Hot Drinks)
         private ToggleButton? _selectedItemButton;   // Stores selected menu item
         private ToggleButton? _selectedSizeButton;   // Stores selected size (Regular / Medium / Large)
+        private ToggleButton? _selectedDrinkTypeButton;
+        private ToggleButton? _selectedAddOnTypeButton;
+        private ToggleButton? _selectedAddOnButton;
+        private ToggleButton? _selectedDrinksButton;
 
-        private string? _selectedOption;  // Store selected option text
         private string? _selectedItem;    // Store selected menu item text
         private string? _selectedSize;    // Store selected size text
+        private string? _selectedDrinkType;   
+        private string? _selectedAddOnType;     
+        private string? _selectedDrink;   
+        private string? _selectedAddOn;   
 
         public OptionsView()
         {
             InitializeComponent();
-            DataContext = new SubItemWindowViewModel();
+            DataContext = new OptionsViewModel();
         }
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -31,18 +38,33 @@ namespace EBISX_POS.Views
                 var parentStackPanel = clickedButton.Parent as StackPanel;
 
                 // Determine which group this button belongs to
-                if (parentStackPanel != null)
+                if (clickedButton.DataContext is DrinkDetailDTO Drink)
                 {
-                    if (parentStackPanel.Name == "OptionsGroup")
-                    {
-                        HandleSelection(ref _selectedOptionButton, clickedButton, ref _selectedOption);
-                        Debug.WriteLine($"Selected Option: {_selectedOption}");
-                    }
-                    else if (parentStackPanel.Name == "SizeGroup")
-                    {
-                        HandleSelection(ref _selectedSizeButton, clickedButton, ref _selectedSize);
-                        Debug.WriteLine($"Selected Size: {_selectedSize}");
-                    }
+                    HandleSelection(ref _selectedDrinksButton, clickedButton, ref _selectedDrink);
+                    Debug.WriteLine($"Selected Drink: {Drink.MenuName}");
+                }
+                else if (clickedButton.DataContext is AddOnDetailDTO AddOn)
+                {
+                    HandleSelection(ref _selectedAddOnButton, clickedButton, ref _selectedAddOn);
+                    Debug.WriteLine($"Selected AddOn: {AddOn.MenuName} Size: {AddOn.Size}");
+                }
+                else if (clickedButton.DataContext is AddOnTypeDTO selectedAddOnType)
+                {
+                    HandleSelection(ref _selectedAddOnTypeButton, clickedButton, ref _selectedAddOnType);
+                    OptionsState.UpdateAddOns(selectedAddOnType.AddOnTypeId);
+                    Debug.WriteLine($"Selected AddOns Type: {selectedAddOnType.AddOnTypeName} Id: {selectedAddOnType.AddOnTypeId}");
+                }
+                else if (clickedButton.DataContext is DrinkTypeDTO selectedDrinkType)
+                {
+                    HandleSelection(ref _selectedDrinkTypeButton, clickedButton, ref _selectedDrinkType);
+                    OptionsState.UpdateDrinks(selectedDrinkType.DrinkTypeId);
+                    Debug.WriteLine($"Selected Drink Type: {selectedDrinkType.DrinkTypeName} Id: {selectedDrinkType.DrinkTypeId}");
+                }
+                // If the button is inside an ItemsControl (for sizes)
+                else if (clickedButton.DataContext is string size)
+                {
+                    HandleSelection(ref _selectedSizeButton, clickedButton, ref _selectedSize);
+                    Debug.WriteLine($"Selected Size: {size}");
                 }
                 else if (clickedButton.DataContext is ItemMenu item)
                 {

@@ -21,6 +21,7 @@ namespace EBISX_POS.ViewModels
         {
             _menuService = menuService;
             ItemClickCommand = new RelayCommand<ItemMenu>(OnItemClick);
+
         }
 
         public async Task LoadMenusAsync(int categoryId)

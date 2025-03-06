@@ -62,10 +62,6 @@ namespace EBISX_POS
         {
             var services = new ServiceCollection();
 
-            // State Management
-            services.AddSingleton<CashierState>();
-            services.AddSingleton<OrderState>();
-
             // Register services
             services.AddSingleton<AuthService>();
             services.AddSingleton<MenuService>(); // Register MenuService

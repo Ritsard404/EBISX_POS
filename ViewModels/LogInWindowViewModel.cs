@@ -12,7 +12,6 @@ namespace EBISX_POS.ViewModels
 {
     public partial class LogInWindowViewModel : ViewModelBase
     {
-        private readonly CashierState _cashierState;
 
         [ObservableProperty]
         private bool _isLoading;
@@ -31,10 +30,9 @@ namespace EBISX_POS.ViewModels
         private readonly AuthService _authService;
         public ObservableCollection<CashierDTO> Cashiers { get; } = new();
 
-        public LogInWindowViewModel(AuthService authService, CashierState cashierState)
+        public LogInWindowViewModel(AuthService authService)
         {
             _authService = authService;
-            _cashierState = cashierState;
             LoadCashiers();
         }
 
@@ -90,7 +88,7 @@ namespace EBISX_POS.ViewModels
                 }
 
                 // Set Cashier Name in Global State
-                _cashierState.CashierName = message;
+                CashierState.CashierName = message;
                 Debug.WriteLine($"Log in success: {message}"); // Debug line
             }
             catch (Exception ex)
