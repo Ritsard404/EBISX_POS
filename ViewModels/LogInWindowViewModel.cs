@@ -22,6 +22,11 @@ namespace EBISX_POS.ViewModels
             private set => SetProperty(ref _isLoading, value);
         }
 
+        private void SetProperty(ref bool isLoading, bool value)
+        {
+            throw new NotImplementedException();
+        }
+
         public LogInWindowViewModel(AuthService authService)
         {
             _authService = authService;

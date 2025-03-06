@@ -33,7 +33,7 @@ namespace EBISX_POS
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
-                desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
+                desktop.MainWindow = Services.GetRequiredService<ManagerWindow>();
             }
 
             base.OnFrameworkInitializationCompleted();

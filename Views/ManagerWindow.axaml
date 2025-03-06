@@ -1,0 +1,189 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="" d:DesignHeight=""
+        x:Class="EBISX_POS.Views.ManagerWindow"
+		xmlns:vm="using:EBISX_POS.ViewModels"
+        Title="ManagerWindow">
+
+	<Window.Styles>
+		<Style Selector="Button">
+			<Setter Property="Width" Value="200" />
+			<Setter Property="Height" Value="150" />
+			<Setter Property="FontSize" Value="13" />
+			<Setter Property="HorizontalAlignment" Value="Center" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+		</Style>
+		<Style Selector="PathIcon">
+			<Setter Property="Width" Value="75" />
+			<Setter Property="Height" Value="75" />
+			<Setter Property="Foreground" Value="#D2691E" />
+			<Setter Property="HorizontalAlignment" Value="Center" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="HorizontalAlignment" Value="Center" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+		</Style>
+	</Window.Styles>
+
+	<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*,Auto">
+		<!--  Header  -->
+		<Grid
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            Height="40">
+			<TextBlock
+                Margin="20,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontWeight="Bold"
+                Foreground="Black"
+                Text="Ebisx POS" />
+			<TextBlock
+                Margin="0,0,20,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontWeight="Bold"
+                Foreground="Black"
+                Text="Manager" />
+			<Border BorderBrush="DarkOrange" BorderThickness="0,0,0,2" />
+		</Grid>
+
+		<!--  Left Sidebar  -->
+		<Grid
+            Grid.Row="1"
+            Grid.Column="0"
+            Width="150"
+            Background="White">
+			<Border BorderBrush="DarkOrange" BorderThickness="0,0,2,0" />
+		</Grid>
+
+		<!--  Main Content  -->
+		<Grid
+            Grid.Row="1"
+            Grid.Column="1"
+            Background="white"
+            RowDefinitions="*,Auto">
+			<Grid
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                ColumnDefinitions="Auto,Auto,Auto,Auto"
+                RowDefinitions="Auto,Auto,Auto">
+				<!--  Button 1 with Report  -->
+				<Button
+					Click="SummaryReport_Button"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="5"
+					VerticalContentAlignment="Center">
+					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+						<TextBlock FontSize="30" Text="Sales" />
+						<TextBlock FontSize="30" Text="Report" />
+
+					</StackPanel>
+				</Button>
+				<!--  Button 2 with User Login  -->
+				<!--
+                <Button Click="CrewLogin"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="5">
+                    <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+                        <PathIcon Data="{StaticResource person_regular}" />
+                        <TextBlock FontSize="30" Text="Crew" />
+                    </StackPanel>
+                </Button>-->
+				<!--  Button 3 with Transaction Logs  -->
+				<Button Click="TransactionLog"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="5">
+					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+						<TextBlock FontSize="30" Text="Transact" />
+						<TextBlock FontSize="30" Text="Log" />
+					</StackPanel>
+				</Button>
+				<!--  Button 4 with Refund  -->
+				<Button
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="5">
+					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+						<TextBlock FontSize="30" Text="Refund" />
+					</StackPanel>
+				</Button>
+				<!--  Button 5 with Monthly Report  -->
+				<Button
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="5">
+					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+						<TextBlock FontSize="30" Text="Monthly" />
+						<TextBlock FontSize="30" Text="Report" />
+					</StackPanel>
+				</Button>
+				<!--  Button 6 with Quarterly Report  -->
+				<Button
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="5">
+					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+						<TextBlock FontSize="30" Text="Quarterly" />
+						<TextBlock FontSize="30" Text="Report" />
+					</StackPanel>
+				</Button>
+				<!--  Button 7 with Yearly Report  -->
+				<Button
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="5">
+					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+						<TextBlock FontSize="30" Text="Yearly" />
+						<TextBlock FontSize="30" Text="Report" />
+					</StackPanel>
+				</Button>
+				<!--  Button 8 with Senior/Pwd  -->
+				<Button
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="5">
+					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+						<TextBlock FontSize="30" Text="Sc/Pwd" />
+						<TextBlock FontSize="30" Text="Discount" />
+					</StackPanel>
+				</Button>
+				<!--  Button 9 with Bir Summary Report  -->
+				<Button
+                    Grid.Row="1"
+                    Grid.Column="5"
+                    Margin="5">
+					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+						<TextBlock FontSize="30" Text="BIR.Sum" />
+						<TextBlock FontSize="30" Text="Report" />
+					</StackPanel>
+				</Button>
+			</Grid>
+			<Grid
+                Grid.Row="2"
+                Height="140"
+                Background="White">
+				<Border BorderBrush="DarkOrange" BorderThickness="0,2,0,0" />
+			</Grid>
+		</Grid>
+
+		<!--  Right Sidebar  -->
+		<Grid
+            Grid.Row="1"
+            Grid.Column="2"
+            Width="200"
+            Background="White">
+			<Border BorderBrush="DarkOrange" BorderThickness="2,0,0,0" />
+		</Grid>
+
+		<!--  Footer  -->
+
+	</Grid>
+
+</Window>
