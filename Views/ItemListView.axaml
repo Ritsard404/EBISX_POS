@@ -14,7 +14,7 @@
             <ItemsControl x:Name="ItemsList" ItemsSource="{Binding MenuItems}" IsVisible="{Binding HasMenus}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Top"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>

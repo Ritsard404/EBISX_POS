@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using EBISX_POS.Models;
+using EBISX_POS.State;
 
 namespace EBISX_POS.ViewModels
 {
     public class OrderSummaryViewModel : ViewModelBase
     {
+
         public ObservableCollection<OrderItem> OrderItems { get; } = new ObservableCollection<OrderItem>
         {
             new OrderItem
@@ -102,8 +104,5 @@ namespace EBISX_POS.ViewModels
             }
         };
     }
-
-
-
 }
 

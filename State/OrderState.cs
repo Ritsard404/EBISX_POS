@@ -1,16 +1,16 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using EBISX_POS.Models;
+﻿using EBISX_POS.Models;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace EBISX_POS.State
 {
-    public partial class OrderState : ObservableObject
+    public static class OrderState
     {
-        [ObservableProperty]
-        private ObservableCollection<OrderItemState> _currentOrder = new();
+        public static ObservableCollection<OrderItemState> CurrentOrder { get; set; } = new ObservableCollection<OrderItemState>();
+        //public static ObservableCollection<OrderItem> OrderItems = new ObservableCollection<OrderItem>();
+        public static OrderItemState CurrentOrderItem { get; set; } = new OrderItemState();
+        public static decimal _totalAmount;
 
-        [ObservableProperty]
-        private decimal _totalAmount;
+
+
     }
 }

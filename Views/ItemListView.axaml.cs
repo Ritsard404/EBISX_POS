@@ -9,6 +9,8 @@ using EBISX_POS.Services; // Ensure this is added
 using System.Diagnostics;
 using System.Threading.Tasks;
 using EBISX_POS.State;
+using EBISX_POS.API.Models;
+using System.Linq;
 
 namespace EBISX_POS.Views
 {
@@ -65,6 +67,14 @@ namespace EBISX_POS.Views
                 {
                     DataContext = new SubItemWindowViewModel(item, _menuService)
                 };
+
+                OrderState.CurrentOrderItem.SubOrders.Clear();
+                OrderState.CurrentOrderItem.SubOrders.Add(new SubOrderItem
+                {
+                    MenuId = item.Id,
+                    Name = item.ItemName,
+                    ItemPrice = item.Price
+                });
 
                 await detailsWindow.ShowDialog((Window)this.VisualRoot);
             }

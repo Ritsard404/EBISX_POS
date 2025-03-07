@@ -35,7 +35,7 @@ namespace EBISX_POS.ViewModels
             var categories = await _menuService.GetCategoriesAsync();
             ButtonList.Clear();
             categories.ForEach(category => ButtonList.Add(category));
-            Debug.WriteLine($"Loaded default {categories.FirstOrDefault().Id} categories");
+
             await LoadMenusAsync(categories.FirstOrDefault().Id);
 
         }

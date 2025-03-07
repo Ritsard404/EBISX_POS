@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using EBISX_POS.State;
 using CommunityToolkit.Mvvm.Input;
 using System.Linq;
+using EBISX_POS.API.Models;
 
 namespace EBISX_POS.ViewModels
 {
@@ -29,10 +30,10 @@ namespace EBISX_POS.ViewModels
         /// Indicates if options are currently being loaded
         /// </summary>
         [ObservableProperty]
-        private bool _isLoading; 
-        
+        private bool _isLoading;
+
         [ObservableProperty]
-        private bool _isNotHideView;
+        private bool _HasOptions;
 
 
         /// <summary>
@@ -67,6 +68,7 @@ namespace EBISX_POS.ViewModels
         {
             try
             {
+
                 // Validate required item
                 if (Item == null)
                 {
@@ -76,7 +78,7 @@ namespace EBISX_POS.ViewModels
 
                 Debug.WriteLine($"Loading options for Item ID: {Item.Id}");
                 IsLoading = true;
-                IsNotHideView = false;
+                HasOptions = false;
 
 
                 // 🔹 Reset state before fetching new data
@@ -102,6 +104,13 @@ namespace EBISX_POS.ViewModels
                     {
                         OptionsState.DrinkSizes.Add(size);
                     }
+
+                    SelectedOptionsState.SelectedDrinkType = drinksResult.DrinkTypesWithDrinks.FirstOrDefault().DrinkTypeId;
+                    SelectedOptionsState.SelectedSize = drinksResult.Sizes.FirstOrDefault();
+
+                    // Store  Default
+                    OptionsState.UpdateDrinks(drinksResult.DrinkTypesWithDrinks.FirstOrDefault().DrinkTypeId, drinksResult.Sizes.FirstOrDefault());
+
                 }
                 else
                 {
@@ -115,7 +124,10 @@ namespace EBISX_POS.ViewModels
                 {
                     OptionsState.AddOnsType.Clear();
                     addOnResult.ForEach(addOn => OptionsState.AddOnsType.Add(addOn));
-                    
+
+                    // Default Display
+                    OptionsState.UpdateAddOns(addOnResult.FirstOrDefault().AddOnTypeId);
+
                 }
                 else
                 {
@@ -131,7 +143,7 @@ namespace EBISX_POS.ViewModels
             {
                 // Always clear loading state
                 IsLoading = false;
-                IsNotHideView = true;
+                HasOptions = true;
             }
         }
     }

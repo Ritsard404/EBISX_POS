@@ -5,8 +5,9 @@ namespace EBISX_POS.Models
 {
     public class OrderItemState
     {
+        private static int _nextId = 1;
         public int ID { get; set; }
-        public int Quantity { get; set; }
+        public int Quantity { get; set; } = 0;
         public string? OrderType { get; set; }
         public List<SubOrderItem> SubOrders { get; set; } = new();
 
@@ -15,12 +16,19 @@ namespace EBISX_POS.Models
             .Select((s, index) => new SubOrderItem
             {
                 MenuId = s.MenuId,
+                DrinkId = s.DrinkId,
+                AddOnId = s.AddOnId,
                 Name = s.Name,
                 ItemPrice = s.ItemPrice,
                 Size = s.Size,
                 IsFirstItem = index == 0, // True for the first item
                 Quantity = index == 0 ? Quantity : 0 // Only show Quantity for the first item
             }).ToList();
+
+        public OrderItemState()
+        {
+            ID = _nextId++;
+        }
     }
 
     public class SubOrderItem

@@ -11,6 +11,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EBISX_POS.Views
 {
@@ -132,5 +133,22 @@ namespace EBISX_POS.Views
                 }
             }
         }
+
+        private void NumberButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && int.TryParse(btn.Content?.ToString(), out var num))
+            {
+                Debug.WriteLine($"Number clicked: {num}");
+                OrderState.CurrentOrderItem.Quantity += num;
+            }
+        }
+
+        private void ClearNumber_Click(object sender, RoutedEventArgs e)
+        {
+            OrderState.CurrentOrderItem.Quantity = 0;
+            Debug.WriteLine("Quantity cleared");
+        }
+
+
     }
 }

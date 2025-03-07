@@ -94,7 +94,7 @@
 					<Grid>
 						<!-- This ContentControl will be centered -->
 						<ContentControl x:Name="ItemListViewContainer"
-										HorizontalAlignment="Center"
+										HorizontalAlignment="Left"
 										VerticalAlignment="Top"
 										Name="IsMenuAvail"/>
 						<!-- This ProgressBar will also be centered and overlay the ContentControl -->
@@ -111,27 +111,28 @@
 						<!-- First Row: 7 Buttons -->
 						<Grid Grid.Row="0" ColumnDefinitions="*, *, *, *, *, *, *">
 							<Button FontSize="18" Content="1" Grid.Column="0" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Content="2" Grid.Column="1" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Content="3" Grid.Column="2" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Content="4" Grid.Column="3" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Content="5" Grid.Column="4" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Content="6" Grid.Column="5" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Content="7" Grid.Column="6" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="2" Grid.Column="1" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="3" Grid.Column="2" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="4" Grid.Column="3" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="5" Grid.Column="4" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="6" Grid.Column="5" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="7" Grid.Column="6" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 						</Grid>
 
-						<!-- Second Row: 3 Buttons (Left) and 2 Buttons (Right) -->
-						<Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, Auto,*, Auto,  Auto">
+						<!-- Second Row: 4 Buttons (Left) and 2 Buttons (Right) -->
+						<Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, Auto, Auto, *, Auto,  Auto">
 							<!-- Left side -->
-							<Button FontSize="18" Content="8" Grid.Column="0" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Content="9" Grid.Column="1" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Content="0" Grid.Column="2" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="8" Grid.Column="0" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="9" Grid.Column="1" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="0" Grid.Column="2" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Content="CLEAR" Click="ClearNumber_Click" Grid.Column="3" FontWeight="SemiBold" Margin="10" Width="80" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 
 							<!-- Right side -->
-							<Button FontSize="20" FontWeight="Bold" Grid.Column="4" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+							<Button FontSize="20" FontWeight="Bold" Grid.Column="5" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
 								<TextBlock Text="VOID" LetterSpacing="2" />
 
 							</Button>
-							<Button FontSize="20" FontWeight="Bold" Grid.Column="5" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+							<Button FontSize="20" FontWeight="Bold" Grid.Column="6" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
 								<TextBlock Text="MANAGER" LetterSpacing="2" />
 
 							</Button>

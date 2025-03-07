@@ -72,6 +72,19 @@
 											<!--<Image Source="avares://EBISX_POS/Assets/Images/Burgers/burger.png" MaxWidth="100" />-->
 
 
+											<!--Price Overlay (Top-Right Corner)-->
+											<Border Background="Red"
+												CornerRadius="10"
+												Padding="5"
+												HorizontalAlignment="Right"
+												VerticalAlignment="Top"
+												Margin="5"
+												Opacity="0.8">
+												<TextBlock Text="{Binding MenuPrice, StringFormat='${0:F2}'}"
+														   Foreground="White"
+														   FontWeight="Bold"
+														   FontSize="18"/>
+											</Border>
 
 											<!--Middle Border-->
 											<Border BorderBrush="Orange" BorderThickness="0,3,0,0"

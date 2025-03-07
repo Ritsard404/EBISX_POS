@@ -45,6 +45,16 @@ namespace EBISX_POS.ViewModels
             {
                 OnPropertyChanged(nameof(HasAddOns));
             };
+
+            if (DrinkTypes.Any() && DrinkSizes.Any())
+            {
+                OptionsState.UpdateDrinks(DrinkTypes.FirstOrDefault().DrinkTypeId, DrinkSizes.FirstOrDefault());
+            }
+
+            if (AddOnsType.Any())
+            {
+                OptionsState.UpdateAddOns(AddOnsType.FirstOrDefault().AddOnTypeId);
+            }
         }
     }
 }

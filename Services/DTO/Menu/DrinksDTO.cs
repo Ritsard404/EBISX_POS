@@ -1,4 +1,5 @@
-﻿﻿using System;
+﻿using EBISX_POS.API.Services.DTO.Menu;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace EBISX_POS.Services.DTO.Menu
         /// Categorized drink types (e.g., Sodas, Juices) with their options
         /// </summary>
         public List<DrinkTypeDTO> DrinkTypesWithDrinks { get; set; }
-        
+
         /// <summary>
         /// Available size options for drinks
         /// </summary>
@@ -31,16 +32,19 @@ namespace EBISX_POS.Services.DTO.Menu
         /// Unique identifier for the drink category
         /// </summary>
         public int DrinkTypeId { get; set; }
-        
+
         /// <summary>
         /// Display name for the drink category
         /// </summary>
         public string DrinkTypeName { get; set; }
-        
+
         /// <summary>
         /// List of drink options in this category
         /// </summary>
-        public List<DrinkDetailDTO> Drinks { get; set; }
+        //public List<DrinkDetailDTO> Drinks { get; set; }
+
+
+        public List<SizesWithPricesDTO>? SizesWithPrices { get; set; } = new List<SizesWithPricesDTO>();
     }
 
     /// <summary>
@@ -48,14 +52,9 @@ namespace EBISX_POS.Services.DTO.Menu
     /// </summary>
     public class DrinkDetailDTO
     {
-        /// <summary>
-        /// Name of the drink item
-        /// </summary>
+        public int MenuId { get; set; }
         public string MenuName { get; set; }
-        
-        /// <summary>
-        /// Optional path to the drink's display image
-        /// </summary>
         public string? MenuImagePath { get; set; }
+        public decimal MenuPrice { get; set; }
     }
 }

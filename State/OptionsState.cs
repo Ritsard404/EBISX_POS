@@ -1,8 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using EBISX_POS.Services.DTO.Menu;
-using System;
+﻿using EBISX_POS.Services.DTO.Menu;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 
 namespace EBISX_POS.State
@@ -14,20 +11,29 @@ namespace EBISX_POS.State
         public static ObservableCollection<string> DrinkSizes { get; set; } = new ObservableCollection<string>();
         public static ObservableCollection<AddOnTypeDTO> AddOnsType { get; set; } = new ObservableCollection<AddOnTypeDTO>();
         public static ObservableCollection<AddOnDetailDTO> AddOns { get; set; } = new ObservableCollection<AddOnDetailDTO>();
-
-
-        public static void UpdateDrinks(int drinkTypeId)
+      
+        public static void UpdateDrinks(int? drinkTypeId, string? size)
         {
             Drinks.Clear();
-            var drinks = DrinkTypes.FirstOrDefault(d => d.DrinkTypeId == drinkTypeId)?.Drinks;
-            if (drinks != null)
+            var drinksEntry = DrinkTypes.FirstOrDefault(d => d.DrinkTypeId == drinkTypeId)?
+                                .SizesWithPrices?.FirstOrDefault(w => w.Size == size)
+                                ?.Drinks;
+            if (drinksEntry != null)
             {
-                foreach (var drink in drinks)
+                foreach (var drink in drinksEntry)
                 {
-                    Drinks.Add(drink);
+                    // Map DrinksDTO to DrinkDetailDTO.
+                    Drinks.Add(new DrinkDetailDTO
+                    {
+                        MenuName = drink.MenuName,
+                        MenuImagePath = drink.MenuImagePath,
+                        MenuPrice = drink.MenuPrice
+                    });
                 }
             }
         }
+
+
 
         public static void UpdateAddOns(int addOnTypeId)
         {

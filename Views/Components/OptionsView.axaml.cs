@@ -20,10 +20,10 @@ namespace EBISX_POS.Views
 
         private string? _selectedItem;    // Store selected menu item text
         private string? _selectedSize;    // Store selected size text
-        private string? _selectedDrinkType;   
-        private string? _selectedAddOnType;     
-        private string? _selectedDrink;   
-        private string? _selectedAddOn;   
+        private string? _selectedDrinkType;
+        private string? _selectedAddOnType;
+        private string? _selectedDrink;
+        private string? _selectedAddOn;
 
         public OptionsView()
         {
@@ -57,13 +57,16 @@ namespace EBISX_POS.Views
                 else if (clickedButton.DataContext is DrinkTypeDTO selectedDrinkType)
                 {
                     HandleSelection(ref _selectedDrinkTypeButton, clickedButton, ref _selectedDrinkType);
-                    OptionsState.UpdateDrinks(selectedDrinkType.DrinkTypeId);
+                    SelectedOptionsState.SelectedDrinkType = selectedDrinkType.DrinkTypeId;
+                    OptionsState.UpdateDrinks(selectedDrinkType.DrinkTypeId, SelectedOptionsState.SelectedSize);
                     Debug.WriteLine($"Selected Drink Type: {selectedDrinkType.DrinkTypeName} Id: {selectedDrinkType.DrinkTypeId}");
                 }
                 // If the button is inside an ItemsControl (for sizes)
                 else if (clickedButton.DataContext is string size)
                 {
                     HandleSelection(ref _selectedSizeButton, clickedButton, ref _selectedSize);
+                    SelectedOptionsState.SelectedSize = size;
+                    OptionsState.UpdateDrinks(SelectedOptionsState.SelectedDrinkType, size);
                     Debug.WriteLine($"Selected Size: {size}");
                 }
                 else if (clickedButton.DataContext is ItemMenu item)
