@@ -6,21 +6,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="750"
         x:Class="EBISX_POS.Views.SubItemWindow"
-        Title="Sub Items"
-		x:DataType="vm:SubItemWindowViewModel">
+		x:DataType="vm:SubItemWindowViewModel"
+		ExtendClientAreaToDecorationsHint="True"
+		SystemDecorations="None">
 	
-	<ScrollViewer   HorizontalAlignment="Stretch" VerticalAlignment="Center">
-		<StackPanel Margin="10">
+	<Border BorderThickness="15" CornerRadius="10" BorderBrush="Orange">
+		<Grid RowDefinitions="*, Auto">
 
-			<!-- Show After Loading-->
-			<StackPanel IsVisible="{Binding IsNotHideView}">
-				<TextBlock Text="{Binding Item.ItemName}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
-				<views:OptionsView />
-			</StackPanel>
+			<ScrollViewer Grid.Row="0"   HorizontalAlignment="Stretch" VerticalAlignment="Center">
+				<StackPanel Margin="10">
 
-			<!-- Loading Indicator -->
-			<ProgressBar IsIndeterminate="True"  IsVisible="{Binding IsLoading}"/>
-		</StackPanel>
-	</ScrollViewer>
+					<!-- Show After Loading-->
+					<StackPanel IsVisible="{Binding IsNotHideView}">
+						<TextBlock Text="{Binding Item.ItemName}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+						<views:OptionsView />
+					</StackPanel>
+
+					<!-- Loading Indicator -->
+					<ProgressBar IsIndeterminate="True"  IsVisible="{Binding IsLoading}"/>
+				</StackPanel>
+			</ScrollViewer>
+
+			<!-- Footer -->
+			<Border Grid.Row="1"  BorderBrush="Orange" BorderThickness="0,3,0,0">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+					<Button Content="Close" 
+							Click="CloseButton_Click"
+							Width="130" Height="40"
+							FontWeight="SemiBold"
+							FontSize="16"
+							Background="Red"
+							VerticalContentAlignment="Center"
+							HorizontalContentAlignment="Center"/>
+					
+					<Button Content="Add Order" 
+							Margin="20,0,0,0"
+							Width="130" Height="40"
+							FontWeight="SemiBold"
+							FontSize="16"
+							Background="Green"
+							VerticalContentAlignment="Center"
+							HorizontalContentAlignment="Center"/>
+				</StackPanel>
+			</Border>
+		</Grid>
+	</Border>
 
 </Window>

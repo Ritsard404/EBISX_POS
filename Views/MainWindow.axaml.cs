@@ -3,19 +3,40 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using EBISX_POS.API.Models; // Ensure this is added
+using EBISX_POS.API.Models;
 using EBISX_POS.Services;
 using EBISX_POS.State;
 using EBISX_POS.ViewModels;
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace EBISX_POS.Views
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly MenuService _menuService;
         private ToggleButton? _selectedMenuButton; // Stores selected menu item
         private Category? _selectedMenuItem;       // Stores selected menu item object
+
+        private bool isLoading = true;
+        public bool IsLoading
+        {
+            get => isLoading;
+            set
+            {
+                if (isLoading != value)
+                {
+                    isLoading = value;
+                    OnPropertyChanged(nameof(IsLoading));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         public MainWindow(MenuService menuService)
         {
@@ -27,35 +48,49 @@ namespace EBISX_POS.Views
             var itemListView = CreateItemListView();
             ItemListViewContainer.Content = itemListView;
 
-            // Subscribe to the ItemsControl's attached event.
-            // Assume MenuGroup is the x:Name of your ItemsControl that hosts the ToggleButtons.
-            MenuGroup.AttachedToVisualTree += MenuGroup_AttachedToVisualTree;
+            // When the window is opened, load the first category's menus.
+            this.Opened += async (s, e) =>
+            {
+                var categories = await _menuService.GetCategoriesAsync();
+                if (categories.Any())
+                {
+                    var firstCategory = categories.First();
+                    
+                    // Set loading flag to true
+                    IsLoadCtgry.IsVisible = true;
+                    IsLoadMenu.IsVisible = true;
+                    IsCtgryAvail.IsVisible = false;
+                    IsMenuAvail.IsVisible = false;
+
+                    await itemListView.LoadMenusAsync(firstCategory.Id);
+                    
+                    // Once loaded, set loading flag to false.
+                    IsLoadCtgry.IsVisible = false;
+                    IsLoadMenu.IsVisible = false;
+                    IsCtgryAvail.IsVisible = true;
+                    IsMenuAvail.IsVisible = true;
+                }
+            };
+
+            // Attach to the ItemsControl's AttachedToVisualTree to auto-select the first toggle.
+            MenuGroup.AttachedToVisualTree += (s, e) =>
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (MenuGroup.ItemContainerGenerator.ContainerFromIndex(0) is ToggleButton firstToggle)
+                    {
+                        firstToggle.IsChecked = true;
+                        ToggleButton_Click(firstToggle, new RoutedEventArgs());
+                    }
+                }, DispatcherPriority.Background);
+            };
+
+             
         }
 
         private ItemListView CreateItemListView()
         {
             return new ItemListView(_menuService);
-        }
-
-        /// <summary>
-        /// When the ItemsControl is attached to the visual tree, this method is called.
-        /// It retrieves the first ToggleButton (the default category) and toggles it.
-        /// </summary>
-        private async void MenuGroup_AttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
-        {
-            // Post the action to the UI thread to ensure all items are generated.
-            Dispatcher.UIThread.Post(async () =>
-            {
-                // Get the container for the first item in the ItemsControl.
-                var container = MenuGroup.ItemContainerGenerator.ContainerFromIndex(0) as Control;
-                if (container is ToggleButton firstToggleButton)
-                {
-                    // Set the first button as checked.
-                    firstToggleButton.IsChecked = true;
-                    // Call the click handler to load menus for the default category.
-                    ToggleButton_Click(firstToggleButton, new RoutedEventArgs());
-                }
-            }, DispatcherPriority.Background);
         }
 
         private async void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -81,6 +116,8 @@ namespace EBISX_POS.Views
                     if (DataContext is MainWindowViewModel viewModel)
                     {
                         Debug.WriteLine($"Calling LoadMenusAsync for category ID: {_selectedMenuItem.Id}");
+                        // Set loading flag to true before loading
+                        IsLoading = true;
                         await viewModel.LoadMenusAsync(_selectedMenuItem.Id);
                         Debug.WriteLine($"Finished calling LoadMenusAsync for category ID: {_selectedMenuItem.Id}");
 
@@ -89,6 +126,8 @@ namespace EBISX_POS.Views
                         {
                             await itemListView.LoadMenusAsync(_selectedMenuItem.Id);
                         }
+                        // Set loading flag to false after loading
+                        IsLoading = false;
                     }
                 }
             }

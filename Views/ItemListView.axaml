@@ -11,7 +11,7 @@
     <Grid VerticalAlignment="Stretch">
         <!-- Center Content -->
         <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Stretch">
-            <ItemsControl x:Name="ItemsList" ItemsSource="{Binding MenuItems}">
+            <ItemsControl x:Name="ItemsList" ItemsSource="{Binding MenuItems}" IsVisible="{Binding HasMenus}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top"/>

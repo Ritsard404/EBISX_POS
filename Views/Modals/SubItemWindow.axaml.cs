@@ -5,6 +5,7 @@ using EBISX_POS.ViewModels;
 using EBISX_POS.Models;
 using EBISX_POS.Services;
 using EBISX_POS.State;
+using Avalonia.Interactivity;
 
 namespace EBISX_POS.Views
 {
@@ -19,6 +20,12 @@ namespace EBISX_POS.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private void CloseButton_Click(object? sender, RoutedEventArgs e)
+        {
+            // Close the current window
+            this.Close();
         }
     }
 }

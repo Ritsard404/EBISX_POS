@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EBISX_POS.Services;
 using System.Diagnostics;
 using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace EBISX_POS.ViewModels
 {
@@ -13,8 +14,8 @@ namespace EBISX_POS.ViewModels
     {
         private readonly MenuService _menuService;
 
-        public ObservableCollection<Category> ButtonList { get; } = new();
 
+        public ObservableCollection<Category> ButtonList { get; } = new();
         public OrderSummaryViewModel OrderSummaryViewModel { get; } // Add this property
         public ItemListViewModel ItemListViewModel { get; } // Add this property
 
@@ -34,7 +35,10 @@ namespace EBISX_POS.ViewModels
             var categories = await _menuService.GetCategoriesAsync();
             ButtonList.Clear();
             categories.ForEach(category => ButtonList.Add(category));
-         }
+            Debug.WriteLine($"Loaded default {categories.FirstOrDefault().Id} categories");
+            await LoadMenusAsync(categories.FirstOrDefault().Id);
+
+        }
 
         public async Task LoadMenusAsync(int categoryId)
         {

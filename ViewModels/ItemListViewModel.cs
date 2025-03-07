@@ -24,11 +24,18 @@ namespace EBISX_POS.ViewModels
 
         }
 
+        // This property returns true if there are any menus.
+        public bool HasMenus => MenuItems.Count > 0;
+
         public async Task LoadMenusAsync(int categoryId)
         {
             var menus = await _menuService.GetMenusAsync(categoryId);
+            Debug.WriteLine($"Found {menus.Count} menus for category {categoryId}");
             MenuItems.Clear();
             menus.ForEach(menu => MenuItems.Add(menu));
+
+            // Notify that HasMenus may have changed.
+            OnPropertyChanged(nameof(HasMenus));
         }
 
         private void OnItemClick(ItemMenu? item)
