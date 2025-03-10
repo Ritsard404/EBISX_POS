@@ -68,13 +68,20 @@ namespace EBISX_POS.Views
                     DataContext = new SubItemWindowViewModel(item, _menuService)
                 };
 
-                OrderState.CurrentOrderItem.SubOrders.Clear();
-                OrderState.CurrentOrderItem.SubOrders.Add(new SubOrderItem
-                {
-                    MenuId = item.Id,
-                    Name = item.ItemName,
-                    ItemPrice = item.Price
-                });
+                //OrderState.CurrentOrderItem.SubOrders.Clear();
+                //OrderState.CurrentOrderItem.SubOrders.Add(new SubOrderItem
+                //{
+                //    MenuId = item.Id,
+                //    Name = item.ItemName,
+                //    ItemPrice = item.Price
+                //});
+
+                OrderState.CurrentOrderItem.Quantity = (OrderState.CurrentOrderItem.Quantity < 1)
+                    ? 1
+                    : OrderState.CurrentOrderItem.Quantity;
+                OrderState.UpdateItemOrder(itemType: "Menu", itemId: item.Id, name: item.ItemName, price: item.Price, size: null);
+                OrderState.DisplayOrders();
+
 
                 await detailsWindow.ShowDialog((Window)this.VisualRoot);
             }

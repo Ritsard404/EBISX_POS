@@ -43,6 +43,8 @@ namespace EBISX_POS.Services.DTO.Menu
     /// </summary>
     public class AddOnDetailDTO
     {
+        public int MenuId { get; set; }
+
         /// <summary>
         /// Name of the add-on item
         /// </summary>

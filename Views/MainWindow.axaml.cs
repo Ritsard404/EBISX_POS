@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using EBISX_POS.API.Models;
 using EBISX_POS.Services;
@@ -45,6 +46,8 @@ namespace EBISX_POS.Views
             _menuService = menuService;
             DataContext = new MainWindowViewModel(menuService);
 
+            this.AttachedToVisualTree += OnAttachedToVisualTree;
+
             // Create and set the ItemListView
             var itemListView = CreateItemListView();
             ItemListViewContainer.Content = itemListView;
@@ -73,21 +76,22 @@ namespace EBISX_POS.Views
                 }
             };
 
-            // Attach to the ItemsControl's AttachedToVisualTree to auto-select the first toggle.
-            MenuGroup.AttachedToVisualTree += (s, e) =>
-            {
-                Dispatcher.UIThread.Post(() =>
-                {
-                    if (MenuGroup.ItemContainerGenerator.ContainerFromIndex(0) is ToggleButton firstToggle)
-                    {
-                        firstToggle.IsChecked = true;
-                        ToggleButton_Click(firstToggle, new RoutedEventArgs());
-                    }
-                }, DispatcherPriority.Background);
-            };
-
-             
         }
+
+
+        private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+        {
+            // Get all ToggleButtons that are part of the ItemsControl's visual tree.
+            var toggleButtons = MenuGroup.GetLogicalDescendants().OfType<ToggleButton>().ToList();
+
+            if (toggleButtons.Any())
+            {
+                // Set the first ToggleButton as checked.
+                _selectedMenuButton = toggleButtons.First();
+                _selectedMenuButton.IsChecked = true;
+            }
+        }
+
 
         private ItemListView CreateItemListView()
         {
@@ -140,6 +144,7 @@ namespace EBISX_POS.Views
             {
                 Debug.WriteLine($"Number clicked: {num}");
                 OrderState.CurrentOrderItem.Quantity += num;
+                Debug.WriteLine($"Number clicked: {OrderState.CurrentOrderItem.Quantity}");
             }
         }
 

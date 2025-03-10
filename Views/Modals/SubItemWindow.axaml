@@ -4,7 +4,7 @@
         xmlns:views="using:EBISX_POS.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="1200"
+        mc:Ignorable="d" d:DesignWidth="1500" d:DesignHeight="1800"
         x:Class="EBISX_POS.Views.SubItemWindow"
 		x:DataType="vm:SubItemWindowViewModel"
 		ExtendClientAreaToDecorationsHint="True"
@@ -45,6 +45,7 @@
 							VerticalContentAlignment="Center"
 							HorizontalContentAlignment="Center"/>
 					<Button Content="Add Order"
+							Click="AddOrderButton_Click"
 							Margin="20,0,0,0"
 							Width="130" Height="40"
 							FontWeight="SemiBold"

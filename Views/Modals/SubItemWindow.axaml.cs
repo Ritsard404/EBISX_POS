@@ -27,5 +27,15 @@ namespace EBISX_POS.Views
             // Close the current window
             this.Close();
         }
+
+        private void AddOrderButton_Click(object? sender, RoutedEventArgs e)
+        {
+            if (!OrderState.FinalizeCurrentOrder())
+            {
+                return;
+            }
+            // Close the current window
+            this.Close();
+        }
     }
 }

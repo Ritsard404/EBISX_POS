@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using EBISX_POS.API.Models;
 using EBISX_POS.Models;
 using EBISX_POS.Services.DTO.Menu;
 using EBISX_POS.State;
@@ -41,12 +42,21 @@ namespace EBISX_POS.Views
                 if (clickedButton.DataContext is DrinkDetailDTO Drink)
                 {
                     HandleSelection(ref _selectedDrinksButton, clickedButton, ref _selectedDrink);
+
+                    OrderState.UpdateItemOrder(itemType: "Drink", itemId: Drink.MenuId, name: Drink.MenuName, price: Drink.MenuPrice, size: SelectedOptionsState.SelectedSize);
+
                     Debug.WriteLine($"Selected Drink: {Drink.MenuName}");
+                    OrderState.DisplayOrders();
                 }
                 else if (clickedButton.DataContext is AddOnDetailDTO AddOn)
                 {
                     HandleSelection(ref _selectedAddOnButton, clickedButton, ref _selectedAddOn);
+
+                    OrderState.UpdateItemOrder(itemType: "AddOn", itemId: AddOn.MenuId, name: AddOn.MenuName, price: AddOn.Price, size: AddOn.Size);
+
                     Debug.WriteLine($"Selected AddOn: {AddOn.MenuName} Size: {AddOn.Size}");
+                    OrderState.DisplayOrders();
+
                 }
                 else if (clickedButton.DataContext is AddOnTypeDTO selectedAddOnType)
                 {
@@ -59,6 +69,8 @@ namespace EBISX_POS.Views
                     HandleSelection(ref _selectedDrinkTypeButton, clickedButton, ref _selectedDrinkType);
                     SelectedOptionsState.SelectedDrinkType = selectedDrinkType.DrinkTypeId;
                     OptionsState.UpdateDrinks(selectedDrinkType.DrinkTypeId, SelectedOptionsState.SelectedSize);
+
+
                     Debug.WriteLine($"Selected Drink Type: {selectedDrinkType.DrinkTypeName} Id: {selectedDrinkType.DrinkTypeId}");
                 }
                 // If the button is inside an ItemsControl (for sizes)

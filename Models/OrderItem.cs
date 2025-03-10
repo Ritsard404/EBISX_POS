@@ -26,7 +26,6 @@ namespace EBISX_POS.Models
             }).ToList();
     }
 
-
     public class SubOrder
     {
         public int ID { get; set; }
