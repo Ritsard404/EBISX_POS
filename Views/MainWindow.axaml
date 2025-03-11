@@ -95,7 +95,7 @@
 					<Grid>
 						<!-- This ContentControl will be centered -->
 						<ContentControl x:Name="ItemListViewContainer"
-										HorizontalAlignment="Left"
+										HorizontalAlignment="Center"
 										VerticalAlignment="Top"
 										Name="IsMenuAvail"/>
 						<!-- This ProgressBar will also be centered and overlay the ContentControl -->
@@ -126,17 +126,17 @@
 							<Button FontSize="18" Click="NumberButton_Click" Content="8" Grid.Column="0" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Click="NumberButton_Click" Content="9" Grid.Column="1" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Click="NumberButton_Click" Content="0" Grid.Column="2" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="20" Click="ClearNumber_Click" FontWeight="Bold" Grid.Column="3" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-								<TextBlock Text="CCLEAR" LetterSpacing="2" />
+							<Button FontSize="18" Click="ClearNumber_Click" FontWeight="Bold" Grid.Column="3" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+								<TextBlock Text="CLEAR" LetterSpacing="2" />
 
 							</Button>
 							
 							<!-- Right side -->
-							<Button FontSize="20" FontWeight="Bold" Grid.Column="5" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+							<Button FontSize="18" FontWeight="Bold" Grid.Column="5" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
 								<TextBlock Text="CANCEL ORDER" LetterSpacing="2" />
 
 							</Button>
-							<Button FontSize="20" FontWeight="Bold" Grid.Column="6" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+							<Button FontSize="18" FontWeight="Bold" Grid.Column="6" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
 								<TextBlock Text="MANAGER" LetterSpacing="2" />
 
 							</Button>
@@ -147,7 +147,7 @@
 			</Grid>
 
 			<!-- Receipt Area -->
-			<Grid Grid.Column="2" Width="350" RowDefinitions="*, Auto">
+			<Grid Grid.Column="2" Width="380" RowDefinitions="*, Auto">
 				<!-- Content Area Inside Menu -->
 				<Border Grid.Row="0" BorderBrush="Orange" BorderThickness="0,0,0,3">
 					<views:OrderSummaryView DataContext="{Binding OrderSummaryViewModel}"/>

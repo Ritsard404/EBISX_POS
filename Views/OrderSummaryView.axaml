@@ -8,7 +8,7 @@
              x:DataType="vm:OrderSummaryViewModel">
 	<Grid>
 		<!-- Headers -->
-		<Grid ColumnDefinitions="100,*,Auto" Margin="5,5,5,20">
+		<Grid ColumnDefinitions="80,*,Auto" Margin="5,5,5,20">
 			<TextBlock Text="QTY" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center"/>
 			<TextBlock Text="NAME" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Left"/>
 			<TextBlock Text="PRICE" Grid.Column="2" FontWeight="Bold" Margin="0,0,20,0" HorizontalAlignment="Right"/>
@@ -24,7 +24,7 @@
 								<ItemsControl ItemsSource="{Binding DisplaySubOrders}">
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
-											<Grid ColumnDefinitions="100,*,Auto">
+											<Grid ColumnDefinitions="80,*,Auto">
 												<TextBlock Text="{Binding Quantity}"
 														   Grid.Column="0"
 														   HorizontalAlignment="Center"
@@ -50,7 +50,7 @@
 					<ItemsControl Background="Orange" ItemsSource="{Binding CurrentOrderItem.DisplaySubOrders}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Grid ColumnDefinitions="100,*,Auto">
+								<Grid ColumnDefinitions="80,*,Auto">
 									<TextBlock Text="{Binding Quantity}"
 											   Grid.Column="0"
 											   HorizontalAlignment="Center"
