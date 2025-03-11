@@ -49,6 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\Manager\" />
     <Folder Include="Services\API\" />
   </ItemGroup>
 </Project>
