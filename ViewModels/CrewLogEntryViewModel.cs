@@ -31,7 +31,7 @@ namespace EBISX_POS.ViewModels
         {
             if (SelectedCrew != null)
             {
-                var crewMember = _crewService.Authenticate(SelectedCrew.Id);
+                var crewMember = _crewService.Authenticate(SelectedCrew.CrewMemberId);
                 Message = crewMember != null ? $"Welcome, {crewMember.Name}!" : "Crew ID not found. Try again.";
             }
         }

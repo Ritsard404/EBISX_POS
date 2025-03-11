@@ -21,7 +21,7 @@ namespace EBISX_POS.Services.Transaction
                     TransactionId = "TXN1001",
                     LogDate = DateTime.Now,
                     LogTime = DateTime.Now.TimeOfDay,
-                    Cashier = "John Doe",
+                    //Cashier = "John Doe",
                     TotalAmount = 100.00m,
                     Action = "Created",
                     Details = "Transaction created successfully."
@@ -33,7 +33,7 @@ namespace EBISX_POS.Services.Transaction
                     TransactionId = "TXN1002",
                     LogDate = DateTime.Now.AddMinutes(-15),
                     LogTime = DateTime.Now.AddMinutes(-15).TimeOfDay,
-                    Cashier = "Jane Smith",
+                    //Cashier = "Jane Smith",
                     TotalAmount = 50.00m,
                     Action = "Reprinted",
                     Details = "Invoice reprinted upon customer request."

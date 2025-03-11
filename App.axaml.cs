@@ -62,6 +62,7 @@ namespace EBISX_POS
 
             // Register ViewModels
             services.AddTransient<LogInWindowViewModel>();
+            
             //services.AddSingleton<MainWindowViewModel>();
             //services.AddTransient<LoginWindowViewModel>();
             //services.AddTransient<HomeViewModel>();
@@ -70,6 +71,9 @@ namespace EBISX_POS
 
             // Register Views
             services.AddTransient<LogInWindow>();
+            services.AddTransient<ManagerWindow>(); 
+            services.AddTransient<TransactionLogWindow>();
+
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)

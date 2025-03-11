@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="EBISX_POS.Views.TransactionView"
+             xmlns:vm="clr-namespace:EBISX_POS.ViewModels.Manager"
+             x:DataType="vm:TransactionViewModel">
+
+	<UserControl.DataContext>
+		<vm:TransactionViewModel/>
+	</UserControl.DataContext>
+
+	<StackPanel Margin="10">
+		<TextBlock Text="Transaction Logs" FontSize="20" Margin="0,0,0,10"/>
+		<DataGrid Margin="20" ItemsSource="{Binding TransactionLogs}"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="Gray"
+                  SelectedItem="{Binding SelectedTransactionLog, Mode=TwoWay}">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Transaction ID" Width="*" Binding="{Binding TransactionId}" />
+				<DataGridTextColumn Header="Cashier" Width="*" Binding="{Binding CrewMember.Name}" />
+				<DataGridTextColumn Header="Date" Width="*" Binding="{Binding LogDate, StringFormat='yyyy-MM-dd'}" />
+				<DataGridTextColumn Header="Time" Width="*" Binding="{Binding LogTime}" />
+				<DataGridTextColumn Header="Total Amount" Width="*" Binding="{Binding TotalAmount, StringFormat='C'}" />
+				<DataGridTextColumn Header="Action" Width="*" Binding="{Binding Action}" />
+				<DataGridTextColumn Header="Details" Width="*" Binding="{Binding Details}"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</StackPanel>
+</UserControl>

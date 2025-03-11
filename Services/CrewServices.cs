@@ -15,11 +15,11 @@ namespace EBISX_POS.Services
         {
             _crewMembers = new List<CrewMember>
             {
-                new CrewMember { Id = 101, Name = "John Doe" },
-                new CrewMember { Id = 102, Name = "Jane Smith" },
-                new CrewMember { Id = 103, Name = "Robert Brown" },
-                new CrewMember { Id = 104, Name = "Emily Davis" },
-                new CrewMember { Id = 105, Name = "Michael Johnson" }
+                new CrewMember { CrewMemberId = 101, Name = "John Doe" },
+                new CrewMember { CrewMemberId = 102, Name = "Jane Smith" },
+                new CrewMember { CrewMemberId = 103, Name = "Robert Brown" },
+                new CrewMember { CrewMemberId = 104, Name = "Emily Davis" },
+                new CrewMember { CrewMemberId = 105, Name = "Michael Johnson" }
             };
         }
 
@@ -27,7 +27,7 @@ namespace EBISX_POS.Services
 
         public CrewMember? Authenticate(int crewId)
         {
-            return _crewMembers.FirstOrDefault(c => c.Id == crewId);
+            return _crewMembers.FirstOrDefault(c => c.CrewMemberId == crewId);
         }
     }
 }

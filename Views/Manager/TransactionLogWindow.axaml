@@ -7,7 +7,8 @@
         d:DesignHeight="450"
         x:Class="EBISX_POS.Views.TransactionLogWindow"
         Title="TransactionLogWindow"
-        xmlns:views="clr-namespace:EBISX_POS.Views">
-
-	<views:TransactionLogView />
+        xmlns:views="clr-namespace:EBISX_POS.Views"
+        xmlns:vm="clr-namespace:EBISX_POS.ViewModels.Manager"
+        x:DataType="vm:TransactionViewModel">
+    <views:TransactionView  />
 </Window>

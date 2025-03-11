@@ -18,7 +18,7 @@
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal" Margin="5">
-							<TextBlock Text="{Binding Id}" FontWeight="Bold" Width="50"/>
+							<TextBlock Text="{Binding CrewMemberId}" FontWeight="Bold" Width="50"/>
 							<TextBlock Text="{Binding Name}" Margin="10,0,0,0"/>
 						</StackPanel>
 					</DataTemplate>

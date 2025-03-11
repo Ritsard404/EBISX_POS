@@ -9,12 +9,9 @@ namespace EBISX_POS.Models
 {
     public class CrewMember
     {
-        public int Id { get; set; }   
-
-        [Required, StringLength(100)] 
+        public int CrewMemberId { get; set; }   // Primary key
         public string Name { get; set; }
-
-
-
+        // Navigation property for TransactionLogs (optional if using an ORM)
+        public List<TransactionLog> TransactionLogs { get; set; } = new();
     }
 }
