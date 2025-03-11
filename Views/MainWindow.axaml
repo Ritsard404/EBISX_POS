@@ -110,7 +110,7 @@
 					<Grid RowDefinitions="*, *">
 						<!-- First Row: 7 Buttons -->
 						<Grid Grid.Row="0" ColumnDefinitions="*, *, *, *, *, *, *">
-							<Button FontSize="18" Content="1" Grid.Column="0" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="1" Grid.Column="0" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Click="NumberButton_Click" Content="2" Grid.Column="1" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Click="NumberButton_Click" Content="3" Grid.Column="2" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Click="NumberButton_Click" Content="4" Grid.Column="3" FontWeight="SemiBold" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>

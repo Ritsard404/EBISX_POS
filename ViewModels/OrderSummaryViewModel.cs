@@ -15,6 +15,8 @@ namespace EBISX_POS.ViewModels
         // Expose the static current order item through a property.
         public OrderItemState CurrentOrderItem => OrderState.CurrentOrderItem;
 
+        public ObservableCollection<OrderItemState> CurrentOrder { get; } = OrderState.CurrentOrder;
+
         public ObservableCollection<OrderItem> OrderItems { get; } = new ObservableCollection<OrderItem>
         {
             new OrderItem
@@ -118,6 +120,11 @@ namespace EBISX_POS.ViewModels
             OrderState.CurrentOrderItem.PropertyChanged += (s, e) =>
             {
                 OnPropertyChanged(nameof(CurrentOrderItem));
+            };
+
+            OrderState.CurrentOrder.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(CurrentOrder));
             };
 
         }

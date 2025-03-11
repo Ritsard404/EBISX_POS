@@ -59,7 +59,7 @@ namespace EBISX_POS.Views
                 if (categories.Any())
                 {
                     var firstCategory = categories.First();
-                    
+
                     // Set loading flag to true
                     IsLoadCtgry.IsVisible = true;
                     IsLoadMenu.IsVisible = true;
@@ -67,7 +67,7 @@ namespace EBISX_POS.Views
                     IsMenuAvail.IsVisible = false;
 
                     await itemListView.LoadMenusAsync(firstCategory.Id);
-                    
+
                     // Once loaded, set loading flag to false.
                     IsLoadCtgry.IsVisible = false;
                     IsLoadMenu.IsVisible = false;
@@ -75,6 +75,8 @@ namespace EBISX_POS.Views
                     IsMenuAvail.IsVisible = true;
                 }
             };
+
+            OnPropertyChanged(nameof(OrderState.CurrentOrderItem));
 
         }
 
@@ -137,17 +139,29 @@ namespace EBISX_POS.Views
                 }
             }
         }
-
         private void NumberButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && int.TryParse(btn.Content?.ToString(), out var num))
+            if (sender is Button btn && int.TryParse(btn.Content?.ToString(), out int digit))
             {
-                Debug.WriteLine($"Number clicked: {num}");
-                OrderState.CurrentOrderItem.Quantity += num;
-                Debug.WriteLine($"Number clicked: {OrderState.CurrentOrderItem.Quantity}");
+                if (!OrderState.CurrentOrderItem.SubOrders.Any())
+                {
+                    OrderState.CurrentOrderItem.Quantity = digit;
+                    OrderState.UpdateItemOrder(itemType: "Menu", itemId: digit, name: "Select Menu", price: 0, size: null);
+                    OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+                    return;
+                }
+
+                // Build new quantity string and parse it back to int
+                string newString = $"{(OrderState.CurrentOrderItem.Quantity == 0 ? "" : OrderState.CurrentOrderItem.Quantity)}{digit}";
+
+                if (int.TryParse(newString, out int newValue))
+                {
+                    OrderState.CurrentOrderItem.Quantity = newValue;
+                    OnPropertyChanged(nameof(OrderState.CurrentOrderItem));
+                }
+
             }
         }
-
         private void ClearNumber_Click(object sender, RoutedEventArgs e)
         {
             OrderState.CurrentOrderItem.Quantity = 0;

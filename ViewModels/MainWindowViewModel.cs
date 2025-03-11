@@ -26,9 +26,33 @@ namespace EBISX_POS.ViewModels
             ItemListViewModel = new ItemListViewModel(menuService); // Initialize it
 
             _ = LoadCategories();
+
+
+
+            // Subscribe to changes in the entire OrderState
+            OrderState.StaticPropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(OrderState.CurrentOrderItem))
+                {
+                    OnPropertyChanged(nameof(CashierName));
+                }
+            };
+
+            // Also subscribe to Quantity changes (Nested Property)
+            if (OrderState.CurrentOrderItem != null)
+            {
+                OrderState.CurrentOrderItem.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(OrderState.CurrentOrderItem.Quantity))
+                    {
+                        OnPropertyChanged(nameof(CashierName));
+                    }
+                };
+            }
         }
 
-        public string CashierName => CashierState.CashierName ?? "Developer";
+        public string CashierName => OrderState.CurrentOrderItem.Quantity.ToString();
+        //public string CashierName => CashierState.CashierName ?? "Developer";
 
         private async Task LoadCategories()
         {

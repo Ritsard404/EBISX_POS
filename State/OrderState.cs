@@ -90,7 +90,9 @@ namespace EBISX_POS.State
                     newItem.MenuId = itemId;
 
                 CurrentOrderItem.SubOrders.Add(newItem);
+                CurrentOrderItem.RefreshDisplaySubOrders();
             }
+
         }
 
         public static void DisplayOrders()
@@ -144,7 +146,9 @@ namespace EBISX_POS.State
             CurrentOrderItem = new OrderItemState();
 
             // Optionally, notify any subscribers that the current order item has changed
+            CurrentOrderItem.RefreshDisplaySubOrders();
             OnStaticPropertyChanged(nameof(CurrentOrderItem));
+            OnStaticPropertyChanged(nameof(CurrentOrder));
 
             return true;
         }
