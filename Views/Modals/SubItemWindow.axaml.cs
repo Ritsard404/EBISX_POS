@@ -30,7 +30,7 @@ namespace EBISX_POS.Views
 
         private void AddOrderButton_Click(object? sender, RoutedEventArgs e)
         {
-            if (!OrderState.FinalizeCurrentOrder())
+            if (!OrderState.FinalizeCurrentOrder(isSolo: false))
             {
                 return;
             }

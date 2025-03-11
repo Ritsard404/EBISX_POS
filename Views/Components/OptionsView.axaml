@@ -79,11 +79,25 @@
 												HorizontalAlignment="Right"
 												VerticalAlignment="Top"
 												Margin="5"
-												Opacity="0.8">
-												<TextBlock Text="{Binding MenuPrice, StringFormat='${0:F2}'}"
+												Opacity="0.8"
+												IsVisible="{Binding IsUpgradeMeal}">
+												<TextBlock Text="{Binding MenuPrice, StringFormat='+ ${0:F2}'}"
 														   Foreground="White"
 														   FontWeight="Bold"
 														   FontSize="18"/>
+											</Border>
+
+											<!-- "Size" Label -->
+											<Border Background="Beige"
+													CornerRadius="10"
+													Padding="5"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Top"
+													Margin="5">
+												<TextBlock Text="{Binding Size}"
+														   FontWeight="Bold"
+														   FontSize="14"
+														   Foreground="BlueViolet"/>
 											</Border>
 
 											<!--Middle Border-->
@@ -179,91 +193,92 @@
 						</ScrollViewer>
 					</Grid>
 				</StackPanel>
-			
-			
-			<!-- Add-Ons Items-->
-			<ScrollViewer 
-				Grid.Row="1" 
-				Margin="0,10,0,10" 
-				HorizontalAlignment="Left" 
-				VerticalAlignment="Center"
-				VerticalScrollBarVisibility="Auto">
-
-				<ItemsControl ItemsSource="{Binding AddOns}">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<ToggleButton
-								Margin="5"
-								Padding="0"
-								Width="135"
-								Background="Transparent"
-								Click="ToggleButton_Click"
-								CornerRadius="10">
-
-								<Border BorderBrush="Orange" BorderThickness="3" IsHitTestVisible="False" CornerRadius="10">
-									<Grid>
-										<!--Image-->
-										<Image Source="{Binding MenuImagePath}" Width="100"/>
-										<!--<Image Source="avares://EBISX_POS/Assets/Images/Burgers/burger.png" MaxWidth="100" />-->
 
 
+				<!-- Add-Ons Items-->
+				<ScrollViewer
+					Grid.Row="1"
+					Margin="0,10,0,10"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					VerticalScrollBarVisibility="Auto">
 
-										<!--Price Overlay (Top-Right Corner)-->
-										<Border Background="Red"
-											CornerRadius="10"
-											Padding="5"
-											HorizontalAlignment="Right"
-											VerticalAlignment="Top"
-											Margin="5"
-											Opacity="0.8">
-											<TextBlock Text="{Binding Price, StringFormat='${0:F2}'}"
-													   Foreground="White"
-													   FontWeight="Bold"
-													   FontSize="18"/>
-										</Border>
+					<ItemsControl ItemsSource="{Binding AddOns}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<ToggleButton
+									Margin="5"
+									Padding="0"
+									Width="135"
+									Background="Transparent"
+									Click="ToggleButton_Click"
+									CornerRadius="10">
 
-										<!-- "Size" Label -->
-										<Border Background="Beige"
+									<Border BorderBrush="Orange" BorderThickness="3" IsHitTestVisible="False" CornerRadius="10">
+										<Grid>
+											<!--Image-->
+											<Image Source="{Binding MenuImagePath}" Width="100"/>
+											<!--<Image Source="avares://EBISX_POS/Assets/Images/Burgers/burger.png" MaxWidth="100" />-->
+
+
+
+											<!--Price Overlay (Top-Right Corner)-->
+											<Border Background="Red"
 												CornerRadius="10"
 												Padding="5"
-												HorizontalAlignment="Left"
+												HorizontalAlignment="Right"
 												VerticalAlignment="Top"
 												Margin="5"
-												IsVisible="{Binding HasSize}">
-											<TextBlock Text="{Binding Size}"
-													   FontWeight="Bold"
-													   FontSize="14"
-													   Foreground="BlueViolet"/>
-										</Border>
+													Opacity="0.8"
+														IsVisible="{Binding IsUpgradeMeal}">
+												<TextBlock Text="{Binding Price, StringFormat='+ ${0:F2}'}"
+														   Foreground="White"
+														   FontWeight="Bold"
+														   FontSize="18"/>
+											</Border>
 
-										<!--Middle Border-->
-										<Border BorderBrush="Orange" BorderThickness="0,3,0,0"
-												HorizontalAlignment="Stretch"
-												VerticalAlignment="Bottom"
-												Height="3"
-												Margin="0,125,0,30"/>
-										<!--Adjust margin to control spacing-->
+											<!-- "Size" Label -->
+											<Border Background="Beige"
+													CornerRadius="10"
+													Padding="5"
+													HorizontalAlignment="Left"
+													VerticalAlignment="Top"
+													Margin="5"
+													IsVisible="{Binding HasSize}">
+												<TextBlock Text="{Binding Size}"
+														   FontWeight="Bold"
+														   FontSize="14"
+														   Foreground="BlueViolet"/>
+											</Border>
 
-										<!--Item Name (Below the Middle Border)-->
-										<TextBlock Text="{Binding MenuName}"
-												  HorizontalAlignment="Center"
-												  VerticalAlignment="Bottom"
-												  Margin="5,40,5,5"
-												  FontWeight="Bold"
-												  FontSize="16" />
-									</Grid>
-								</Border>
+											<!--Middle Border-->
+											<Border BorderBrush="Orange" BorderThickness="0,3,0,0"
+													HorizontalAlignment="Stretch"
+													VerticalAlignment="Bottom"
+													Height="3"
+													Margin="0,125,0,30"/>
+											<!--Adjust margin to control spacing-->
 
-							</ToggleButton>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</ScrollViewer>
+											<!--Item Name (Below the Middle Border)-->
+											<TextBlock Text="{Binding MenuName}"
+													  HorizontalAlignment="Center"
+													  VerticalAlignment="Bottom"
+													  Margin="5,40,5,5"
+													  FontWeight="Bold"
+													  FontSize="16" />
+										</Grid>
+									</Border>
+
+								</ToggleButton>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
 			</Grid>
 		</Border>
 

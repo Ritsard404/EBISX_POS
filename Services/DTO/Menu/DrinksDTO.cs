@@ -56,5 +56,7 @@ namespace EBISX_POS.Services.DTO.Menu
         public string MenuName { get; set; }
         public string? MenuImagePath { get; set; }
         public decimal MenuPrice { get; set; }
+        public string? Size { get; set; }
+        public bool IsUpgradeMeal { get; set; }
     }
 }

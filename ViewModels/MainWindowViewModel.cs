@@ -37,22 +37,9 @@ namespace EBISX_POS.ViewModels
                     OnPropertyChanged(nameof(CashierName));
                 }
             };
-
-            // Also subscribe to Quantity changes (Nested Property)
-            if (OrderState.CurrentOrderItem != null)
-            {
-                OrderState.CurrentOrderItem.PropertyChanged += (s, e) =>
-                {
-                    if (e.PropertyName == nameof(OrderState.CurrentOrderItem.Quantity))
-                    {
-                        OnPropertyChanged(nameof(CashierName));
-                    }
-                };
-            }
         }
 
-        public string CashierName => OrderState.CurrentOrderItem.Quantity.ToString();
-        //public string CashierName => CashierState.CashierName ?? "Developer";
+        public string CashierName => CashierState.CashierName ?? "Developer";
 
         private async Task LoadCategories()
         {
@@ -66,9 +53,7 @@ namespace EBISX_POS.ViewModels
 
         public async Task LoadMenusAsync(int categoryId)
         {
-            Debug.WriteLine($"Loading menus for category ID: {categoryId}");
             await ItemListViewModel.LoadMenusAsync(categoryId);
-            Debug.WriteLine($"Finished loading menus for category ID: {categoryId}");
         }
     }
 }

@@ -10,6 +10,10 @@ using EBISX_POS.State;
 using CommunityToolkit.Mvvm.Input;
 using System.Linq;
 using EBISX_POS.API.Models;
+using Avalonia.Controls;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia;
 
 namespace EBISX_POS.ViewModels
 {
@@ -137,7 +141,7 @@ namespace EBISX_POS.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading options: {ex.Message}");
-                // In production: Log error and show user-friendly message
+                NotificationService.NetworkIssueMessage();
             }
             finally
             {

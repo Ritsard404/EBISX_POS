@@ -11,7 +11,7 @@ namespace EBISX_POS.State
         public static ObservableCollection<string> DrinkSizes { get; set; } = new ObservableCollection<string>();
         public static ObservableCollection<AddOnTypeDTO> AddOnsType { get; set; } = new ObservableCollection<AddOnTypeDTO>();
         public static ObservableCollection<AddOnDetailDTO> AddOns { get; set; } = new ObservableCollection<AddOnDetailDTO>();
-      
+
         public static void UpdateDrinks(int? drinkTypeId, string? size)
         {
             Drinks.Clear();
@@ -27,7 +27,9 @@ namespace EBISX_POS.State
                     {
                         MenuName = drink.MenuName,
                         MenuImagePath = drink.MenuImagePath,
-                        MenuPrice = drink.MenuPrice
+                        MenuPrice = drink.MenuPrice,
+                        Size = drink.Size,
+                        IsUpgradeMeal = drink.IsUpgradeMeal
                     });
                 }
             }

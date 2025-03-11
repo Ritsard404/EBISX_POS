@@ -58,10 +58,17 @@ namespace EBISX_POS.Views
             if (sender is ToggleButton clickedButton && clickedButton.DataContext is ItemMenu item)
             {
                 HandleSelection(ref _selectedItemButton, clickedButton, ref _selectedItem);
-                Debug.WriteLine($"Selected Item: {item.ItemName}");
 
                 if (item.IsSolo || item.IsAddOn)
+                {
+                    if(OrderState.CurrentOrderItem.Quantity < 1)
+                    {
+                        OrderState.CurrentOrderItem.Quantity = 1;
+                    }
+                    OrderState.UpdateItemOrder(itemType: "Menu", itemId: item.Id, name: item.ItemName + (item.IsSolo ? " (Solo)" : ""), price: item.Price, size: item.Size);
+                    OrderState.FinalizeCurrentOrder(isSolo: true);
                     return;
+                }
 
                 var detailsWindow = new SubItemWindow(item, _menuService)
                 {

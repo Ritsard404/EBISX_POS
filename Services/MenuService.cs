@@ -59,6 +59,7 @@ namespace EBISX_POS.Services
             catch (HttpRequestException ex)
             {
                 Debug.WriteLine($"HTTP Error: {ex.Message}");
+                NotificationService.NetworkIssueMessage();
                 return new List<Category>(); // Return empty list on HTTP error
             }
             catch (JsonException ex)
@@ -69,6 +70,7 @@ namespace EBISX_POS.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unexpected Error: {ex.Message}");
+                NotificationService.NetworkIssueMessage();
                 return new List<Category>(); // Catch any other unexpected errors
             }
         }
@@ -114,6 +116,7 @@ namespace EBISX_POS.Services
             catch (HttpRequestException ex)
             {
                 Debug.WriteLine($"HTTP Error: {ex.Message}");
+                NotificationService.NetworkIssueMessage();
                 return new List<ItemMenu>(); // Return empty list on HTTP error
             }
             catch (JsonException ex)
@@ -124,6 +127,7 @@ namespace EBISX_POS.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unexpected Error: {ex.Message}");
+                NotificationService.NetworkIssueMessage();
                 return new List<ItemMenu>(); // Catch any other unexpected errors
             }
         }
@@ -167,6 +171,7 @@ namespace EBISX_POS.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unexpected Error: {ex.Message}");
+                NotificationService.NetworkIssueMessage();
                 return new List<AddOnTypeDTO>();
             }
         }
@@ -203,6 +208,7 @@ namespace EBISX_POS.Services
             catch (HttpRequestException ex)
             {
                 Debug.WriteLine($"HTTP Error: {ex.Message}");
+                NotificationService.NetworkIssueMessage();
             }
             catch (JsonException ex)
             {
@@ -210,7 +216,9 @@ namespace EBISX_POS.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected Error: {ex.Message}");
+                Debug.WriteLine($"Unexpected Error: {ex.Message}"); 
+                NotificationService.NetworkIssueMessage();
+
             }
 
             // In case of an error, return an empty DrinksDTO

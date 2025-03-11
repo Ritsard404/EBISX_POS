@@ -48,7 +48,9 @@ namespace EBISX_POS.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error: {ex.Message}");
+                Debug.WriteLine($"Error: {ex.Message}"); 
+                NotificationService.NetworkIssueMessage();
+
             }
             finally
             {
@@ -95,7 +97,9 @@ namespace EBISX_POS.ViewModels
             {
                 Debug.WriteLine($"Error: {ex.Message}");
                 ErrorMessage = "An unexpected error occurred.";
-                OnPropertyChanged(nameof(HasError));
+                OnPropertyChanged(nameof(HasError)); 
+                NotificationService.NetworkIssueMessage();
+
             }
             finally
             {

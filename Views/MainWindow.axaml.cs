@@ -122,11 +122,9 @@ namespace EBISX_POS.Views
                 {
                     if (DataContext is MainWindowViewModel viewModel)
                     {
-                        Debug.WriteLine($"Calling LoadMenusAsync for category ID: {_selectedMenuItem.Id}");
                         // Set loading flag to true before loading
                         IsLoading = true;
                         await viewModel.LoadMenusAsync(_selectedMenuItem.Id);
-                        Debug.WriteLine($"Finished calling LoadMenusAsync for category ID: {_selectedMenuItem.Id}");
 
                         // Update ItemListView's DataContext.
                         if (ItemListViewContainer.Content is ItemListView itemListView)
@@ -162,10 +160,10 @@ namespace EBISX_POS.Views
 
             }
         }
+
         private void ClearNumber_Click(object sender, RoutedEventArgs e)
         {
             OrderState.CurrentOrderItem.Quantity = 0;
-            Debug.WriteLine("Quantity cleared");
         }
 
 

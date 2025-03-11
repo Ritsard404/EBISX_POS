@@ -114,11 +114,11 @@ namespace EBISX_POS.State
             }
         }
 
-        public static bool FinalizeCurrentOrder()
+        public static bool FinalizeCurrentOrder(bool isSolo)
         {
             var isNoDrinks = CurrentOrderItem.SubOrders
                 .All(s => s.DrinkId == null);
-            if (isNoDrinks)
+            if (isNoDrinks && !isSolo)
             {
                 var alertBox = MessageBoxManager.GetMessageBoxStandard(
                     new MessageBoxStandardParams
@@ -152,19 +152,6 @@ namespace EBISX_POS.State
 
             return true;
         }
-
-        //private static void InitialCurrentOrder(int orderId, int itemId)
-        //{
-        //    var orderList = CurrentOrder.FirstOrDefault(i => i.ID == orderId);
-        //    if (orderList != null)
-        //    {
-        //        CurrentOrder.Add(CurrentOrderItem);
-        //    }
-        //    else
-        //    {
-        //        var subOrderList = orderList.;
-        //    }
-        //}
 
     }
 }
