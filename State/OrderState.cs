@@ -117,22 +117,25 @@ namespace EBISX_POS.State
         public static bool FinalizeCurrentOrder(bool isSolo)
         {
             var isNoDrinks = CurrentOrderItem.SubOrders
-                .All(s => s.DrinkId == null);
-            if (isNoDrinks && !isSolo)
+                .All(s => s.DrinkId == null );
+            var isNoAddOn = CurrentOrderItem.SubOrders
+                .All(s => s.AddOnId == null);
+
+            if (!isSolo && (isNoDrinks || isNoAddOn))
             {
                 var alertBox = MessageBoxManager.GetMessageBoxStandard(
                     new MessageBoxStandardParams
                     {
-                        ContentTitle = "Required Drink!",
-                        ContentMessage = "Please select a drink.",
+                        ContentTitle = "Required Drink/Side!",
+                        ContentMessage = "Please select a drink/side.",
                         ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         CanResize = false,
                         SizeToContent = SizeToContent.WidthAndHeight,
                         Width = 400,
                         ShowInCenter = true
-                    }); 
-                
+                    });
+
 
                 alertBox.ShowAsync();
 

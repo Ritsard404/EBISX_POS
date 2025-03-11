@@ -132,7 +132,7 @@
 
 						<!-- Scrollable Dynamic Toggle Buttons for Sizes -->
 						<ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-							<ItemsControl ItemsSource="{Binding DrinkSizes}">
+							<ItemsControl x:Name="SizeItemsControl" ItemsSource="{Binding DrinkSizes}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<StackPanel Orientation="Horizontal" Spacing="10"/>

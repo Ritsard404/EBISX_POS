@@ -28,15 +28,6 @@ namespace EBISX_POS.ViewModels
             _ = LoadCategories();
 
 
-
-            // Subscribe to changes in the entire OrderState
-            OrderState.StaticPropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(OrderState.CurrentOrderItem))
-                {
-                    OnPropertyChanged(nameof(CashierName));
-                }
-            };
         }
 
         public string CashierName => CashierState.CashierName ?? "Developer";

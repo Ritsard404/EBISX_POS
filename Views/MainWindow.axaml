@@ -59,12 +59,13 @@
 									<ItemsControl x:Name="MenuGroup" ItemsSource="{Binding ButtonList}">
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
-												<ToggleButton FontSize="14"
+												<ToggleButton FontSize="18"
 															  HorizontalAlignment="Stretch"
 															  VerticalContentAlignment="Center"
 															  FontWeight="SemiBold"
 															  Padding="10"
 															  Margin="7"
+															  Height="60"
 															  Click="ToggleButton_Click">
 													<TextBlock Text="{Binding CtgryName}"
 															   TextWrapping="Wrap"
@@ -125,11 +126,11 @@
 							<Button FontSize="18" Click="NumberButton_Click" Content="8" Grid.Column="0" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Click="NumberButton_Click" Content="9" Grid.Column="1" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Click="NumberButton_Click" Content="0" Grid.Column="2" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Content="CLEAR" Click="ClearNumber_Click" Grid.Column="3" FontWeight="SemiBold" Margin="10" Width="80" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="20" Content="CLEAR" Click="ClearNumber_Click" Grid.Column="3" FontWeight="Bold" Margin="10" Width="80" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" LetterSpacing="2"/>
 
 							<!-- Right side -->
 							<Button FontSize="20" FontWeight="Bold" Grid.Column="5" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-								<TextBlock Text="VOID" LetterSpacing="2" />
+								<TextBlock Text="CANCEL ORDER" LetterSpacing="2" />
 
 							</Button>
 							<Button FontSize="20" FontWeight="Bold" Grid.Column="6" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">

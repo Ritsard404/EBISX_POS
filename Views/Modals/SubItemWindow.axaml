@@ -4,11 +4,12 @@
         xmlns:views="using:EBISX_POS.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1500" d:DesignHeight="1800"
+        mc:Ignorable="d" d:DesignWidth="1500" d:DesignHeight="1800" Height="600"
         x:Class="EBISX_POS.Views.SubItemWindow"
 		x:DataType="vm:SubItemWindowViewModel"
 		ExtendClientAreaToDecorationsHint="True"
-		SystemDecorations="None">
+		SystemDecorations="None"
+        WindowStartupLocation="CenterOwner">
 
 	<Border BorderThickness="15" CornerRadius="10" BorderBrush="Orange">
 		<Grid RowDefinitions="*, Auto">
@@ -19,7 +20,7 @@
 							  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 					<StackPanel Margin="10">
 						<StackPanel IsVisible="{Binding HasOptions}">
-							<TextBlock Text="{Binding Item.ItemName}"
+							<TextBlock x:Name="QuantityDisp" Text="{Binding ItemNameAndQuantity}"
 									   FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
 							<views:OptionsView />
 						</StackPanel>

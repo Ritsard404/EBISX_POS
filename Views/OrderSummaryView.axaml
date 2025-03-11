@@ -32,10 +32,11 @@
 												<TextBlock Text="{Binding DisplayName}"
 														   Grid.Column="1"
 														   HorizontalAlignment="Left"/>
-												<TextBlock Text="{Binding ItemPrice, StringFormat='₱ {0:F2}'}"
+												<TextBlock Text="{Binding ItemPriceString}"
 														   Grid.Column="2"
 														   Margin="0,0,10,0"
-														   HorizontalAlignment="Right"/>
+														   HorizontalAlignment="Right"
+														   IsVisible="{Binding IsUpgradeMeal}"/>
 											</Grid>
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
@@ -57,10 +58,11 @@
 									<TextBlock Text="{Binding DisplayName}"
 											   Grid.Column="1"
 											   HorizontalAlignment="Left"/>
-									<TextBlock Text="{Binding ItemPrice, StringFormat='₱ {0:F2}'}"
+									<TextBlock Text="{Binding ItemPriceString}"
 											   Grid.Column="2"
 											   Margin="0,0,10,0"
-											   HorizontalAlignment="Right"/>
+											   HorizontalAlignment="Right"
+											   IsVisible="{Binding IsUpgradeMeal}"/>
 								</Grid>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>

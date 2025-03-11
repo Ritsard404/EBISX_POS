@@ -19,7 +19,7 @@ namespace EBISX_POS.Views
         private readonly MenuService _menuService;
 
 
-        private ToggleButton? _selectedItemButton;
+        private Button? _selectedItemButton;
         private string? _selectedItem;
 
         public ItemListView(MenuService menuService) // Ensure this constructor is public
@@ -55,13 +55,13 @@ namespace EBISX_POS.Views
 
         private async void OnItemClicked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (sender is ToggleButton clickedButton && clickedButton.DataContext is ItemMenu item)
+            if (sender is Button clickedButton && clickedButton.DataContext is ItemMenu item)
             {
                 HandleSelection(ref _selectedItemButton, clickedButton, ref _selectedItem);
 
                 if (item.IsSolo || item.IsAddOn)
                 {
-                    if(OrderState.CurrentOrderItem.Quantity < 1)
+                    if (OrderState.CurrentOrderItem.Quantity < 1)
                     {
                         OrderState.CurrentOrderItem.Quantity = 1;
                     }
@@ -70,46 +70,33 @@ namespace EBISX_POS.Views
                     return;
                 }
 
-                var detailsWindow = new SubItemWindow(item, _menuService)
-                {
-                    DataContext = new SubItemWindowViewModel(item, _menuService)
-                };
 
-                //OrderState.CurrentOrderItem.SubOrders.Clear();
-                //OrderState.CurrentOrderItem.SubOrders.Add(new SubOrderItem
-                //{
-                //    MenuId = item.Id,
-                //    Name = item.ItemName,
-                //    ItemPrice = item.Price
-                //});
-
+                OrderState.CurrentOrderItem.SubOrders.Clear();
                 OrderState.CurrentOrderItem.Quantity = (OrderState.CurrentOrderItem.Quantity < 1)
                     ? 1
                     : OrderState.CurrentOrderItem.Quantity;
                 OrderState.UpdateItemOrder(itemType: "Menu", itemId: item.Id, name: item.ItemName, price: item.Price, size: null);
                 OrderState.DisplayOrders();
 
+                var detailsWindow = new SubItemWindow(item, _menuService)
+                {
+                    DataContext = new SubItemWindowViewModel(item, _menuService)
+                };
+
 
                 await detailsWindow.ShowDialog((Window)this.VisualRoot);
             }
         }
 
-        private void HandleSelection(ref ToggleButton? selectedButton, ToggleButton clickedButton, ref string? selectedValue)
+        private void HandleSelection(ref Button? selectedButton, Button clickedButton, ref string? selectedValue)
         {
             if (selectedButton == clickedButton)
             {
-                clickedButton.IsChecked = false;
                 selectedButton = null;
                 selectedValue = null;
             }
             else
             {
-                if (selectedButton != null)
-                {
-                    selectedButton.IsChecked = false;
-                }
-
-                clickedButton.IsChecked = true;
                 selectedButton = clickedButton;
                 selectedValue = clickedButton.Content?.ToString();
             }

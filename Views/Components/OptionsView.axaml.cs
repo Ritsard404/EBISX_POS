@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -7,11 +8,14 @@ using EBISX_POS.Services.DTO.Menu;
 using EBISX_POS.State;
 using EBISX_POS.ViewModels;
 using System.Diagnostics;
+using System.Linq;
 
 namespace EBISX_POS.Views
 {
     public partial class OptionsView : UserControl
     {
+
+
         private ToggleButton? _selectedItemButton;   // Stores selected menu item
         private ToggleButton? _selectedSizeButton;   // Stores selected size (Regular / Medium / Large)
         private ToggleButton? _selectedDrinkTypeButton;
@@ -30,6 +34,7 @@ namespace EBISX_POS.Views
         {
             InitializeComponent();
             DataContext = new OptionsViewModel();
+
         }
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -109,5 +114,5 @@ namespace EBISX_POS.Views
                 selectedValue = clickedButton.Content?.ToString();
             }
         }
-    }
+      }
 }

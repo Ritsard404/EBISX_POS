@@ -32,7 +32,7 @@ namespace EBISX_POS.Models
                     ItemPrice = s.ItemPrice,
                     Size = s.Size,
                     IsFirstItem = index == 0, // True for the first item
-                    Quantity = index == 0 ? Quantity : 0 // Only show Quantity for the first item
+                    Quantity = index == 0 ? Quantity : 1 // Only show Quantity for the first item
                 }));
 
         public OrderItemState()
@@ -67,9 +67,14 @@ namespace EBISX_POS.Models
         public bool IsFirstItem { get; set; } = false;
         public int Quantity { get; set; } = 0; // Store Quantity for first item
 
-        public string DisplayName => string.IsNullOrEmpty(Size) ? Name : $"{Name} ({Size})";
+        public string DisplayName => string.IsNullOrEmpty(Size) ? Name + $" @{ItemPrice.ToString("F2")}" : $"{Name} ({Size})";
 
         // Opacity Property (replaces a converter)
         public double Opacity => IsFirstItem ? 1.0 : 0.0;
+
+        public bool IsUpgradeMeal => ItemPrice > 0;
+
+        public string ItemPriceString => IsFirstItem ? "₱" + ItemSubTotal.ToString("F2")
+            : IsUpgradeMeal ? "+ ₱" + ItemSubTotal.ToString("F2") : "";
     }
 }

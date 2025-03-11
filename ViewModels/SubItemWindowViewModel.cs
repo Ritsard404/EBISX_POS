@@ -14,25 +14,16 @@ using Avalonia.Controls;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
+using System.ComponentModel;
 
 namespace EBISX_POS.ViewModels
 {
-    /// <summary>
-    /// ViewModel for managing the sub-item selection window, handling drink sizes and add-ons
-    /// </summary>
     public partial class SubItemWindowViewModel : ViewModelBase
     {
         private readonly MenuService _menuService;
 
-        /// <summary>
-        /// The main menu item being customized
-        /// </summary>
         public ItemMenu Item { get; }
 
-
-        /// <summary>
-        /// Indicates if options are currently being loaded
-        /// </summary>
         [ObservableProperty]
         private bool _isLoading;
 
@@ -40,34 +31,35 @@ namespace EBISX_POS.ViewModels
         private bool _HasOptions;
 
 
-        /// <summary>
-        /// Initializes a new instance of the SubItemWindowViewModel
-        /// </summary>
-        /// <param name="item">The menu item being customized</param>
-        /// <param name="menuService">Service for fetching menu data</param>
-        /// <exception cref="ArgumentNullException">Thrown if any required service is null</exception>
+        public string ItemNameAndQuantity
+        => Item.ItemName +
+            $" ({(OrderState.CurrentOrderItem.Quantity == 0 ? 1 : OrderState.CurrentOrderItem.Quantity)})";
         public SubItemWindowViewModel(ItemMenu item, MenuService menuService)
         {
+            // Subscribe to changes of the static property.
+            OrderState.StaticPropertyChanged += OnOrderStateStaticPropertyChanged;
+
+            OrderState.CurrentOrderItem.PropertyChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(ItemNameAndQuantity));
+            };
+
             Item = item;
             _menuService = menuService;
 
 
-            // Start loading options asynchronously without blocking UI
-            // Note: In production, consider proper async/await with cancellation
             _ = LoadOptions();
+
         }
 
-        /// <summary>
-        /// Loads available drink options and add-ons for the current menu item
-        /// </summary>
-        /// <remarks>
-        /// 1. Checks for valid menu item
-        /// 2. Shows loading indicator
-        /// 3. Fetches drink options asynchronously
-        /// 4. Fetches add-ons asynchronously
-        /// 5. Updates observable collections for UI binding
-        /// 6. Handles errors and updates loading state
-        /// </remarks>
+        private void OnOrderStateStaticPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(OrderState.CurrentOrderItem))
+            {
+                // Notify the view that the property has updated.
+                OnPropertyChanged(nameof(ItemNameAndQuantity));
+            }
+        }
         public async Task LoadOptions()
         {
             try
