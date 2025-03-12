@@ -40,7 +40,6 @@ namespace EBISX_POS.Views
 
         private async void VoidCurrentOrder_Button(object? sender, RoutedEventArgs e)
         {
-
             var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
             var owner = lifetime?.MainWindow;
 

@@ -7,6 +7,7 @@ using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
 using EBISX_POS.State;
 using EBISX_POS.ViewModels;
+using System.Linq;
 
 namespace EBISX_POS.Views
 {
@@ -36,10 +37,19 @@ namespace EBISX_POS.Views
 
         private async void VoidButton_Click(object sender, RoutedEventArgs e)
         {
+
+            // Get the view model from DataContext
+            var viewModel = this.DataContext as OrderItemEditWindowViewModel;
+            if (viewModel == null)
+                return;
+
+            // Retrieve the order item from the view model
+            var orderItem = viewModel.OrderItem;
+
             var box = MessageBoxManager.GetMessageBoxStandard(
                 new MessageBoxStandardParams
                 {
-                    ContentHeader = "Void Order",
+                    ContentHeader = $"Void Order",
                     ContentMessage = "Please ask the manager to swipe.",
                     ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -54,6 +64,8 @@ namespace EBISX_POS.Views
             switch (result)
             {
                 case ButtonResult.Ok:
+                    OrderState.VoidCurrentOrder(orderItem);
+                    Close();
                     return;
                 case ButtonResult.Cancel:
                     return;

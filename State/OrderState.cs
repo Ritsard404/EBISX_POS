@@ -28,6 +28,7 @@ namespace EBISX_POS.State
                 {
                     _currentOrderItem = value;
                     OnStaticPropertyChanged(nameof(CurrentOrderItem));
+                    OnStaticPropertyChanged(nameof(CurrentOrderItem.Quantity));
                 }
             }
         }
@@ -96,29 +97,10 @@ namespace EBISX_POS.State
 
         }
 
-        public static void DisplayOrders()
-        {
-            var order = CurrentOrderItem;
-
-            Debug.WriteLine($"🛒 Current Order - ID: {order.ID}, Type: {order.OrderType}, Quantity: {order.Quantity}");
-            Debug.WriteLine("----------------------------------------------------");
-
-            foreach (var subOrder in order.DisplaySubOrders)
-            {
-                Debug.WriteLine($"📌 Item: {subOrder.DisplayName}");
-                Debug.WriteLine($"   🔹 Price: {subOrder.ItemPrice:C}");
-                Debug.WriteLine($"   🔹 Quantity: {subOrder.Quantity}");
-                Debug.WriteLine($"   🔹 Subtotal: {subOrder.ItemSubTotal:C}");
-                Debug.WriteLine($"   🔹 Size: {subOrder.Size}");
-                Debug.WriteLine($"   🔹 IsFirstItem: {subOrder.IsFirstItem}");
-                Debug.WriteLine("----------------------------------------------------");
-            }
-        }
-
         public static async Task<bool> FinalizeCurrentOrder(bool isSolo, Window owner)
         {
             var isNoDrinks = CurrentOrderItem.SubOrders
-                .All(s => s.DrinkId == null );
+                .All(s => s.DrinkId == null);
             var isNoAddOn = CurrentOrderItem.SubOrders
                 .All(s => s.AddOnId == null);
 
@@ -135,25 +117,25 @@ namespace EBISX_POS.State
                         SizeToContent = SizeToContent.WidthAndHeight,
                         Width = 400,
                         ShowInCenter = true,
-                        Icon= Icon.Info
+                        Icon = Icon.Info
                     });
 
 
                 var result = await box.ShowAsPopupAsync(owner);
-                switch(result)
+                switch (result)
                 {
                     case ButtonResult.Ok:
                         return false;
                     default:
                         return false;
                 };
-                
+
             };
 
             // Add the current order item to the collection
             CurrentOrder.Add(CurrentOrderItem);
 
-            // Reset the current order item to a new instance for the next order
+            // Reset the current order item to a new instance for the next order\
             CurrentOrderItem = new OrderItemState();
 
             // Optionally, notify any subscribers that the current order item has changed
@@ -164,5 +146,12 @@ namespace EBISX_POS.State
             return true;
         }
 
+        public static void VoidCurrentOrder(OrderItemState orderItem)
+        {
+            var voidOrder = CurrentOrder.FirstOrDefault(i => i.ID == orderItem.ID);
+            CurrentOrder.Remove(voidOrder);
+
+            OnStaticPropertyChanged(nameof(CurrentOrder));
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using EBISX_POS.Models;
 using EBISX_POS.State;
@@ -112,6 +113,7 @@ namespace EBISX_POS.ViewModels
             //}
         };
 
+
         public OrderSummaryViewModel()
         {
             // Subscribe to changes of the static property.
@@ -121,6 +123,7 @@ namespace EBISX_POS.ViewModels
             {
                 OnPropertyChanged(nameof(CurrentOrderItem));
             };
+
 
             OrderState.CurrentOrder.CollectionChanged += (s, e) =>
             {
@@ -133,7 +136,6 @@ namespace EBISX_POS.ViewModels
         {
             if (e.PropertyName == nameof(OrderState.CurrentOrderItem))
             {
-                // Notify the view that the property has updated.
                 OnPropertyChanged(nameof(CurrentOrderItem));
             }
         }

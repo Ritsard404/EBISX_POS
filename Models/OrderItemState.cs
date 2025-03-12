@@ -47,6 +47,7 @@ namespace EBISX_POS.Models
         partial void OnQuantityChanged(int oldValue, int newValue)
         {
             OnPropertyChanged(nameof(DisplaySubOrders));
+            OnPropertyChanged(nameof(Quantity));
         }
 
         public void RefreshDisplaySubOrders() => OnPropertyChanged(nameof(DisplaySubOrders));
