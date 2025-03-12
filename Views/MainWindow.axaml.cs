@@ -3,16 +3,16 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Threading;
+using MsBox.Avalonia.Enums;
 using EBISX_POS.API.Models;
 using EBISX_POS.Services;
 using EBISX_POS.State;
 using EBISX_POS.ViewModels;
-using System;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using EBISX_POS.Models;
 
 namespace EBISX_POS.Views
 {
@@ -166,6 +166,38 @@ namespace EBISX_POS.Views
             OrderState.CurrentOrderItem.Quantity = 0;
         }
 
+        private async void CancelOrder_Click(object sender, RoutedEventArgs e)
+        {
+            var box = MessageBoxManager.GetMessageBoxStandard(
+                new MessageBoxStandardParams
+                {
+                    ContentHeader = "Cancel Order",
+                    ContentMessage = "Swipe the manager ID.",
+                    ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    Width = 400,
+                    ShowInCenter = true,
+                    Icon = MsBox.Avalonia.Enums.Icon.Warning
+                });
 
+            var result = await box.ShowAsPopupAsync(this);
+
+            switch (result)
+            {
+                case ButtonResult.Ok:
+                    OrderState.CurrentOrderItem = new OrderItemState();
+                    OrderState.CurrentOrder.Clear();
+                    OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+                    return;
+                case ButtonResult.Cancel:
+                    return;
+                default:
+                    return;
+            }
+
+
+        }
     }
 }

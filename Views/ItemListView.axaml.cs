@@ -53,7 +53,7 @@ namespace EBISX_POS.Views
             DataContext = viewModel;
         }
 
-        private async void OnItemClicked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private async void OnItemClicked(object? sender, RoutedEventArgs e)
         {
             if (sender is Button clickedButton && clickedButton.DataContext is ItemMenu item)
             {
@@ -61,12 +61,15 @@ namespace EBISX_POS.Views
 
                 if (item.IsSolo || item.IsAddOn)
                 {
+                    var owner = this.VisualRoot as Window;
+
                     if (OrderState.CurrentOrderItem.Quantity < 1)
                     {
                         OrderState.CurrentOrderItem.Quantity = 1;
                     }
+                    OrderState.CurrentOrderItem.SubOrders.Clear();
                     OrderState.UpdateItemOrder(itemType: "Menu", itemId: item.Id, name: item.ItemName + (item.IsSolo ? " (Solo)" : ""), price: item.Price, size: item.Size);
-                    OrderState.FinalizeCurrentOrder(isSolo: true);
+                    await OrderState.FinalizeCurrentOrder(isSolo: true, owner);
                     return;
                 }
 
@@ -76,7 +79,7 @@ namespace EBISX_POS.Views
                     ? 1
                     : OrderState.CurrentOrderItem.Quantity;
                 OrderState.UpdateItemOrder(itemType: "Menu", itemId: item.Id, name: item.ItemName, price: item.Price, size: null);
-                OrderState.DisplayOrders();
+                //OrderState.DisplayOrders();
 
                 var detailsWindow = new SubItemWindow(item, _menuService)
                 {

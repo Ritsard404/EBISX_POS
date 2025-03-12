@@ -128,11 +128,10 @@
 							<Button FontSize="18" Click="NumberButton_Click" Content="0" Grid.Column="2" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Click="ClearNumber_Click" FontWeight="Bold" Grid.Column="3" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
 								<TextBlock Text="CLEAR" LetterSpacing="2" />
-
 							</Button>
 							
 							<!-- Right side -->
-							<Button FontSize="18" FontWeight="Bold" Grid.Column="5" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+							<Button FontSize="18" FontWeight="Bold" Click="CancelOrder_Click" Grid.Column="5" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
 								<TextBlock Text="CANCEL ORDER" LetterSpacing="2" />
 
 							</Button>

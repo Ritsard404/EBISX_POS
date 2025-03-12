@@ -51,7 +51,7 @@ namespace EBISX_POS.Views
                     OrderState.UpdateItemOrder(itemType: "Drink", itemId: Drink.MenuId, name: Drink.MenuName, price: Drink.MenuPrice, size: SelectedOptionsState.SelectedSize);
 
                     Debug.WriteLine($"Selected Drink: {Drink.MenuName}");
-                    OrderState.DisplayOrders();
+                    //OrderState.DisplayOrders();
                 }
                 else if (clickedButton.DataContext is AddOnDetailDTO AddOn)
                 {
@@ -60,7 +60,7 @@ namespace EBISX_POS.Views
                     OrderState.UpdateItemOrder(itemType: "AddOn", itemId: AddOn.MenuId, name: AddOn.MenuName, price: AddOn.Price, size: AddOn.Size);
 
                     Debug.WriteLine($"Selected AddOn: {AddOn.MenuName} Size: {AddOn.Size}");
-                    OrderState.DisplayOrders();
+                    //OrderState.DisplayOrders();
 
                 }
                 else if (clickedButton.DataContext is AddOnTypeDTO selectedAddOnType)

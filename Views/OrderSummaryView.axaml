@@ -20,53 +20,63 @@
 				<ItemsControl Grid.Row="0" ItemsSource="{Binding CurrentOrder}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<StackPanel Margin="0,0,0,20">
-								<ItemsControl ItemsSource="{Binding DisplaySubOrders}">
-									<ItemsControl.ItemTemplate>
-										<DataTemplate>
-											<Grid ColumnDefinitions="80,*,Auto">
-												<TextBlock Text="{Binding Quantity}"
-														   Grid.Column="0"
-														   HorizontalAlignment="Center"
-														   Opacity="{Binding Opacity}"/>
-												<TextBlock Text="{Binding DisplayName}"
-														   Grid.Column="1"
-														   HorizontalAlignment="Left"/>
-												<TextBlock Text="{Binding ItemPriceString}"
-														   Grid.Column="2"
-														   Margin="0,0,10,0"
-														   HorizontalAlignment="Right"
-														   IsVisible="{Binding IsUpgradeMeal}"/>
-											</Grid>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-							</StackPanel>
+							<Button
+								Background="Transparent"
+								Click="EditOrder_Button"
+								HorizontalAlignment="Stretch">
+								<StackPanel >
+									<ItemsControl ItemsSource="{Binding DisplaySubOrders}">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Grid ColumnDefinitions="80,*,Auto">
+													<TextBlock Text="{Binding Quantity}"
+															   Grid.Column="0"
+															   HorizontalAlignment="Center"
+															   Opacity="{Binding Opacity}"/>
+													<TextBlock Text="{Binding DisplayName}"
+															   Grid.Column="1"
+															   HorizontalAlignment="Left"/>
+													<TextBlock Text="{Binding ItemPriceString}"
+															   Grid.Column="2"
+															   Margin="0,0,10,0"
+															   HorizontalAlignment="Right"
+															   IsVisible="{Binding IsUpgradeMeal}"/>
+												</Grid>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</StackPanel>
+							</Button>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 
 				<StackPanel Grid.Row="1" Margin="0,0,0,20">
+					<Button
+						Background="Transparent"
+						Click="VoidCurrentOrder_Button"
+						HorizontalAlignment="Stretch">
 					<ItemsControl Background="Orange" ItemsSource="{Binding CurrentOrderItem.DisplaySubOrders}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Grid ColumnDefinitions="80,*,Auto">
-									<TextBlock Text="{Binding Quantity}"
-											   Grid.Column="0"
-											   HorizontalAlignment="Center"
-											   Opacity="{Binding Opacity}"/>
-									<TextBlock Text="{Binding DisplayName}"
-											   Grid.Column="1"
-											   HorizontalAlignment="Left"/>
-									<TextBlock Text="{Binding ItemPriceString}"
-											   Grid.Column="2"
-											   Margin="0,0,10,0"
-											   HorizontalAlignment="Right"
-											   IsVisible="{Binding IsUpgradeMeal}"/>
-								</Grid>
+									<Grid ColumnDefinitions="80,*,Auto">
+										<TextBlock Text="{Binding Quantity}"
+												   Grid.Column="0"
+												   HorizontalAlignment="Center"
+												   Opacity="{Binding Opacity}"/>
+										<TextBlock Text="{Binding DisplayName}"
+												   Grid.Column="1"
+												   HorizontalAlignment="Left"/>
+										<TextBlock Text="{Binding ItemPriceString}"
+												   Grid.Column="2"
+												   Margin="0,0,10,0"
+												   HorizontalAlignment="Right"
+												   IsVisible="{Binding IsUpgradeMeal}"/>
+									</Grid>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
-					</ItemsControl>
+						</ItemsControl>
+					</Button>
 				</StackPanel>
 			</Grid>
 		</ScrollViewer>

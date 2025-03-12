@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EBISX_POS.State
 {
@@ -114,7 +115,7 @@ namespace EBISX_POS.State
             }
         }
 
-        public static bool FinalizeCurrentOrder(bool isSolo)
+        public static async Task<bool> FinalizeCurrentOrder(bool isSolo, Window owner)
         {
             var isNoDrinks = CurrentOrderItem.SubOrders
                 .All(s => s.DrinkId == null );
@@ -123,23 +124,30 @@ namespace EBISX_POS.State
 
             if (!isSolo && (isNoDrinks || isNoAddOn))
             {
-                var alertBox = MessageBoxManager.GetMessageBoxStandard(
+                var box = MessageBoxManager.GetMessageBoxStandard(
                     new MessageBoxStandardParams
                     {
-                        ContentTitle = "Required Drink/Side!",
+                        ContentHeader = "Required Drink/Side!",
                         ContentMessage = "Please select a drink/side.",
                         ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         CanResize = false,
                         SizeToContent = SizeToContent.WidthAndHeight,
                         Width = 400,
-                        ShowInCenter = true
+                        ShowInCenter = true,
+                        Icon= Icon.Info
                     });
 
 
-                alertBox.ShowAsync();
-
-                return false;
+                var result = await box.ShowAsPopupAsync(owner);
+                switch(result)
+                {
+                    case ButtonResult.Ok:
+                        return false;
+                    default:
+                        return false;
+                };
+                
             };
 
             // Add the current order item to the collection
