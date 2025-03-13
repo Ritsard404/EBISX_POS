@@ -55,7 +55,8 @@
 					<Button
 						Background="Transparent"
 						Click="VoidCurrentOrder_Button"
-						HorizontalAlignment="Stretch">
+						HorizontalAlignment="Stretch"
+						IsVisible="{Binding CurrentOrderItem.HasCurrentOrder}">
 					<ItemsControl Background="Orange" ItemsSource="{Binding CurrentOrderItem.DisplaySubOrders}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>

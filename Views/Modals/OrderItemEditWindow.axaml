@@ -36,20 +36,24 @@
 								VerticalContentAlignment="Center"
 								HorizontalContentAlignment="Center"
 								FontWeight="Bold"
-							>-</Button>
-						<TextBox
-							Text="{Binding OrderItem.Quantity}"
-							VerticalContentAlignment="Center"
-							HorizontalContentAlignment="Center"
-							Margin="10, 0, 10, 0"
-							IsReadOnly="True" />
-						<Button
+								Content="-"
+								Command="{Binding EditQuantityCommand}"
+								CommandParameter="-1" />
+						<TextBox Text="{Binding OrderItem.Quantity}"
+								 VerticalContentAlignment="Center"
+								 HorizontalContentAlignment="Center"
+								 Margin="10, 0, 10, 0"
+								 IsReadOnly="True" />
+						<Button Width="40"
+								FontSize="20"
 								VerticalContentAlignment="Center"
 								HorizontalContentAlignment="Center"
-								FontSize="20"
-								Width="40"
-								FontWeight="Bold">+</Button>
+								FontWeight="Bold"
+								Content="+"
+								Command="{Binding EditQuantityCommand}"
+								CommandParameter="1" />
 					</StackPanel>
+
 				</Grid>
 			</StackPanel>
 

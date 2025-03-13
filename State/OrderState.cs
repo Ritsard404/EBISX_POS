@@ -41,8 +41,6 @@ namespace EBISX_POS.State
             StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
         }
 
-        public static decimal _totalAmount;
-
 
         public static void UpdateItemOrder(string itemType, int itemId, string name, decimal price, string? size)
         {

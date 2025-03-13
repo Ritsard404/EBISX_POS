@@ -23,12 +23,6 @@ namespace EBISX_POS.Views
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void CloseButton_Click(object? sender, RoutedEventArgs e)
-        {
-            // Close the current window
-            this.Close();
-        }
-
         private void SaveButton_Click(object? sender, RoutedEventArgs e)
         {
             // Close the current window

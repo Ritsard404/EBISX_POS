@@ -16,6 +16,9 @@ namespace EBISX_POS.Models
         [ObservableProperty]
         private string? orderType;
 
+        [ObservableProperty]
+        private bool hasCurrentOrder;
+
         // Using ObservableCollection so UI is notified on add/remove.
         [ObservableProperty]
         private ObservableCollection<SubOrderItem> subOrders = new ObservableCollection<SubOrderItem>();
@@ -50,7 +53,16 @@ namespace EBISX_POS.Models
             OnPropertyChanged(nameof(Quantity));
         }
 
-        public void RefreshDisplaySubOrders() => OnPropertyChanged(nameof(DisplaySubOrders));
+        public void RefreshDisplaySubOrders()
+        {
+            OnPropertyChanged(nameof(DisplaySubOrders));
+            UpdateHasCurrentOrder();
+        }
+
+        private void UpdateHasCurrentOrder()
+        {
+            HasCurrentOrder = subOrders.Any();
+        }
 
     }
 
