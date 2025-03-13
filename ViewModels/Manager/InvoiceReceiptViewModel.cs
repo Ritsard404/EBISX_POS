@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace EBISX_POS.ViewModels
+namespace EBISX_POS.ViewModels.Manager
 {
     public class InvoiceReceiptViewModel : INotifyPropertyChanged
     {
@@ -25,7 +25,7 @@ namespace EBISX_POS.ViewModels
                 {
                     BusinessName = "TESSA’S RESTAURANT",
                     Operator = "CBR Foods, Inc.",
-                    Address = "2nd Floor MTNL Bldg. Quen's Ave., Brgy. Poblacion Sur, Paniqui, Tarlac",
+                    Address = "2nd Floor MTNL Bldg. Quen's Ave.,\nBrgy. Poblacion Sur, Paniqui, Tarlac",
                     VATRegTIN = "321-654-987-00000",
                     MIN = "0987654321",
                     SerialNumber = "1234567890-01",

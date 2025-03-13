@@ -73,6 +73,11 @@ namespace EBISX_POS
             services.AddTransient<LogInWindow>();
             services.AddTransient<ManagerWindow>(); 
             services.AddTransient<TransactionLogWindow>();
+            services.AddTransient<DailySalesReportView>(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                return new DailySalesReportView(configuration);
+            });
 
 
             var configuration = new ConfigurationBuilder()
@@ -84,6 +89,7 @@ namespace EBISX_POS
 
             // Correct way to register ApiSettings from appsettings.json
             services.Configure<ApiSettings>(configuration);
+            services.Configure<ReportSetting>(configuration);
 
             // Register logging
             services.AddLogging(configure => configure.AddConsole());

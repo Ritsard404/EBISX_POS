@@ -116,12 +116,13 @@
 				</Button>
 				<!--  Button 5 with Monthly Report  -->
 				<Button
+					Click="Cash_Track_Button"
                     Grid.Row="0"
                     Grid.Column="3"
                     Margin="5">
 					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-						<TextBlock FontSize="30" Text="Monthly" />
-						<TextBlock FontSize="30" Text="Report" />
+						<TextBlock FontSize="30" Text="Cash" />
+						<TextBlock FontSize="30" Text="Track" />
 					</StackPanel>
 				</Button>
 				<!--  Button 6 with Quarterly Report  -->
