@@ -31,7 +31,6 @@ namespace EBISX_POS.ViewModels
             }
             else
             {
-                Debug.WriteLine("EditQuantity received an invalid parameter.");
                 return;
             }
 
@@ -39,7 +38,6 @@ namespace EBISX_POS.ViewModels
             if (OrderItem.Quantity + intDelta >= 1)
             {
                 OrderItem.Quantity += intDelta;
-                Debug.WriteLine($"Quantity updated to: {OrderItem.Quantity}");
             }
         }
     }

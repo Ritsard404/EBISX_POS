@@ -13,6 +13,8 @@ using MsBox.Avalonia;
 using System.ComponentModel;
 using System.Linq;
 using EBISX_POS.Models;
+using System;
+using System.Diagnostics;
 
 namespace EBISX_POS.Views
 {
@@ -198,6 +200,74 @@ namespace EBISX_POS.Views
             }
 
 
+        }
+
+        private async void OrderType_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                string orderType = string.Empty;
+
+                if (btn.Content is TextBlock textBlock)
+                {
+                    orderType = textBlock.Text;
+                }
+                else
+                {
+                    orderType = btn.Content?.ToString() ?? string.Empty;
+                }
+
+                Debug.WriteLine($"Order type selected: {orderType}");
+
+                // Perform actions based on the orderType
+                switch (orderType)
+                {
+                    case "DINE IN":
+                        // Handle Dine In logic
+                        OrderState.CurrentOrderItem.OrderType = "Dine In";
+                        break;
+                    case "TAKE OUT":
+                        // Handle Take Out logic
+                        OrderState.CurrentOrderItem.OrderType = "Take Out";
+                        break;
+                    default:
+                        // Handle other cases if necessary
+                        break;
+                }
+
+                TenderState.tenderOrder.Reset();
+                if (TenderState.tenderOrder.CalculateTotalAmount())
+                {
+
+                    var box = MessageBoxManager.GetMessageBoxStandard(
+                        new MessageBoxStandardParams
+                        {
+                            ContentHeader = "No Order Yet!",
+                            ContentMessage = "Please Select Order.",
+                            ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            CanResize = false,
+                            SizeToContent = SizeToContent.WidthAndHeight,
+                            Width = 400,
+                            ShowInCenter = true,
+                            Icon = MsBox.Avalonia.Enums.Icon.Warning
+                        });
+
+                    var result = await box.ShowAsPopupAsync(this);
+
+                    switch (result)
+                    {
+                        case ButtonResult.Ok:
+                            return;
+                        default:
+                            return;
+                    }
+                }
+
+                // Open the TenderOrderWindow
+                var tenderOrderWindow = new TenderOrderWindow();
+                await tenderOrderWindow.ShowDialog((Window)this.VisualRoot);
+            }
         }
     }
 }

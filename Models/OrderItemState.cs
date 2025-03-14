@@ -19,6 +19,9 @@ namespace EBISX_POS.Models
         [ObservableProperty]
         private bool hasCurrentOrder;
 
+        [ObservableProperty]
+        private decimal totalPrice;
+
         // Using ObservableCollection so UI is notified on add/remove.
         [ObservableProperty]
         private ObservableCollection<SubOrderItem> subOrders = new ObservableCollection<SubOrderItem>();
@@ -44,6 +47,7 @@ namespace EBISX_POS.Models
             subOrders.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged(nameof(DisplaySubOrders));
+                UpdateTotalPrice();
             };
         }
 
@@ -51,17 +55,23 @@ namespace EBISX_POS.Models
         {
             OnPropertyChanged(nameof(DisplaySubOrders));
             OnPropertyChanged(nameof(Quantity));
+            UpdateTotalPrice();
         }
 
         public void RefreshDisplaySubOrders()
         {
             OnPropertyChanged(nameof(DisplaySubOrders));
+            UpdateTotalPrice();
             UpdateHasCurrentOrder();
         }
 
         private void UpdateHasCurrentOrder()
         {
             HasCurrentOrder = subOrders.Any();
+        }
+        private void UpdateTotalPrice()
+        {
+            TotalPrice = DisplaySubOrders.Sum(p => p.ItemSubTotal);
         }
 
     }
