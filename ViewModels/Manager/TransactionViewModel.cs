@@ -66,28 +66,28 @@ namespace EBISX_POS.ViewModels.Manager
 
             Debug.WriteLine($"Loaded {TransactionLogs.Count} transactions.");
 
-            // Initialize ViewTransactionCommand
-            ViewTransactionCommand = new AsyncRelayCommand<TransactionLog>(ViewTransactionAsync);
+            //// Initialize ViewTransactionCommand
+            //ViewTransactionCommand = new AsyncRelayCommand<TransactionLog>(ViewTransactionAsync);
         }
 
         // Triggered when SelectedTransactionLog changes
-        partial void OnSelectedTransactionLogChanged(TransactionLog value)
-        {
-            if (value != null)
-            {
-                Debug.WriteLine($"Row clicked: Transaction ID = {value.TransactionId}");
-            }
-        }
+        //partial void OnSelectedTransactionLogChanged(TransactionLog value)
+        //{
+        //    if (value != null)
+        //    {
+        //        Debug.WriteLine($"Row clicked: Transaction ID = {value.TransactionId}");
+        //    }
+        //}
 
         // Properly defined async command method
-        private Task ViewTransactionAsync(TransactionLog transaction)
-        {
-            if (transaction != null)
-            {
-                Debug.WriteLine($"ViewTransactionCommand executed for Transaction ID = {transaction.TransactionId}");
-                // Implement further logic, e.g., navigating to a detail view.
-            }
-            return Task.CompletedTask;
-        }
+        //private Task ViewTransactionAsync(TransactionLog transaction)
+        //{
+        //    if (transaction != null)
+        //    {
+        //        Debug.WriteLine($"ViewTransactionCommand executed for Transaction ID = {transaction.TransactionId}");
+        //        // Implement further logic, e.g., navigating to a detail view.
+        //    }
+        //    return Task.CompletedTask;
+        //}
     }
 }

@@ -59,6 +59,7 @@ namespace EBISX_POS
             // Register services
             services.AddSingleton<AuthService>();
             //services.AddSingleton<TokenService>();
+            services.AddSingleton<ManagerWindow>();
 
             // Register ViewModels
             services.AddTransient<LogInWindowViewModel>();
@@ -72,11 +73,16 @@ namespace EBISX_POS
             // Register Views
             services.AddTransient<LogInWindow>();
             services.AddTransient<ManagerWindow>(); 
-            services.AddTransient<TransactionLogWindow>();
             services.AddTransient<DailySalesReportView>(provider =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 return new DailySalesReportView(configuration);
+            });
+
+            services.AddTransient<CashTrackView>(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                return new CashTrackView(configuration);
             });
 
 
