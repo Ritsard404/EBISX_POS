@@ -24,7 +24,6 @@ namespace EBISX_POS.Views
         }
         private void BackButton_Click(object? sender, RoutedEventArgs e)
         {
-            // Close the current window
             this.Close();
         }
 
