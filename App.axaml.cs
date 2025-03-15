@@ -73,16 +73,26 @@ namespace EBISX_POS
             // Register Views
             services.AddTransient<LogInWindow>();
             services.AddTransient<ManagerWindow>(); 
+
+            // Sales report
             services.AddTransient<DailySalesReportView>(provider =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 return new DailySalesReportView(configuration);
             });
 
+            // Cash Track logs view
             services.AddTransient<CashTrackView>(provider =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 return new CashTrackView(configuration);
+            });
+
+            // T logs view
+            services.AddTransient<TransactionView>(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                return new TransactionView(configuration);
             });
 
 

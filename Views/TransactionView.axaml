@@ -1,48 +1,71 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="EBISX_POS.Views.TransactionView"
-		xmlns:vm="clr-namespace:EBISX_POS.ViewModels.Manager"
-		xmlns:local="clr-namespace:EBISX_POS.Views"
-		x:DataType="vm:TransactionViewModel"
-        Title="TransactionView">
+<Window
+    x:Class="EBISX_POS.Views.TransactionView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:EBISX_POS.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:EBISX_POS.ViewModels.Manager"
+    Title="TransactionView"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:TransactionViewModel"
+    mc:Ignorable="d">
 
-	<Grid Margin="10">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height=""/>
-		</Grid.RowDefinitions>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="" />
+        </Grid.RowDefinitions>
 
-		<!-- Header Section -->
-		<StackPanel Orientation="Horizontal" Margin="0 0 0 6">
-			<TextBlock Text="Transaction Logs" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
-		</StackPanel>
+        <!--  Header Section  -->
+        <StackPanel Margin="0,0,0,6" Orientation="Horizontal">
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="20"
+                FontWeight="Bold"
+                Text="Transaction Logs" />
+        </StackPanel>
 
-		<!-- DataGrid Section -->
-		<DataGrid Grid.Row="1" 
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  SelectionMode="Single"
-				  MinHeight="12" MaxHeight="400" Width="800"
-				  ItemsSource="{Binding TransactionLogs}">
+        <!--  DataGrid Section  -->
+        <DataGrid
+            Grid.Row="1"
+            Width="800"
+            MinHeight="12"
+            MaxHeight="400"
+            AutoGenerateColumns="False"
+            IsReadOnly="True"
+            ItemsSource="{Binding TransactionLogs}"
+            SelectedItem="{Binding SelectedTransactionLog}"
+            SelectionMode="Single">
 
-			<!-- Columns -->
-			<DataGrid.Columns>
-				<DataGridTextColumn Header="Transact ID" Binding="{Binding TransactionId}"   Width="120"/>
-				<DataGridTextColumn Header="Date" Binding="{Binding LogDate,StringFormat=MM/dd/yyyy}"  Width="200"/>
-				<DataGridTextColumn Header="Time" Binding="{Binding LogTime, StringFormat=hh\\:mm\\:ss}" Width="150"/>
+            <!--  Columns  -->
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="120"
+                    Binding="{Binding TransactionId}"
+                    Header="Transact ID" />
+                <DataGridTextColumn
+                    Width="200"
+                    Binding="{Binding LogDate, StringFormat=MM/dd/yyyy}"
+                    Header="Date" />
+                <DataGridTextColumn
+                    Width="150"
+                    Binding="{Binding LogTime, StringFormat=hh\\:mm\\:ss}"
+                    Header="Time" />
 
-				<!-- View Button -->
-				<DataGridTemplateColumn Header="View" Width="100">
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Button Content="Action"/>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-			</DataGrid.Columns>
-		</DataGrid>
-	</Grid>
+                <!--  View Button  -->
+                <DataGridTemplateColumn Width="100" Header="Action">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                HorizontalAlignment="Center"
+                                Click="Print_Tlogs"
+                                Content="Print" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </Window>

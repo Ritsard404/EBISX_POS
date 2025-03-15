@@ -46,6 +46,7 @@ namespace EBISX_POS.Views {
                 string fileName = "DailySalesReport.txt";
                 string filePath = Path.Combine(folderPath, fileName);
 
+
                 // Get the data from ViewModel
                 var viewModel = (InvoiceReceiptViewModel)DataContext;
                 var invoice = viewModel.Reports.FirstOrDefault(); // Get the first report
