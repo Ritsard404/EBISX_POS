@@ -61,7 +61,8 @@
 									   FontFamily="{StaticResource NunitoFont}"
 									   FontSize="18"
 									   IsVisible="{Binding TenderCurrentOrder.HasPromoDiscount}"
-									   FontWeight="ExtraBold"/>
+									   FontWeight="ExtraBold"
+									   />
 						</Grid>
 						<TextBlock Grid.Column="1"/>
 						<TextBlock Grid.Column="2"
@@ -218,7 +219,8 @@
 					<Button Width="100"
 						Height="50"
 						VerticalContentAlignment="Center"
-						HorizontalContentAlignment="Center">
+						HorizontalContentAlignment="Center"
+						Click="PromoDiscount_Click">
 						<StackPanel Orientation="Vertical">
 							<TextBlock Text="PROMO"
 									   FontSize="16"

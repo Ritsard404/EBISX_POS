@@ -72,5 +72,52 @@ namespace EBISX_POS.Views
                 TenderState.tenderOrder.HasPwdScDiscount = !TenderState.tenderOrder.HasPwdScDiscount;
         }
 
+        private async void PromoDiscount_Click(object? sender, RoutedEventArgs e)
+        {
+            if (TenderState.tenderOrder.HasPwdScDiscount)
+            {
+                await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+                {
+                    ContentHeader = "Discounted Already",
+                    ContentMessage = "This order is already discounted.",
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    Width = 400,
+                    ShowInCenter = true,
+                    Icon = MsBox.Avalonia.Enums.Icon.Warning
+                }).ShowAsPopupAsync(this);
+                return;
+            }
+
+            var result = await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+            {
+                ContentHeader = "Promo Discount",
+                ContentMessage = "Please ask the manager to swipe.",
+                ButtonDefinitions = ButtonEnum.OkCancel,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                CanResize = false,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                Width = 400,
+                ShowInCenter = true,
+                Icon = MsBox.Avalonia.Enums.Icon.Warning
+            }).ShowAsPopupAsync(this);
+
+            if (result == ButtonResult.Ok)
+            {
+
+                var promoWindow = new PromoCodeWindow();
+                await promoWindow.ShowDialog((Window)this.VisualRoot);
+                return;
+            }
+
+            if (result == ButtonResult.Cancel)
+                return;
+
+
+
+        }
+
     }
 };

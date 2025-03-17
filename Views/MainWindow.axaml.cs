@@ -170,6 +170,9 @@ namespace EBISX_POS.Views
 
         private async void CancelOrder_Click(object sender, RoutedEventArgs e)
         {
+            if (!OrderState.CurrentOrder.Any())
+                return;
+
             var box = MessageBoxManager.GetMessageBoxStandard(
                 new MessageBoxStandardParams
                 {

@@ -2,12 +2,9 @@
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia;
 
 namespace EBISX_POS.Services
 {
@@ -15,6 +12,9 @@ namespace EBISX_POS.Services
     {
         public static async void NetworkIssueMessage()
         {
+            var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            var owner = lifetime?.MainWindow;
+
             var alertBox = MessageBoxManager.GetMessageBoxStandard(
                 new MessageBoxStandardParams
                 {
@@ -29,7 +29,7 @@ namespace EBISX_POS.Services
                 });
             Debug.WriteLine("Imong Api Goy Taronga!");
 
-            await alertBox.ShowAsync();
+            await alertBox.ShowAsPopupAsync(owner);
         }
     }
 }

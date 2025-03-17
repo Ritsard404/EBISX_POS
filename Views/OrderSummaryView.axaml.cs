@@ -1,9 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using EBISX_POS.Models;
-using EBISX_POS.Services;
 using EBISX_POS.State;
 using EBISX_POS.ViewModels;
 using MsBox.Avalonia.Dto;

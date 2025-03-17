@@ -123,9 +123,9 @@
 						<!-- Second Row: 4 Buttons (Left) and 2 Buttons (Right) -->
 						<Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, Auto, Auto, *, Auto,  Auto">
 							<!-- Left side -->
-							<Button FontSize="18" Click="NumberButton_Click" Content="8" Grid.Column="0" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Click="NumberButton_Click" Content="9" Grid.Column="1" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-							<Button FontSize="18" Click="NumberButton_Click" Content="0" Grid.Column="2" FontWeight="SemiBold" Margin="10" Width="70" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="8" Grid.Column="0" FontWeight="SemiBold" Margin="10" Width="85" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="9" Grid.Column="1" FontWeight="SemiBold" Margin="10" Width="85" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button FontSize="18" Click="NumberButton_Click" Content="0" Grid.Column="2" FontWeight="SemiBold" Margin="10" Width="85" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 							<Button FontSize="18" Click="ClearNumber_Click" FontWeight="Bold" Grid.Column="3" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
 								<TextBlock Text="CLEAR" LetterSpacing="2" />
 							</Button>

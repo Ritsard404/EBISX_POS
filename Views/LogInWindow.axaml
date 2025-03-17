@@ -55,7 +55,8 @@
 
 				<TextBox Text="{Binding ManagerEmail}"
 						 Watermark="Email"
-						 UseFloatingWatermark="True"/>
+						 UseFloatingWatermark="True"
+						 Height="40"/>
 
 				<Button Content="Sign In"
 						HorizontalAlignment="Stretch"
