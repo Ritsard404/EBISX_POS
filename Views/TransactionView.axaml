@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:EBISX_POS.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:EBISX_POS.ViewModels.Manager"
+	xmlns:model="using:AvaloniaControls.Models"
     Title="TransactionView"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -29,6 +30,9 @@
 
         <!--  DataGrid Section  -->
         <DataGrid
+			GridLinesVisibility="All"
+			BorderBrush="Gray"
+			BorderThickness="1"
             Grid.Row="1"
             Width="800"
             MinHeight="12"
@@ -36,7 +40,7 @@
             AutoGenerateColumns="False"
             IsReadOnly="True"
             ItemsSource="{Binding TransactionLogs}"
-            SelectedItem="{Binding SelectedTransactionLog}"
+            SelectedItem="{Binding SelectedTransactionLog, Mode=TwoWay}"
             SelectionMode="Single">
 
             <!--  Columns  -->

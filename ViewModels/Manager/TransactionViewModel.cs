@@ -17,6 +17,7 @@ namespace EBISX_POS.ViewModels.Manager
         // Selected transaction log
         [ObservableProperty]
         private TransactionLog selectedTransactionLog;
+        
 
         // Command for viewing transaction details
         public IAsyncRelayCommand<TransactionLog> ViewTransactionCommand { get; }

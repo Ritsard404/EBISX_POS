@@ -28,7 +28,6 @@ namespace EBISX_POS.Views
         }
 
         // This method handles the Print Tlogs button click event
-        // This method handles the Print Tlogs button click event
         private async void Print_Tlogs(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             try
@@ -44,6 +43,9 @@ namespace EBISX_POS.Views
                 var viewModel = (TransactionViewModel)DataContext;
                 var selectedTransaction = viewModel.SelectedTransactionLog;
 
+                // is order are function
+                Debug.WriteLine($"Selected Transaction: {selectedTransaction?.TransactionId}");
+
                 if (selectedTransaction == null)
                 {
                     await MessageBoxManager
@@ -58,13 +60,13 @@ namespace EBISX_POS.Views
                         Transaction Receipt
                 ======================================
                  
-                 Transaction ID: {selectedTransaction.TransactionId}
-                 Date: {selectedTransaction.LogDate:MM/dd/yyyy}
-                 Time: {selectedTransaction.LogTime:hh\\:mm\\:ss}
-                 Total Amount: {selectedTransaction.TotalAmount:C}
-                 Action: {selectedTransaction.Action}
-                 Details: {selectedTransaction.Details}
-                 Crew Member: {selectedTransaction.CrewMember.Name}
+                Transaction ID: {selectedTransaction?.TransactionId ?? "N/A"}
+                Date: {selectedTransaction?.LogDate.ToString("MM/dd/yyyy") ?? "N/A"}
+                Time: {selectedTransaction?.LogTime.ToString(@"hh\:mm\:ss") ?? "N/A"}
+                Total Amount: {selectedTransaction?.TotalAmount.ToString("C") ?? "N/A"}
+                Action: {selectedTransaction?.Action ?? "N/A"}
+                Details: {selectedTransaction?.Details ?? "N/A"}
+                Crew Member: {selectedTransaction?.CrewMember?.Name ?? "N/A"}
                 
                 ======================================";
 

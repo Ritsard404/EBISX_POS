@@ -25,8 +25,8 @@ namespace EBISX_POS.Views
 
         private void TransactionLog(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var transactionwindow = new TransactionView();
-            transactionwindow.Show();
+            var transactionWindow = _serviceProvider.GetRequiredService<TransactionView>();
+            transactionWindow.Show();
         }
 
         private async void Cash_Track_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
