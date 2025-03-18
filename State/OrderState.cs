@@ -93,6 +93,8 @@ namespace EBISX_POS.State
                 CurrentOrderItem.RefreshDisplaySubOrders();
             }
 
+            DisplayCurrentOrder();
+
         }
 
         public static async Task<bool> FinalizeCurrentOrder(bool isSolo, Window owner)
@@ -150,6 +152,51 @@ namespace EBISX_POS.State
             CurrentOrder.Remove(voidOrder);
 
             OnStaticPropertyChanged(nameof(CurrentOrder));
+        }
+
+
+        public static void DisplayCurrentOrder()
+        {
+            Debug.WriteLine("=== Current Order Details ===");
+
+            if (CurrentOrder.Count == 0)
+            {
+                Debug.WriteLine("No orders found.");
+                return;
+            }
+
+            foreach (var order in CurrentOrder)
+            {
+                Debug.WriteLine($"Order ID: {order.ID}");
+                Debug.WriteLine($"Order Type: {order.OrderType}");
+                Debug.WriteLine($"Quantity: {order.Quantity}");
+                Debug.WriteLine($"Total Price: ₱{order.TotalPrice:F2}");
+                Debug.WriteLine($"Has Current Order: {order.HasCurrentOrder}");
+                Debug.WriteLine("Sub-Orders:");
+
+                if (order.SubOrders.Count == 0)
+                {
+                    Debug.WriteLine("  No sub-orders.");
+                }
+                else
+                {
+                    foreach (var subOrder in order.SubOrders)
+                    {
+                        Debug.WriteLine($"  - Name: {subOrder.Name}");
+                        Debug.WriteLine($"    Menu ID: {subOrder.MenuId}");
+                        Debug.WriteLine($"    Drink ID: {subOrder.DrinkId}");
+                        Debug.WriteLine($"    AddOn ID: {subOrder.AddOnId}");
+                        Debug.WriteLine($"    Price: ₱{subOrder.ItemPrice:F2}");
+                        Debug.WriteLine($"    Quantity: {subOrder.Quantity}");
+                        Debug.WriteLine($"    SubTotal: ₱{subOrder.ItemSubTotal:F2}");
+                        Debug.WriteLine($"    Size: {subOrder.Size}");
+                        Debug.WriteLine($"    Is First Item: {subOrder.IsFirstItem}");
+                        Debug.WriteLine("------------------------------------");
+                    }
+                }
+
+                Debug.WriteLine("===================================");
+            }
         }
     }
 }

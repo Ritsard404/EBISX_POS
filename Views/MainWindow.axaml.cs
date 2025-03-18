@@ -48,6 +48,8 @@ namespace EBISX_POS.Views
             _menuService = menuService;
             DataContext = new MainWindowViewModel(menuService);
 
+
+
             this.AttachedToVisualTree += OnAttachedToVisualTree;
 
             // Create and set the ItemListView
@@ -219,8 +221,6 @@ namespace EBISX_POS.Views
                 {
                     orderType = btn.Content?.ToString() ?? string.Empty;
                 }
-
-                Debug.WriteLine($"Order type selected: {orderType}");
 
                 // Perform actions based on the orderType
                 switch (orderType)

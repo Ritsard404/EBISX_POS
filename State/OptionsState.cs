@@ -25,6 +25,7 @@ namespace EBISX_POS.State
                     // Map DrinksDTO to DrinkDetailDTO.
                     Drinks.Add(new DrinkDetailDTO
                     {
+                        MenuId= drink.MenuId,
                         MenuName = drink.MenuName,
                         MenuImagePath = drink.MenuImagePath,
                         MenuPrice = drink.MenuPrice,

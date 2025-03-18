@@ -65,6 +65,7 @@ namespace EBISX_POS
             // Register services
             services.AddSingleton<AuthService>();
             services.AddSingleton<MenuService>(); // Register MenuService
+            services.AddSingleton<OrderService>(); 
 
             // Register ViewModels
             services.AddTransient<LogInWindowViewModel>();
@@ -76,6 +77,7 @@ namespace EBISX_POS
             // Register Views
             services.AddTransient<LogInWindow>();
             services.AddTransient<MainWindow>(); // Register MainWindow
+            services.AddTransient<OrderSummaryView>();
             services.AddTransient<ItemListView>(provider => new ItemListView(provider.GetRequiredService<MenuService>())); // Register ItemListView
 
             var configuration = new ConfigurationBuilder()

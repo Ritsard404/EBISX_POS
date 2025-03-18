@@ -50,7 +50,7 @@ namespace EBISX_POS.Views
 
                     OrderState.UpdateItemOrder(itemType: "Drink", itemId: Drink.MenuId, name: Drink.MenuName, price: Drink.MenuPrice, size: SelectedOptionsState.SelectedSize);
 
-                    Debug.WriteLine($"Selected Drink: {Drink.MenuName}");
+                    Debug.WriteLine($"Selected Drink: {Drink.MenuId}");
                     //OrderState.DisplayOrders();
                 }
                 else if (clickedButton.DataContext is AddOnDetailDTO AddOn)

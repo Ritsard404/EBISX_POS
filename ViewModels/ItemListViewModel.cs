@@ -17,7 +17,7 @@ namespace EBISX_POS.ViewModels
         public ObservableCollection<ItemMenu> MenuItems { get; } = new();
         public ICommand ItemClickCommand { get; }
 
-        public ItemListViewModel(MenuService menuService) // Ensure this constructor is public
+        public ItemListViewModel(MenuService menuService) 
         {
             _menuService = menuService;
             ItemClickCommand = new RelayCommand<ItemMenu>(OnItemClick);
@@ -30,7 +30,6 @@ namespace EBISX_POS.ViewModels
         public async Task LoadMenusAsync(int categoryId)
         {
             var menus = await _menuService.GetMenusAsync(categoryId);
-            Debug.WriteLine($"Found {menus.Count} menus for category {categoryId}");
             MenuItems.Clear();
             menus.ForEach(menu => MenuItems.Add(menu));
 

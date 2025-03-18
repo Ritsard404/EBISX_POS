@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using EBISX_POS.Models;
+using EBISX_POS.Services;
 using EBISX_POS.State;
 
 namespace EBISX_POS.ViewModels
