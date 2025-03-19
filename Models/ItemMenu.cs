@@ -13,6 +13,7 @@ namespace EBISX_POS.Models
         public bool HasSize { get; set; }
         public bool IsSolo { get; set; }
         public bool  IsAddOn { get; set; }
+        public bool  IsDrink { get; set; }
 
         private string? _imagePath;
         public string? ImagePath

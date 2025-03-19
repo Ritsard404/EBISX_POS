@@ -8,6 +8,9 @@ using MsBox.Avalonia;
 using EBISX_POS.State;
 using EBISX_POS.ViewModels;
 using System.Linq;
+using EBISX_POS.Services;
+using Microsoft.Extensions.DependencyInjection;
+using EBISX_POS.API.Services.DTO.Order;
 
 namespace EBISX_POS.Views
 {
@@ -23,17 +26,35 @@ namespace EBISX_POS.Views
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void SaveButton_Click(object? sender, RoutedEventArgs e)
+        private async void SaveButton_Click(object? sender, RoutedEventArgs e)
         {
+            var orderService = App.Current.Services.GetRequiredService<OrderService>();
+
+            // Get the view model from DataContext
+            var viewModel = DataContext as OrderItemEditWindowViewModel;
+            if (viewModel == null)
+                return;
+
+            // Retrieve the order item from the view model
+            var orderItem = viewModel.OrderItem;
+
+            var newQty = new EditOrderItemQuantityDTO()
+            {
+                entryId = orderItem.ID,
+                qty = orderItem.Quantity
+            };
+            
+            await orderService.EditQtyOrderItem(newQty);
+
             // Close the current window
-            this.Close();
+            Close();
         }
 
         private async void VoidButton_Click(object sender, RoutedEventArgs e)
         {
 
             // Get the view model from DataContext
-            var viewModel = this.DataContext as OrderItemEditWindowViewModel;
+            var viewModel = DataContext as OrderItemEditWindowViewModel;
             if (viewModel == null)
                 return;
 
@@ -51,7 +72,7 @@ namespace EBISX_POS.Views
                     SizeToContent = SizeToContent.WidthAndHeight,
                     Width = 400,
                     ShowInCenter = true,
-                    Icon= MsBox.Avalonia.Enums.Icon.Warning
+                    Icon = MsBox.Avalonia.Enums.Icon.Warning
                 });
 
             var result = await box.ShowAsPopupAsync(this);

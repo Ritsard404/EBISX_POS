@@ -1,5 +1,9 @@
 ﻿using Avalonia.Controls;
+using EBISX_POS.API.Services.DTO.Order;
 using EBISX_POS.Models;
+using EBISX_POS.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
@@ -67,7 +71,7 @@ namespace EBISX_POS.State
                     item.DrinkId = itemId;
                 else if (itemType == "AddOn")
                     item.AddOnId = itemId;
-                else
+                else if (itemType == "Menu")
                     item.MenuId = itemId;
 
                 CurrentOrderItem.RefreshDisplaySubOrders();
@@ -93,12 +97,16 @@ namespace EBISX_POS.State
                 CurrentOrderItem.RefreshDisplaySubOrders();
             }
 
-            DisplayCurrentOrder();
+            //DisplayCurrentOrder();
 
         }
 
         public static async Task<bool> FinalizeCurrentOrder(bool isSolo, Window owner)
         {
+            var orderService = App.Current.Services.GetRequiredService<OrderService>();
+
+            var subOrders = CurrentOrderItem?.DisplaySubOrders;
+
             var isNoDrinks = CurrentOrderItem.SubOrders
                 .All(s => s.DrinkId == null);
             var isNoAddOn = CurrentOrderItem.SubOrders
@@ -132,28 +140,68 @@ namespace EBISX_POS.State
 
             };
 
+
             // Add the current order item to the collection
             CurrentOrder.Add(CurrentOrderItem);
 
-            // Reset the current order item to a new instance for the next order\
-            CurrentOrderItem = new OrderItemState();
+            var newOrderItem = new AddOrderDTO
+            {
+                qty = CurrentOrderItem.Quantity,
+                entryId = CurrentOrderItem.ID,
+                menuId = subOrders?.FirstOrDefault(m => m.MenuId != null)?.MenuId ?? 0,
+                drinkId = subOrders?.FirstOrDefault(m => m.DrinkId != null)?.DrinkId ?? 0,
+                addOnId = subOrders?.FirstOrDefault(m => m.AddOnId != null)?.AddOnId ?? 0,
+                drinkPrice = subOrders?.FirstOrDefault(m => m.DrinkId != null)?.Quantity > 0 ? subOrders?.FirstOrDefault(m => m.DrinkId != null)?.ItemPrice : 0,
+                addOnPrice = subOrders?.FirstOrDefault(m => m.AddOnId != null)?.Quantity > 0 ? subOrders?.FirstOrDefault(m => m.AddOnId != null)?.ItemPrice : 0,
+            };
 
-            // Optionally, notify any subscribers that the current order item has changed
-            CurrentOrderItem.RefreshDisplaySubOrders();
-            OnStaticPropertyChanged(nameof(CurrentOrderItem));
-            OnStaticPropertyChanged(nameof(CurrentOrder));
+            // Call the AddOrderItem method.
+            var (isSuccess, message) = await orderService.AddOrderItem(newOrderItem);
 
-            return true;
+            if (isSuccess)
+            {
+                // Reset the current order item to a new instance for the next order\
+                CurrentOrderItem = new OrderItemState();
+
+                // Optionally, notify any subscribers that the current order item has changed
+                CurrentOrderItem.RefreshDisplaySubOrders();
+                OnStaticPropertyChanged(nameof(CurrentOrderItem));
+                OnStaticPropertyChanged(nameof(CurrentOrder));
+
+                return true;
+            }
+            else
+            {
+                Debug.WriteLine($"Error: {message}");
+                return false;
+            }
         }
 
-        public static void VoidCurrentOrder(OrderItemState orderItem)
+        public static async void VoidCurrentOrder(OrderItemState orderItem)
         {
+            // Retrieve the OrderService instance from the DI container.
+            var orderService = App.Current.Services.GetRequiredService<OrderService>();
+
             var voidOrder = CurrentOrder.FirstOrDefault(i => i.ID == orderItem.ID);
+
+            var entryId = new VoidOrderItemDTO()
+            {
+                entryId = orderItem.ID,
+                managerEmail = "",
+            };
+
+            // Call the AddOrderItem method.
+            var (isSuccess, message) = await orderService.VoidOrderItem(entryId);
+            if (!isSuccess)
+            {
+                Debug.WriteLine($"Error: {message}");
+                return;
+            }
+
             CurrentOrder.Remove(voidOrder);
 
             OnStaticPropertyChanged(nameof(CurrentOrder));
         }
-
 
         public static void DisplayCurrentOrder()
         {

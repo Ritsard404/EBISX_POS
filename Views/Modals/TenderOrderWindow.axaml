@@ -46,14 +46,14 @@
 									   FontFamily="{StaticResource NunitoFont}"
 									   FontSize="18"
 									   FontWeight="ExtraBold"/>
-							<TextBlock Grid.Column="1"
+							<!--<TextBlock Grid.Column="1"
 									   VerticalAlignment="Center"
 									   HorizontalAlignment="Left"
 									   Text=" (Pwd/Sc)"
 									   FontFamily="{StaticResource NunitoFont}"
 									   FontSize="18"
 									   IsVisible="{Binding TenderCurrentOrder.HasPwdScDiscount}"
-									   FontWeight="ExtraBold"/>
+									   FontWeight="ExtraBold"/>-->
 							<TextBlock Grid.Column="1"
 									   VerticalAlignment="Center"
 									   HorizontalAlignment="Left"
@@ -267,7 +267,7 @@
 							HorizontalContentAlignment="Center"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
 							Command="{Binding TenderButtonClickCommand}"/>
-					<Button Width="100"
+					<!--<Button Width="100"
 						Height="50"
 						VerticalContentAlignment="Center"
 						HorizontalContentAlignment="Center"
@@ -284,6 +284,19 @@
 									   FontFamily="{StaticResource NunitoFont}"
 									   FontWeight="Black"
 									   />
+						</StackPanel>
+					</Button>-->
+					
+					<Button Width="100"
+						Height="50"
+						VerticalContentAlignment="Center"
+						HorizontalContentAlignment="Center">
+						<StackPanel Orientation="Vertical">
+							<TextBlock Text="COUPON"
+									   FontSize="18"
+									   HorizontalAlignment="Center"
+									   FontFamily="{StaticResource NunitoFont}"
+									   FontWeight="Black"/>
 						</StackPanel>
 					</Button>
 

@@ -110,7 +110,8 @@ namespace EBISX_POS.Services
                     Size = menu.Size?.ToString() ?? string.Empty,
                     HasSize = menu.Size != null,
                     IsSolo = !menu.HasDrink && menu.DrinkType == null && menu.IsAddOn == false,
-                    IsAddOn = menu.IsAddOn,
+                    IsAddOn = menu.AddOnType != null || menu.IsAddOn,
+                    IsDrink = menu.DrinkType != null
                 }).ToList();
             }
             catch (HttpRequestException ex)
@@ -216,7 +217,7 @@ namespace EBISX_POS.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unexpected Error: {ex.Message}"); 
+                Debug.WriteLine($"Unexpected Error: {ex.Message}");
                 NotificationService.NetworkIssueMessage();
 
             }

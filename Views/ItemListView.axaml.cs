@@ -67,8 +67,23 @@ namespace EBISX_POS.Views
                     {
                         OrderState.CurrentOrderItem.Quantity = 1;
                     }
+                    
+                    // Determine the item type based on the item's properties.
+                    string itemType = item.IsDrink ? "Drink" : item.IsAddOn ? "AddOn" : "Menu";
+
+                    // Clear the current sub-orders.
                     OrderState.CurrentOrderItem.SubOrders.Clear();
-                    OrderState.UpdateItemOrder(itemType: "Menu", itemId: item.Id, name: item.ItemName + (item.IsSolo ? " (Solo)" : ""), price: item.Price, size: item.Size);
+
+                    // Update the order item with the appropriate type and details.
+                    OrderState.UpdateItemOrder(
+                        itemType: itemType,
+                        itemId: item.Id,
+                        name: item.ItemName + (item.IsSolo ? " (Solo)" : ""),
+                        price: item.Price,
+                        size: item.Size
+                    );
+
+                    // Finalize the current order and exit.
                     await OrderState.FinalizeCurrentOrder(isSolo: true, owner);
                     return;
                 }

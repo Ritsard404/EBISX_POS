@@ -156,13 +156,13 @@
 				<!-- Bottom Keyboard -->
 				<Border Grid.Row="1" BorderBrush="Orange" Height="150" BorderThickness="0,0,0,0">
 					<Grid RowDefinitions="*,*">
-						<Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto">
-							<Button FontSize="18" Grid.Column="0" FontWeight="ExtraBold" Margin="10"
+						<Grid Grid.Row="0" ColumnDefinitions="*, *, Auto">
+							<!--<Button FontSize="18" Grid.Column="0" FontWeight="ExtraBold" Margin="10"
                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
 								<TextBlock Text="COUPON" LetterSpacing="2" />
-							</Button>
-							<Button FontSize="18" Grid.Column="2" FontWeight="ExtraBold" Margin="10"
+							</Button>-->
+							<Button FontSize="18" Width="130" Grid.Column="2" FontWeight="ExtraBold" Margin="10"
                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                     VerticalContentAlignment="Center" Click="OrderType_Click"  HorizontalContentAlignment="Center">
 								<TextBlock Text="DINE IN" LetterSpacing="2" />
@@ -171,7 +171,7 @@
 						</Grid>
 
 						<Grid Grid.Row="1" ColumnDefinitions="*, *, Auto">
-							<Button FontSize="18" Grid.Column="2" Click="OrderType_Click" FontWeight="ExtraBold" Margin="0,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+							<Button FontSize="18" Width="130" Grid.Column="2" Click="OrderType_Click" FontWeight="ExtraBold" Margin="0,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
 								<TextBlock Text="TAKE OUT" LetterSpacing="2" />
 
 							</Button>

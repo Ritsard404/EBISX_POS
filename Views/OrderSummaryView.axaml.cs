@@ -82,11 +82,6 @@ namespace EBISX_POS.Views
                 managerEmail = "user1@example.com"
             };
 
-
-
-            Debug.WriteLine($"VoidCurrentOrder_Button: Qty={voidOrder.qty}, MenuId={voidOrder.menuId}, DrinkId={voidOrder.drinkId}, AddOnId={voidOrder.addOnId}, DrinkPrice={voidOrder.drinkPrice}, AddOnPrice={voidOrder.addOnPrice}, ManagerEmail={voidOrder.managerEmail}");
-
-
             switch (result)
             {
                 case ButtonResult.Ok:

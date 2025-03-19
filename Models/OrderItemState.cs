@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 
 namespace EBISX_POS.Models
 {
@@ -8,7 +10,7 @@ namespace EBISX_POS.Models
     {
         private static int _nextId = 1;
 
-        public int ID { get; set; }  // ID is set in constructor, no change notification needed
+        public long ID { get; set; }  // ID is set in constructor, no change notification needed
 
         [ObservableProperty]
         private int quantity;
@@ -44,7 +46,7 @@ namespace EBISX_POS.Models
 
         public OrderItemState()
         {
-            ID = _nextId++;
+            ID = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + Interlocked.Increment(ref _nextId);
             subOrders.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged(nameof(DisplaySubOrders));

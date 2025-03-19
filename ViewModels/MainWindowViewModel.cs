@@ -7,6 +7,8 @@ using EBISX_POS.Services;
 using System.Diagnostics;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
+using EBISX_POS.Models;
 
 namespace EBISX_POS.ViewModels
 {
@@ -26,6 +28,7 @@ namespace EBISX_POS.ViewModels
             ItemListViewModel = new ItemListViewModel(menuService); // Initialize it
 
             _ = LoadCategories();
+            _ = LoadPendingOrder();
 
 
         }
@@ -41,6 +44,52 @@ namespace EBISX_POS.ViewModels
             await LoadMenusAsync(categories.FirstOrDefault().Id);
 
         }
+        private async Task LoadPendingOrder()
+        {
+            var orderService = App.Current.Services.GetRequiredService<OrderService>();
+
+            // Fetch the pending orders (grouped by EntryId) from the API.
+            var ordersDto = await orderService.GetCurrentOrderItems();
+
+            // If the items collection has empty items, exit.
+            if (!ordersDto.Any())
+                return;
+
+            foreach (var dto in ordersDto)
+            {
+                // Map the DTO's SubOrders to an ObservableCollection<SubOrderItem>
+                var subOrders = new ObservableCollection<SubOrderItem>(
+                    dto.SubOrders.Select(s => new SubOrderItem
+                    {
+                        MenuId = s.MenuId,
+                        DrinkId = s.DrinkId,
+                        AddOnId = s.AddOnId,
+                        Name = s.Name,
+                        ItemPrice = s.ItemPrice,
+                        Size = s.Size,
+                        Quantity = s.Quantity,
+                        IsFirstItem = s.IsFirstItem,
+                    })
+                );
+
+                // Create a new OrderItemState from the DTO.
+                var pendingItem = new OrderItemState()
+                {
+                    ID = dto.EntryId,             // Using EntryId from the DTO.
+                    Quantity = dto.TotalQuantity, // Total quantity from the DTO.
+                    TotalPrice = dto.TotalPrice,  // Total price from the DTO.
+                    HasCurrentOrder = dto.HasCurrentOrder,
+                    SubOrders = subOrders         // Mapped sub-orders.
+                };
+
+                // Add the mapped OrderItemState to the static collection.
+                OrderState.CurrentOrder.Add(pendingItem);
+            }
+
+            // Refresh UI display (if needed by your application).
+            OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+        }
+
 
         public async Task LoadMenusAsync(int categoryId)
         {
