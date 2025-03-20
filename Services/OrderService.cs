@@ -147,6 +147,57 @@ namespace EBISX_POS.Services
             }
         }
 
+        // Calls the VoidOrderItem endpoint to void a specific order item
+        public async Task<(bool, string)> CancelCurrentOrder(string managerEmail)
+        {
+            try
+            {
+                ValidateOrderEndpoint(); // Validate API endpoint configuration
+
+                // Build URL correctly and encode the email to prevent any special character issues
+                var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/CancelCurrentOrder";
+
+                // Create request using PUT method
+                var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("managerEmail", managerEmail);
+
+                // Execute the request and return the result
+                var result = await ExecuteRequestAsync(request);
+                return result.Item1
+                    ? (true, result.Item2 ?? "Order Cancel successfully.")
+                    : result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($" Error: {ex.Message}");
+                return (false, "An unexpected error occurred.");
+            }
+        }
+
+        // Calls the VoidOrderItem endpoint to void a specific order item
+        public async Task<(bool, string)> AddPwdScDiscount(AddPwdScDiscountDTO addPwdScDiscount)
+        {
+            try
+            {
+                ValidateOrderEndpoint(); // Validate API endpoint configuration
+
+                // Build URL and create request with JSON body using PUT method
+                var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/AddPwdScDiscount";
+                var request = new RestRequest(url, Method.Put).AddJsonBody(addPwdScDiscount);
+
+                // Execute the request and return the result
+                var result = await ExecuteRequestAsync(request);
+                return result.Item1
+                    ? (true, result.Item2 ?? "Order voided successfully.")
+                    : result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($" Error: {ex.Message}");
+                return (false, "An unexpected error occurred.");
+            }
+        }
+
         // Calls the GetCurrentOrderItems endpoint to retrieve the current order items
         public async Task<List<GetCurrentOrderItemsDTO>> GetCurrentOrderItems()
         {

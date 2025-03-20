@@ -38,7 +38,7 @@ namespace EBISX_POS.Views
                 return;
             }
             // Close the current window
-            this.Close();
+            Close();
         }
     }
 }

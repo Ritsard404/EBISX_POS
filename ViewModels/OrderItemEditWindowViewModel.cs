@@ -6,10 +6,13 @@ namespace EBISX_POS.ViewModels
 {
     public partial class OrderItemEditWindowViewModel : ViewModelBase
     {
+        // Store original quantity
+        public int OriginalQuantity { get; }
         public OrderItemState OrderItem { get; }
         public OrderItemEditWindowViewModel(OrderItemState orderItem)
         {
             OrderItem = orderItem;
+            OriginalQuantity = orderItem.Quantity;
 
         }
 

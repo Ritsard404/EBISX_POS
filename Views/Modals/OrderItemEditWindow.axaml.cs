@@ -31,9 +31,14 @@ namespace EBISX_POS.Views
             var orderService = App.Current.Services.GetRequiredService<OrderService>();
 
             // Get the view model from DataContext
-            var viewModel = DataContext as OrderItemEditWindowViewModel;
-            if (viewModel == null)
+            if (DataContext is not OrderItemEditWindowViewModel viewModel)
                 return;
+
+            if (viewModel.OriginalQuantity == viewModel.OrderItem.Quantity)
+            {
+                Close();
+                return;
+            }
 
             // Retrieve the order item from the view model
             var orderItem = viewModel.OrderItem;

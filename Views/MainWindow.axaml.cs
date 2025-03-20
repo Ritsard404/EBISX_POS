@@ -15,6 +15,7 @@ using System.Linq;
 using EBISX_POS.Models;
 using System;
 using System.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EBISX_POS.Views
 {
@@ -172,6 +173,8 @@ namespace EBISX_POS.Views
 
         private async void CancelOrder_Click(object sender, RoutedEventArgs e)
         {
+            var orderService = App.Current.Services.GetRequiredService<OrderService>();
+
             if (!OrderState.CurrentOrder.Any())
                 return;
 
@@ -191,9 +194,15 @@ namespace EBISX_POS.Views
 
             var result = await box.ShowAsPopupAsync(this);
 
+            string managerEmail = "buanga uy";
+
             switch (result)
             {
                 case ButtonResult.Ok:
+                    var (isSuccess, message) = await orderService.CancelCurrentOrder(managerEmail);
+                    Debug.WriteLine($" Cancel Message: {message}");
+
+
                     OrderState.CurrentOrderItem = new OrderItemState();
                     OrderState.CurrentOrder.Clear();
                     OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
@@ -271,6 +280,14 @@ namespace EBISX_POS.Views
                 var tenderOrderWindow = new TenderOrderWindow();
                 await tenderOrderWindow.ShowDialog((Window)this.VisualRoot);
             }
+        }
+
+        private async void DiscountPwdSc_Click(object sender, RoutedEventArgs e)
+        {
+            // Open the TenderOrderWindow
+            var discountPwdSw = new SelectDiscountPwdScWindow();
+            await discountPwdSw.ShowDialog((Window)this.VisualRoot);
+
         }
     }
 }
