@@ -33,12 +33,11 @@ namespace EBISX_POS.Views
 
         private async void AddOrderButton_Click(object? sender, RoutedEventArgs e)
         {
+            Close();
             if (!await OrderState.FinalizeCurrentOrder(isSolo: false, this))
             {
                 return;
             }
-            // Close the current window
-            Close();
         }
     }
 }

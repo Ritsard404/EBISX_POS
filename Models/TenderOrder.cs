@@ -38,7 +38,9 @@ namespace EBISX_POS.Models
 
         public bool CalculateTotalAmount()
         {
-            TotalAmount = OrderState.CurrentOrder.Sum(orderItem => orderItem.TotalPrice);
+            TotalAmount = OrderState.CurrentOrder
+                .Sum(orderItem => orderItem.TotalPrice);
+            UpdateComputedValues();
             return TotalAmount <= 0;
         }
 
@@ -55,7 +57,8 @@ namespace EBISX_POS.Models
             }
             else if (HasPwdScDiscount)
             {
-                DiscountAmount = Math.Truncate(TotalAmount * DiscountPwdScPercent * 100) / 100m;
+                DiscountAmount = OrderState.CurrentOrder
+                        .Sum(orderItem => orderItem.TotalDiscountPrice);
             }
             else
             {

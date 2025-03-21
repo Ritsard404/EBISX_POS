@@ -248,6 +248,7 @@ namespace EBISX_POS.Views
                 }
 
                 TenderState.tenderOrder.Reset();
+                TenderState.tenderOrder.HasPwdScDiscount = true;
                 if (TenderState.tenderOrder.CalculateTotalAmount())
                 {
 
@@ -284,9 +285,60 @@ namespace EBISX_POS.Views
 
         private async void DiscountPwdSc_Click(object sender, RoutedEventArgs e)
         {
-            // Open the TenderOrderWindow
-            var discountPwdSw = new SelectDiscountPwdScWindow();
-            await discountPwdSw.ShowDialog((Window)this.VisualRoot);
+            if (OrderState.CurrentOrder.Any(d => d.HasDiscount))
+            {
+
+                var dbox = MessageBoxManager.GetMessageBoxStandard(
+                    new MessageBoxStandardParams
+                    {
+                        ContentHeader = $"Discounted already!",
+                        ContentMessage = "The order has discounted already!",
+                        ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        CanResize = false,
+                        SizeToContent = SizeToContent.WidthAndHeight,
+                        Width = 400,
+                        ShowInCenter = true,
+                        Icon = MsBox.Avalonia.Enums.Icon.Error
+                    });
+
+                var dresult = await dbox.ShowAsPopupAsync(this);
+                switch (dresult)
+                {
+                    case ButtonResult.Ok:
+                        return;
+                    default:
+                        return;
+                }
+            }
+
+            var box = MessageBoxManager.GetMessageBoxStandard(
+                new MessageBoxStandardParams
+                {
+                    ContentHeader = $"Pwd/SC Discount",
+                    ContentMessage = "Please ask the manager to swipe.",
+                    ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    Width = 400,
+                    ShowInCenter = true,
+                    Icon = MsBox.Avalonia.Enums.Icon.Warning
+                });
+
+            var result = await box.ShowAsPopupAsync(this);
+            switch (result)
+            {
+                case ButtonResult.Ok:
+                    // Open the TenderOrderWindow
+                    var discountPwdSw = new SelectDiscountPwdScWindow();
+                    await discountPwdSw.ShowDialog((Window)this.VisualRoot);
+                    return;
+                case ButtonResult.Cancel:
+                    return;
+                default:
+                    return;
+            }
 
         }
     }

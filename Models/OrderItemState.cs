@@ -24,6 +24,11 @@ namespace EBISX_POS.Models
         [ObservableProperty]
         private decimal totalPrice;
 
+        [ObservableProperty]
+        private decimal totalDiscountPrice;
+        public bool HasDiscount { get; set; }
+        public bool IsEnableEdit { get; set; } = true;
+
         // Using ObservableCollection so UI is notified on add/remove.
         [ObservableProperty]
         private ObservableCollection<SubOrderItem> subOrders = new ObservableCollection<SubOrderItem>();
@@ -74,7 +79,13 @@ namespace EBISX_POS.Models
         }
         private void UpdateTotalPrice()
         {
-            TotalPrice = DisplaySubOrders.Sum(p => p.ItemSubTotal);
+            TotalPrice = DisplaySubOrders
+            .Where(i => !(i.AddOnId == null && i.MenuId == null && i.DrinkId == null))
+            .Sum(p => p.ItemSubTotal);
+
+            TotalDiscountPrice = DisplaySubOrders
+            .Where(i => (i.AddOnId == null && i.MenuId == null && i.DrinkId == null))
+            .Sum(p => p.ItemSubTotal);
         }
 
     }
@@ -93,8 +104,8 @@ namespace EBISX_POS.Models
         public bool IsFirstItem { get; set; } = false;
         public int Quantity { get; set; } = 0; // Store Quantity for first item
 
-        public string DisplayName => string.IsNullOrEmpty(Size) ? Name + $" @{ItemPrice.ToString("F2")}" : 
-            ItemPrice > 0 ? Name + $" ({Size})@{ItemPrice.ToString("F2")}" : 
+        public string DisplayName => string.IsNullOrEmpty(Size) || MenuId == null && DrinkId == null && AddOnId == null ? Name + $" @{ItemPrice.ToString("G29")}" :
+            ItemPrice > 0 ? Name + $" ({Size}) @{ItemPrice.ToString("G29")}" :
             $"{Name} ({Size})";
 
         // Opacity Property (replaces a converter)
@@ -102,8 +113,9 @@ namespace EBISX_POS.Models
 
         public bool IsUpgradeMeal => ItemPrice > 0;
 
-        public string ItemPriceString => IsFirstItem ? "₱" + ItemSubTotal.ToString("F2")
-            : IsUpgradeMeal ? "+ ₱" + ItemSubTotal.ToString("F2") 
+        public string ItemPriceString => IsFirstItem ? "₱" + ItemSubTotal.ToString("G29")
+            : MenuId == null && DrinkId == null && AddOnId == null ? "- ₱" + ItemSubTotal.ToString("G29")
+            : IsUpgradeMeal ? "+ ₱" + ItemSubTotal.ToString("G29")
             : "";
     }
 }

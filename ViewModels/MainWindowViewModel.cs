@@ -79,7 +79,9 @@ namespace EBISX_POS.ViewModels
                     Quantity = dto.TotalQuantity, // Total quantity from the DTO.
                     TotalPrice = dto.TotalPrice,  // Total price from the DTO.
                     HasCurrentOrder = dto.HasCurrentOrder,
-                    SubOrders = subOrders         // Mapped sub-orders.
+                    SubOrders = subOrders,         // Mapped sub-orders.
+                    HasDiscount = dto.HasDiscount,
+                    IsEnableEdit = !dto.HasDiscount
                 };
 
                 // Add the mapped OrderItemState to the static collection.

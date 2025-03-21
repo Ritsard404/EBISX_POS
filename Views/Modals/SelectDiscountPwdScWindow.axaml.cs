@@ -101,9 +101,23 @@ namespace EBISX_POS.Views
         }
         public SelectDiscountPwdScWindow()
         {
+
             InitializeComponent();
             DataContext = this;
-            CurrentOrder.ItemsSource = OrderState.CurrentOrder;
+            this.Opened += OnWindowOpened;
+        }
+
+        private void OnWindowOpened(object? sender, System.EventArgs e)
+        {
+            RefreshCurrentOrder();
+        }
+
+        private void RefreshCurrentOrder()
+        {
+            CurrentOrder.ItemsSource = OrderState.CurrentOrder
+                .Where(d => !d.HasDiscount)
+                .GroupBy(i => i.ID)
+                .Select(g => g.First());
         }
 
         private void EditQuantity_Click(object? sender, RoutedEventArgs e)
@@ -195,14 +209,18 @@ namespace EBISX_POS.Views
 
         private async void SaveButton_Click(object? sender, RoutedEventArgs e)
         {
+            if (SelectedIDs.Count() == 0)
+            {
+                Close();
+                return;
+            }
+            if (SelectedIDs.Count() > MaxSelectionCount || SelectedIDs.Count() < MaxSelectionCount)
+            {
+                return;
+            }
+
             var orderService = App.Current.Services.GetRequiredService<OrderService>();
 
-            // Debug output the count and the IDs.
-            Debug.WriteLine($"Is Pwd: {IsPwdSelected}");
-            Debug.WriteLine($"Pwd/Sc Count {MaxSelectionCount}");
-            Debug.WriteLine($"Selected IDs: {SelectedIDs}");
-            // Close the current window
-            Close();
 
             await orderService.AddPwdScDiscount(new AddPwdScDiscountDTO()
             {
@@ -210,7 +228,50 @@ namespace EBISX_POS.Views
                 ManagerEmail = "qwee",
                 PwdScCount = MaxSelectionCount,
                 IsSeniorDisc = !IsPwdSelected
-            });
+            }); // Fetch the pending orders (grouped by EntryId) from the API.
+            var ordersDto = await orderService.GetCurrentOrderItems();
+
+            // If the items collection has empty items, exit.
+            if (!ordersDto.Any())
+                return;
+
+            OrderState.CurrentOrder.Clear();
+            foreach (var dto in ordersDto)
+            {
+                // Map the DTO's SubOrders to an ObservableCollection<SubOrderItem>
+                var subOrders = new ObservableCollection<SubOrderItem>(
+                    dto.SubOrders.Select(s => new SubOrderItem
+                    {
+                        MenuId = s.MenuId,
+                        DrinkId = s.DrinkId,
+                        AddOnId = s.AddOnId,
+                        Name = s.Name,
+                        ItemPrice = s.ItemPrice,
+                        Size = s.Size,
+                        Quantity = s.Quantity,
+                        IsFirstItem = s.IsFirstItem,
+                    })
+                );
+
+                // Create a new OrderItemState from the DTO.
+                var pendingItem = new OrderItemState()
+                {
+                    ID = dto.EntryId,             // Using EntryId from the DTO.
+                    Quantity = dto.TotalQuantity, // Total quantity from the DTO.
+                    TotalPrice = dto.TotalPrice,  // Total price from the DTO.
+                    HasCurrentOrder = dto.HasCurrentOrder,
+                    SubOrders = subOrders,
+                    HasDiscount = dto.HasDiscount// Mapped sub-orders.
+                };
+
+                // Add the mapped OrderItemState to the static collection.
+                OrderState.CurrentOrder.Add(pendingItem);
+            }
+
+            // Refresh UI display (if needed by your application).
+            OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+
+            Close();
         }
     }
 }
