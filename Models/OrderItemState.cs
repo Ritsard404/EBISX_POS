@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
@@ -8,9 +9,8 @@ namespace EBISX_POS.Models
 {
     public partial class OrderItemState : ObservableObject
     {
-        private static int _nextId = 1;
-
-        public long ID { get; set; }  // ID is set in constructor, no change notification needed
+        private static long _counter = 0;
+        public string ID { get; set; }  // ID is set in constructor, no change notification needed
 
         [ObservableProperty]
         private int quantity;
@@ -24,10 +24,11 @@ namespace EBISX_POS.Models
         [ObservableProperty]
         private decimal totalPrice;
 
-        [ObservableProperty]
-        private decimal totalDiscountPrice;
+        public decimal TotalDiscountPrice { get; set; }
         public bool HasDiscount { get; set; }
         public bool IsEnableEdit { get; set; } = true;
+        public bool IsPwdDiscounted { get; set; } = false;
+        public bool IsSeniorDiscounted { get; set; } = false;
 
         // Using ObservableCollection so UI is notified on add/remove.
         [ObservableProperty]
@@ -45,18 +46,25 @@ namespace EBISX_POS.Models
                     ItemPrice = s.ItemPrice,
                     Size = s.Size,
                     IsFirstItem = index == 0, // True for the first item
-                    //Quantity = index == 0 ? Quantity : 1 // Only show Quantity for the first item
                     Quantity = Quantity  // Only show Quantity for the first item
                 }));
 
         public OrderItemState()
         {
-            ID = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + Interlocked.Increment(ref _nextId);
+            RegenerateID();
             subOrders.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged(nameof(DisplaySubOrders));
                 UpdateTotalPrice();
             };
+        }
+
+        // Call this to generate a new unique ID.
+        public void RegenerateID()
+        {
+            long ticks = DateTime.UtcNow.Ticks; // high resolution
+            long count = Interlocked.Increment(ref _counter);
+            ID = $"{ticks}-{Guid.NewGuid().ToString()}-{count}";
         }
 
         partial void OnQuantityChanged(int oldValue, int newValue)
@@ -66,8 +74,13 @@ namespace EBISX_POS.Models
             UpdateTotalPrice();
         }
 
-        public void RefreshDisplaySubOrders()
+        public void RefreshDisplaySubOrders(bool regenerateId = false)
         {
+            if (regenerateId)
+            {
+                RegenerateID();
+            }
+
             OnPropertyChanged(nameof(DisplaySubOrders));
             UpdateTotalPrice();
             UpdateHasCurrentOrder();
@@ -75,7 +88,7 @@ namespace EBISX_POS.Models
 
         private void UpdateHasCurrentOrder()
         {
-            HasCurrentOrder = subOrders.Any();
+            HasCurrentOrder = SubOrders.Any();
         }
         private void UpdateTotalPrice()
         {
@@ -83,9 +96,6 @@ namespace EBISX_POS.Models
             .Where(i => !(i.AddOnId == null && i.MenuId == null && i.DrinkId == null))
             .Sum(p => p.ItemSubTotal);
 
-            TotalDiscountPrice = DisplaySubOrders
-            .Where(i => (i.AddOnId == null && i.MenuId == null && i.DrinkId == null))
-            .Sum(p => p.ItemSubTotal);
         }
 
     }
@@ -104,7 +114,7 @@ namespace EBISX_POS.Models
         public bool IsFirstItem { get; set; } = false;
         public int Quantity { get; set; } = 0; // Store Quantity for first item
 
-        public string DisplayName => string.IsNullOrEmpty(Size) || MenuId == null && DrinkId == null && AddOnId == null ? Name + $" @{ItemPrice.ToString("G29")}" :
+        public string DisplayName => string.IsNullOrEmpty(Size) || MenuId == null && DrinkId == null && AddOnId == null ? Name :
             ItemPrice > 0 ? Name + $" ({Size}) @{ItemPrice.ToString("G29")}" :
             $"{Name} ({Size})";
 

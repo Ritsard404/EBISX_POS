@@ -236,11 +236,11 @@ namespace EBISX_POS.Views
                 {
                     case "DINE IN":
                         // Handle Dine In logic
-                        OrderState.CurrentOrderItem.OrderType = "Dine In";
+                        TenderState.tenderOrder.OrderType = "Dine In";
                         break;
                     case "TAKE OUT":
                         // Handle Take Out logic
-                        OrderState.CurrentOrderItem.OrderType = "Take Out";
+                       TenderState.tenderOrder.OrderType = "Take Out";
                         break;
                     default:
                         // Handle other cases if necessary
@@ -248,7 +248,8 @@ namespace EBISX_POS.Views
                 }
 
                 TenderState.tenderOrder.Reset();
-                TenderState.tenderOrder.HasPwdScDiscount = true;
+                TenderState.tenderOrder.HasScDiscount = OrderState.CurrentOrder.Any(d => d.IsSeniorDiscounted);
+                TenderState.tenderOrder.HasPwdDiscount = OrderState.CurrentOrder.Any(d => d.IsPwdDiscounted);
                 if (TenderState.tenderOrder.CalculateTotalAmount())
                 {
 

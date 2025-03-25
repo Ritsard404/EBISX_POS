@@ -81,7 +81,10 @@ namespace EBISX_POS.ViewModels
                     HasCurrentOrder = dto.HasCurrentOrder,
                     SubOrders = subOrders,         // Mapped sub-orders.
                     HasDiscount = dto.HasDiscount,
-                    IsEnableEdit = !dto.HasDiscount
+                    IsEnableEdit = !dto.HasDiscount,
+                    TotalDiscountPrice = dto.DiscountAmount,
+                    IsPwdDiscounted = dto.IsPwdDiscounted,
+                    IsSeniorDiscounted = dto.IsSeniorDiscounted
                 };
 
                 // Add the mapped OrderItemState to the static collection.

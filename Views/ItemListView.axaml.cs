@@ -28,6 +28,7 @@ namespace EBISX_POS.Views
             _menuService = menuService;
             DataContext = new ItemListViewModel(menuService); // Set initial DataContext
             this.Loaded += OnLoaded; // Add this line
+
         }
 
         private void OnLoaded(object? sender, RoutedEventArgs e) // Update the event handler signature
@@ -67,7 +68,7 @@ namespace EBISX_POS.Views
                     {
                         OrderState.CurrentOrderItem.Quantity = 1;
                     }
-                    
+
                     // Determine the item type based on the item's properties.
                     string itemType = item.IsDrink ? "Drink" : item.IsAddOn ? "AddOn" : "Menu";
 
@@ -83,8 +84,21 @@ namespace EBISX_POS.Views
                         size: item.Size
                     );
 
+
+                    var mainWindow = this.VisualRoot as MainWindow;
+
+                    if (mainWindow != null)
+                    {
+                        mainWindow.IsLoadMenu.IsVisible = true;
+                        mainWindow.IsMenuAvail.IsVisible = false;
+                    }
                     // Finalize the current order and exit.
                     await OrderState.FinalizeCurrentOrder(isSolo: true, owner);
+                    if (mainWindow != null)
+                    {
+                        mainWindow.IsLoadMenu.IsVisible = false;
+                        mainWindow.IsMenuAvail.IsVisible = true;
+                    }
                     return;
                 }
 
@@ -94,7 +108,6 @@ namespace EBISX_POS.Views
                     ? 1
                     : OrderState.CurrentOrderItem.Quantity;
                 OrderState.UpdateItemOrder(itemType: "Menu", itemId: item.Id, name: item.ItemName, price: item.Price, size: null);
-                //OrderState.DisplayOrders();
 
                 var detailsWindow = new SubItemWindow(item, _menuService)
                 {

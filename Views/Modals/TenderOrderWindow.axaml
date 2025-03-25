@@ -46,14 +46,22 @@
 									   FontFamily="{StaticResource NunitoFont}"
 									   FontSize="18"
 									   FontWeight="ExtraBold"/>
-							<!--<TextBlock Grid.Column="1"
+							<TextBlock Grid.Column="1"
 									   VerticalAlignment="Center"
 									   HorizontalAlignment="Left"
-									   Text=" (Pwd/Sc)"
+									   Text=" PWD"
 									   FontFamily="{StaticResource NunitoFont}"
 									   FontSize="18"
-									   IsVisible="{Binding TenderCurrentOrder.HasPwdScDiscount}"
-									   FontWeight="ExtraBold"/>-->
+									   IsVisible="{Binding TenderCurrentOrder.HasPwdDiscount}"
+									   FontWeight="ExtraBold"/>
+							<TextBlock Grid.Column="1"
+									   VerticalAlignment="Center"
+									   HorizontalAlignment="Left"
+									   Text=" Senior"
+									   FontFamily="{StaticResource NunitoFont}"
+									   FontSize="18"
+									   IsVisible="{Binding TenderCurrentOrder.HasScDiscount}"
+									   FontWeight="ExtraBold"/>
 							<TextBlock Grid.Column="1"
 									   VerticalAlignment="Center"
 									   HorizontalAlignment="Left"
@@ -68,7 +76,7 @@
 						<TextBlock Grid.Column="2"
 								   VerticalAlignment="Center"
 								   HorizontalAlignment="Right"
-								   Text="{Binding TenderCurrentOrder.DiscountAmount, StringFormat='₱ {0:N2}'}}"
+								   Text="{Binding TenderCurrentOrder.DiscountAmount, StringFormat='₱ {0:G29}'}}"
 								   FontFamily="{StaticResource NunitoFont}"
 								   FontSize="16"
 								   FontWeight="SemiBold"/>
@@ -85,7 +93,7 @@
 						<TextBlock Grid.Column="2"
 								   VerticalAlignment="Center"
 								   HorizontalAlignment="Right"
-								   Text="{Binding TenderCurrentOrder.AmountDue, StringFormat='₱ {0:N2}'}}"
+								   Text="{Binding TenderCurrentOrder.AmountDue, StringFormat='₱ {0:G29}'}}"
 								   FontFamily="{StaticResource NunitoFont}"
 								   FontSize="16"
 								   FontWeight="SemiBold"/>
@@ -120,7 +128,7 @@
 						<TextBlock Grid.Column="2"
 								   VerticalAlignment="Center"
 								   HorizontalAlignment="Right"
-								   Text="{Binding TenderCurrentOrder.ChangeAmount, StringFormat='₱ {0:N2}'}}"
+								   Text="{Binding TenderCurrentOrder.ChangeAmount, StringFormat='₱ {0:G29}'}}"
 								   FontFamily="{StaticResource NunitoFont}"
 								   FontSize="16"
 								   FontWeight="SemiBold"/>

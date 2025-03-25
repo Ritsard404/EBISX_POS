@@ -155,16 +155,23 @@ namespace EBISX_POS.State
                 addOnPrice = subOrders?.FirstOrDefault(m => m.AddOnId != null)?.Quantity > 0 ? subOrders?.FirstOrDefault(m => m.AddOnId != null)?.ItemPrice : 0,
             };
 
+            // Reset the current order item to a new instance for the next order\
+            CurrentOrderItem = new OrderItemState();
+
+            // Optionally, notify any subscribers that the current order item has changed
+            CurrentOrderItem.RefreshDisplaySubOrders(true);
+
             // Call the AddOrderItem method.
             var (isSuccess, message) = await orderService.AddOrderItem(newOrderItem);
+
 
             if (isSuccess)
             {
                 // Reset the current order item to a new instance for the next order\
-                CurrentOrderItem = new OrderItemState();
+                //CurrentOrderItem = new OrderItemState();
 
-                // Optionally, notify any subscribers that the current order item has changed
-                CurrentOrderItem.RefreshDisplaySubOrders();
+                //// Optionally, notify any subscribers that the current order item has changed
+                //CurrentOrderItem.RefreshDisplaySubOrders(true);
                 OnStaticPropertyChanged(nameof(CurrentOrderItem));
                 OnStaticPropertyChanged(nameof(CurrentOrder));
 
@@ -219,6 +226,7 @@ namespace EBISX_POS.State
                 Debug.WriteLine($"Order Type: {order.OrderType}");
                 Debug.WriteLine($"Quantity: {order.Quantity}");
                 Debug.WriteLine($"Total Price: ₱{order.TotalPrice:F2}");
+                Debug.WriteLine($"Total Discount Price: ₱{order.TotalDiscountPrice:F2}");
                 Debug.WriteLine($"Has Current Order: {order.HasCurrentOrder}");
                 Debug.WriteLine("Sub-Orders:");
 

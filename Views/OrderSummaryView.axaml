@@ -21,10 +21,21 @@
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<Button
-								Background="Transparent"
 								Click="EditOrder_Button"
-								HorizontalAlignment="Stretch">
-								<StackPanel >
+								HorizontalAlignment="Stretch"
+								Classes.HasDiscount="{Binding HasDiscount}"
+								Classes.NotDiscount="{Binding !HasDiscount}">
+								<Button.Styles>
+									<Style Selector="Button.HasDiscount">
+										<Setter Property="Background" Value="#80FFFF00"/>
+										<Setter Property="BorderBrush" Value="Gold"/>
+										<Setter Property="BorderThickness" Value="2"/>
+									</Style>
+									<Style Selector="Button.NotDiscount">
+										<Setter Property="Background" Value="Transparent"/>
+									</Style>
+								</Button.Styles>
+								<StackPanel>
 									<ItemsControl ItemsSource="{Binding DisplaySubOrders}">
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
@@ -50,6 +61,7 @@
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
+
 
 				<StackPanel Grid.Row="1" Margin="0,0,0,20">
 					<Button

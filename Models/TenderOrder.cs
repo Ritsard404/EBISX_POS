@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using EBISX_POS.State;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace EBISX_POS.Models
@@ -15,10 +16,10 @@ namespace EBISX_POS.Models
         [ObservableProperty] private decimal changeAmount = 0m;
         [ObservableProperty] private decimal amountDue = 0m;
         [ObservableProperty] private bool hasPromoDiscount;
-        [ObservableProperty] private bool hasPwdScDiscount;
+        [ObservableProperty] private bool hasPwdDiscount;
+        [ObservableProperty] private bool hasScDiscount;
         [ObservableProperty] private bool hasOrderDiscount;
-
-        public decimal DiscountPwdScPercent => 0.2m;
+        public string OrderType { get; set; } = "";
 
         // Trigger recalculations when key properties change
         partial void OnTotalAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
@@ -26,13 +27,14 @@ namespace EBISX_POS.Models
         partial void OnDiscountAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnPromoDiscountAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnPromoDiscountPercentChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
-        partial void OnHasPwdScDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
+        partial void OnHasPwdDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
+        partial void OnHasScDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
         partial void OnHasPromoDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
 
         public void Reset()
         {
             TotalAmount = TenderAmount = DiscountAmount = PromoDiscountAmount = PromoDiscountPercent = 0m;
-            HasPromoDiscount = HasPwdScDiscount = HasOrderDiscount = false;
+            HasPromoDiscount = HasScDiscount = HasPwdDiscount = HasOrderDiscount = false;
             UpdateComputedValues();
         }
 
@@ -47,7 +49,7 @@ namespace EBISX_POS.Models
         private void UpdateComputedValues()
         {
             HasPromoDiscount = PromoDiscountAmount > 0 || PromoDiscountPercent > 0;
-            HasOrderDiscount = HasPromoDiscount || HasPwdScDiscount;
+            HasOrderDiscount = HasPromoDiscount || HasScDiscount || HasPwdDiscount;
 
             if (HasPromoDiscount)
             {
@@ -55,10 +57,11 @@ namespace EBISX_POS.Models
                     ? PromoDiscountAmount
                     : Math.Min(TotalAmount, 500) * PromoDiscountPercent;
             }
-            else if (HasPwdScDiscount)
+            else if (HasPwdDiscount || HasScDiscount)
             {
                 DiscountAmount = OrderState.CurrentOrder
                         .Sum(orderItem => orderItem.TotalDiscountPrice);
+
             }
             else
             {

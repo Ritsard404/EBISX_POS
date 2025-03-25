@@ -80,8 +80,8 @@ namespace EBISX_POS.Views
         }
 
         // New property for the selected IDs.
-        private List<long> _selectedIDs = new List<long>();
-        public List<long> SelectedIDs
+        private List<string> _selectedIDs = new List<string>();
+        public List<string> SelectedIDs
         {
             get => _selectedIDs;
             set
@@ -182,9 +182,6 @@ namespace EBISX_POS.Views
             if (listBox == null)
                 return;
 
-            // Debug output: total selected items before enforcing limit.
-            Debug.WriteLine($"Before enforcing limit: {listBox.SelectedItems.Count} items selected.");
-
             // If the selected items exceed the allowed count, remove extra items.
             if (listBox.SelectedItems.Count > MaxSelectionCount)
             {
@@ -218,6 +215,8 @@ namespace EBISX_POS.Views
             {
                 return;
             }
+
+            Debug.WriteLine("SelectedIDs: " + string.Join(", ", SelectedIDs));
 
             var orderService = App.Current.Services.GetRequiredService<OrderService>();
 
@@ -261,7 +260,10 @@ namespace EBISX_POS.Views
                     TotalPrice = dto.TotalPrice,  // Total price from the DTO.
                     HasCurrentOrder = dto.HasCurrentOrder,
                     SubOrders = subOrders,
-                    HasDiscount = dto.HasDiscount// Mapped sub-orders.
+                    HasDiscount = dto.HasDiscount,// Mapped sub-orders.
+                    TotalDiscountPrice = dto.DiscountAmount,
+                    IsPwdDiscounted = dto.IsPwdDiscounted,
+                    IsSeniorDiscounted = dto.IsSeniorDiscounted
                 };
 
                 // Add the mapped OrderItemState to the static collection.
