@@ -67,8 +67,8 @@ namespace EBISX_POS.Views
                     Icon = Icon.Warning
                 });
 
-            var result = await box.ShowAsPopupAsync(owner); 
-            
+            var result = await box.ShowAsPopupAsync(owner);
+
             var subOrders = OrderState.CurrentOrderItem?.DisplaySubOrders;
 
             var voidOrder = new AddCurrentOrderVoidDTO
@@ -88,17 +88,21 @@ namespace EBISX_POS.Views
                     OrderState.CurrentOrderItem = new OrderItemState();
                     OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
 
-                    var (success, message) = await _orderService.AddCurrentOrderVoid(voidOrder);
+                    if (OrderState.CurrentOrderItem.TotalPrice > 0 || OrderState.CurrentOrderItem.Quantity > 0 || OrderState.CurrentOrderItem.SubOrders.Any(i=>i.Name != "Select Menu"))
+                    {
+                        var (success, message) = await _orderService.AddCurrentOrderVoid(voidOrder);
 
 
-                    if (success)
-                    {
-                        Debug.WriteLine("VoidCurrentOrder_Button: Order voided successfully.");
+                        if (success)
+                        {
+                            Debug.WriteLine("VoidCurrentOrder_Button: Order voided successfully.");
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"VoidCurrentOrder_Button: Error - {message}");
+                        }
                     }
-                    else
-                    {
-                        Debug.WriteLine($"VoidCurrentOrder_Button: Error - {message}");
-                    }
+
                     return;
                 case ButtonResult.Cancel:
                     Debug.WriteLine("VoidCurrentOrder_Button: Order voiding canceled.");

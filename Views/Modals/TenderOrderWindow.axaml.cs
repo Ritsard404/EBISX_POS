@@ -11,6 +11,7 @@ using System.Diagnostics;
 using EBISX_POS.Services;
 using Microsoft.Extensions.DependencyInjection;
 using EBISX_POS.API.Services.DTO.Order;
+using System.Linq;
 
 namespace EBISX_POS.Views
 {
@@ -104,8 +105,9 @@ namespace EBISX_POS.Views
         //        TenderState.tenderOrder.HasPwdScDiscount = !TenderState.tenderOrder.HasPwdScDiscount;
         //}
 
-        private async void PromoDiscount_Click(object? sender, RoutedEventArgs e)
+        private async void PromoAndCouponDiscount_Click(object? sender, RoutedEventArgs e)
         {
+            // Prevent multiple discounts on the same order.
             if (TenderState.tenderOrder.HasScDiscount || TenderState.tenderOrder.HasPwdDiscount)
             {
                 await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
@@ -123,33 +125,67 @@ namespace EBISX_POS.Views
                 return;
             }
 
-            var result = await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+            if (sender is Button btn)
             {
-                ContentHeader = "Promo Discount",
-                ContentMessage = "Please ask the manager to swipe.",
-                ButtonDefinitions = ButtonEnum.OkCancel,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                CanResize = false,
-                SizeToContent = SizeToContent.WidthAndHeight,
-                Width = 400,
-                ShowInCenter = true,
-                Icon = MsBox.Avalonia.Enums.Icon.Warning
-            }).ShowAsPopupAsync(this);
+                string discountType = GetDiscountType(btn);
 
-            if (result == ButtonResult.Ok)
-            {
+                // Handle actions based on the discount type.
+                switch (discountType)
+                {
+                    case "PROMO":
+                        {
+                            var result = await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+                            {
+                                ContentHeader = "Promo Discount",
+                                ContentMessage = "Please ask the manager to swipe.",
+                                ButtonDefinitions = ButtonEnum.OkCancel,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                CanResize = false,
+                                SizeToContent = SizeToContent.WidthAndHeight,
+                                Width = 400,
+                                ShowInCenter = true,
+                                Icon = MsBox.Avalonia.Enums.Icon.Warning
+                            }).ShowAsPopupAsync(this);
 
-                var promoWindow = new PromoCodeWindow();
-                await promoWindow.ShowDialog((Window)this.VisualRoot);
-                return;
+                            if (result == ButtonResult.Ok)
+                            {
+                                var promoWindow = new PromoCodeWindow();
+                                await promoWindow.ShowDialog((Window)this.VisualRoot);
+                            }
+                            break;
+                        }
+                    case "COUPON":
+                        {
+                            // TODO: Implement coupon discount handling.
+                            break;
+                        }
+                    default:
+                        {
+                            // Optionally, handle unexpected discount types.
+                            break;
+                        }
+                }
             }
-
-            if (result == ButtonResult.Cancel)
-                return;
-
-
-
         }
+
+        private string GetDiscountType(ContentControl control)
+        {
+            // Check if the Content is a TextBlock.
+            if (control.Content is TextBlock textBlock)
+            {
+                return textBlock.Text;
+            }
+            // If the Content is a Panel (e.g., a StackPanel), attempt to get the first TextBlock.
+            else if (control.Content is Panel panel)
+            {
+                var childTextBlock = panel.Children.OfType<TextBlock>().FirstOrDefault();
+                return childTextBlock?.Text ?? string.Empty;
+            }
+            // Fallback: return the Content's string representation.
+            return control.Content?.ToString() ?? string.Empty;
+        }
+
+
 
     }
 };

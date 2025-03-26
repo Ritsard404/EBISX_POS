@@ -174,7 +174,6 @@ namespace EBISX_POS.Services
             }
         }
 
-        // Calls the VoidOrderItem endpoint to void a specific order item
         public async Task<(bool, string)> AddPwdScDiscount(AddPwdScDiscountDTO addPwdScDiscount)
         {
             try
@@ -197,6 +196,32 @@ namespace EBISX_POS.Services
                 return (false, "An unexpected error occurred.");
             }
         }
+        
+        public async Task<(bool, string)> PromoDiscount(string managerEmail, string promoCode)
+        {
+            try
+            {
+                ValidateOrderEndpoint(); // Validate API endpoint configuration
+
+                // Build URL and create request with JSON body using PUT method
+                var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/PromoDiscount";
+                var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("managerEmail", managerEmail)
+                    .AddQueryParameter("promoCode", promoCode);
+
+                // Execute the request and return the result
+                var result = await ExecuteRequestAsync(request);
+                return result.Item1
+                    ? (true, result.Item2 ?? "Promo applied.")
+                    : result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($" Error: {ex.Message}");
+                return (false, "An unexpected error occurred.");
+            }
+        }
+        
         // Calls the FinalizeOrder endpoint to void a specific order item
         public async Task<(bool, string)> FinalizeOrder(FinalizeOrderDTO finalizeOrder)
         {

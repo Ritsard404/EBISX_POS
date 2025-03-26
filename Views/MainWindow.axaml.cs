@@ -149,7 +149,7 @@ namespace EBISX_POS.Views
                 if (!OrderState.CurrentOrderItem.SubOrders.Any())
                 {
                     OrderState.CurrentOrderItem.Quantity = digit;
-                    OrderState.UpdateItemOrder(itemType: "Menu", itemId: digit, name: "Select Menu", price: 0, size: null);
+                    OrderState.UpdateItemOrder(itemType: "Menu", itemId: 0, name: "Select Menu", price: 0, size: null);
                     OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
                     return;
                 }
@@ -250,33 +250,34 @@ namespace EBISX_POS.Views
                 TenderState.tenderOrder.Reset();
                 TenderState.tenderOrder.HasScDiscount = OrderState.CurrentOrder.Any(d => d.IsSeniorDiscounted);
                 TenderState.tenderOrder.HasPwdDiscount = OrderState.CurrentOrder.Any(d => d.IsPwdDiscounted);
-                if (TenderState.tenderOrder.CalculateTotalAmount())
-                {
+                
+                //if (TenderState.tenderOrder.CalculateTotalAmount())
+                //{
 
-                    var box = MessageBoxManager.GetMessageBoxStandard(
-                        new MessageBoxStandardParams
-                        {
-                            ContentHeader = "No Order Yet!",
-                            ContentMessage = "Please Select Order.",
-                            ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                            CanResize = false,
-                            SizeToContent = SizeToContent.WidthAndHeight,
-                            Width = 400,
-                            ShowInCenter = true,
-                            Icon = MsBox.Avalonia.Enums.Icon.Warning
-                        });
+                //    var box = MessageBoxManager.GetMessageBoxStandard(
+                //        new MessageBoxStandardParams
+                //        {
+                //            ContentHeader = "No Order Yet!",
+                //            ContentMessage = "Please Select Order.",
+                //            ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
+                //            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                //            CanResize = false,
+                //            SizeToContent = SizeToContent.WidthAndHeight,
+                //            Width = 400,
+                //            ShowInCenter = true,
+                //            Icon = MsBox.Avalonia.Enums.Icon.Warning
+                //        });
 
-                    var result = await box.ShowAsPopupAsync(this);
+                //    var result = await box.ShowAsPopupAsync(this);
 
-                    switch (result)
-                    {
-                        case ButtonResult.Ok:
-                            return;
-                        default:
-                            return;
-                    }
-                }
+                //    switch (result)
+                //    {
+                //        case ButtonResult.Ok:
+                //            return;
+                //        default:
+                //            return;
+                //    }
+                //}
 
                 // Open the TenderOrderWindow
                 var tenderOrderWindow = new TenderOrderWindow();

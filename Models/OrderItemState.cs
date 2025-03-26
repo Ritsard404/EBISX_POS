@@ -114,7 +114,8 @@ namespace EBISX_POS.Models
         public bool IsFirstItem { get; set; } = false;
         public int Quantity { get; set; } = 0; // Store Quantity for first item
 
-        public string DisplayName => string.IsNullOrEmpty(Size) || MenuId == null && DrinkId == null && AddOnId == null ? Name :
+        public string DisplayName => string.IsNullOrEmpty(Size) ? Name + $" @{ItemPrice.ToString("G29")}" :
+            MenuId == null && DrinkId == null && AddOnId == null ? Name :
             ItemPrice > 0 ? Name + $" ({Size}) @{ItemPrice.ToString("G29")}" :
             $"{Name} ({Size})";
 

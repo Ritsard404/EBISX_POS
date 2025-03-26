@@ -37,7 +37,8 @@
 								   FontFamily="{StaticResource NunitoFont}"
 								   FontSize="16"
 								   FontWeight="SemiBold"/>
-					</Grid><Grid ColumnDefinitions="*,*,*" IsVisible="{Binding TenderCurrentOrder.HasOrderDiscount}">
+					</Grid>
+					<Grid ColumnDefinitions="*,*,*" IsVisible="{Binding TenderCurrentOrder.HasOrderDiscount}">
 						<Grid Grid.Column="0" ColumnDefinitions="Auto,Auto">
 							<TextBlock Grid.Column="0"
 									   VerticalAlignment="Center"
@@ -138,7 +139,7 @@
 
 			<Grid Grid.Row="1" RowDefinitions="*,*,*,*,*,*">
 				<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
-					<Button Content="1000" 
+					<Button Content="1000"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -150,7 +151,7 @@
 							Background="LightGreen"
 							Command="{Binding AddPresetAmountCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"/>
-					<Button Content="500" 
+					<Button Content="500"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -162,7 +163,7 @@
 							Command="{Binding AddPresetAmountCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
 							Background="LightGreen"/>
-					<Button Content="200" 
+					<Button Content="200"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -174,7 +175,7 @@
 							Background="LightGreen"
 							Command="{Binding AddPresetAmountCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"/>
-					<Button Content="CLEAR" 
+					<Button Content="CLEAR"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -185,9 +186,9 @@
 							Command="{Binding TenderButtonClickCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"/>
 				</StackPanel>
-			
+
 				<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
-					<Button Content="100" 
+					<Button Content="100"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -200,7 +201,7 @@
 							Command="{Binding AddPresetAmountCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
 							/>
-					<Button Content="50" 
+					<Button Content="50"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -212,7 +213,7 @@
 							Background="LightGreen"
 							Command="{Binding AddPresetAmountCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"/>
-					<Button Content="20" 
+					<Button Content="20"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -228,7 +229,7 @@
 						Height="50"
 						VerticalContentAlignment="Center"
 						HorizontalContentAlignment="Center"
-						Click="PromoDiscount_Click">
+						Click="PromoAndCouponDiscount_Click">
 						<StackPanel Orientation="Vertical">
 							<TextBlock Text="PROMO"
 									   FontSize="16"
@@ -243,19 +244,9 @@
 						</StackPanel>
 					</Button>
 				</StackPanel>
-			
+
 				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
-					<Button Content="1" 
-							Width="100"
-							Height="50"
-							FontSize="20"
-							FontFamily="{StaticResource NunitoFont}"
-							FontWeight="Black"
-							VerticalContentAlignment="Center"
-							HorizontalContentAlignment="Center" 
-							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
-							Command="{Binding TenderButtonClickCommand}"/>
-					<Button Content="2" 
+					<Button Content="1"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -265,7 +256,17 @@
 							HorizontalContentAlignment="Center"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
 							Command="{Binding TenderButtonClickCommand}"/>
-					<Button Content="3" 
+					<Button Content="2"
+							Width="100"
+							Height="50"
+							FontSize="20"
+							FontFamily="{StaticResource NunitoFont}"
+							FontWeight="Black"
+							VerticalContentAlignment="Center"
+							HorizontalContentAlignment="Center"
+							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+							Command="{Binding TenderButtonClickCommand}"/>
+					<Button Content="3"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -294,24 +295,23 @@
 									   />
 						</StackPanel>
 					</Button>-->
-					
+
 					<Button Width="100"
 						Height="50"
 						VerticalContentAlignment="Center"
-						HorizontalContentAlignment="Center">
-						<StackPanel Orientation="Vertical">
+						HorizontalContentAlignment="Center"
+						Click="PromoAndCouponDiscount_Click">
 							<TextBlock Text="COUPON"
 									   FontSize="18"
 									   HorizontalAlignment="Center"
 									   FontFamily="{StaticResource NunitoFont}"
 									   FontWeight="Black"/>
-						</StackPanel>
 					</Button>
 
 				</StackPanel>
-			
+
 				<StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
-					<Button Content="4" 
+					<Button Content="4"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -321,7 +321,7 @@
 							HorizontalContentAlignment="Center"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
 							Command="{Binding TenderButtonClickCommand}"/>
-					<Button Content="5" 
+					<Button Content="5"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -331,7 +331,7 @@
 							HorizontalContentAlignment="Center"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
 							Command="{Binding TenderButtonClickCommand}"/>
-					<Button Content="6" 
+					<Button Content="6"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -346,19 +346,19 @@
 							VerticalContentAlignment="Center"
 							HorizontalContentAlignment="Center"
 							Click="BackButton_Click">
-							<Path Data="{StaticResource arrow_reply_regular}"
-									Width="20"
-									Height="20"
-									Fill="Black"
-								Stretch="Uniform"
-								Stroke="Black"
-								StrokeThickness="2"/>
+						<Path Data="{StaticResource arrow_reply_regular}"
+								Width="20"
+								Height="20"
+								Fill="Black"
+							Stretch="Uniform"
+							Stroke="Black"
+							StrokeThickness="2"/>
 					</Button>
 
 				</StackPanel>
-			
+
 				<StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
-					<Button Content="7" 
+					<Button Content="7"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -368,7 +368,7 @@
 							HorizontalContentAlignment="Center"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
 							Command="{Binding TenderButtonClickCommand}"/>
-					<Button Content="8" 
+					<Button Content="8"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -378,7 +378,7 @@
 							HorizontalContentAlignment="Center"
 							Command="{Binding TenderButtonClickCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"/>
-					<Button Content="9" 
+					<Button Content="9"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -388,7 +388,7 @@
 							HorizontalContentAlignment="Center"
 							Command="{Binding TenderButtonClickCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"/>
-					<Button Content="ENTER" 
+					<Button Content="ENTER"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -398,9 +398,9 @@
 							HorizontalContentAlignment="Center"
 							Click="EnterButton_Click"/>
 				</StackPanel>
-			
+
 				<StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
-					<Button Content="0" 
+					<Button Content="0"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -410,7 +410,7 @@
 							HorizontalContentAlignment="Center"
 							Command="{Binding TenderButtonClickCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"/>
-					<Button Content="00" 
+					<Button Content="00"
 							Width="100"
 							Height="50"
 							FontSize="20"
@@ -420,7 +420,7 @@
 							HorizontalContentAlignment="Center"
 							Command="{Binding TenderButtonClickCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"/>
-					<Button Content="." 
+					<Button Content="."
 							Width="100"
 							Height="50"
 							FontSize="25"
