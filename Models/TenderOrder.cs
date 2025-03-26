@@ -53,9 +53,7 @@ namespace EBISX_POS.Models
 
             if (HasPromoDiscount)
             {
-                DiscountAmount = PromoDiscountAmount > 0
-                    ? PromoDiscountAmount
-                    : Math.Min(TotalAmount, 500) * PromoDiscountPercent;
+                DiscountAmount = PromoDiscountAmount;
             }
             else if (HasPwdDiscount || HasScDiscount)
             {
@@ -68,8 +66,16 @@ namespace EBISX_POS.Models
                 DiscountAmount = 0m;
             }
 
-            AmountDue = TotalAmount - DiscountAmount;
-            ChangeAmount = TenderAmount - AmountDue;
+            if (PromoDiscountAmount >= TotalAmount)
+            {
+                AmountDue = 0;
+                ChangeAmount = 0;
+            }
+            else
+            {
+                AmountDue = TotalAmount - DiscountAmount;
+                ChangeAmount = TenderAmount - AmountDue;
+            }
         }
     }
 }

@@ -23,8 +23,8 @@
 							<Button
 								Click="EditOrder_Button"
 								HorizontalAlignment="Stretch"
-								Classes.HasDiscount="{Binding HasDiscount}"
-								Classes.NotDiscount="{Binding !HasDiscount}">
+								Classes.HasDiscount="{Binding HasPwdScDiscount}"
+								Classes.NotDiscount="{Binding !HasPwdScDiscount}">
 								<Button.Styles>
 									<Style Selector="Button.HasDiscount">
 										<Setter Property="Background" Value="#80FFFF00"/>

@@ -49,8 +49,6 @@ namespace EBISX_POS.Views
             _menuService = menuService;
             DataContext = new MainWindowViewModel(menuService);
 
-
-
             this.AttachedToVisualTree += OnAttachedToVisualTree;
 
             // Create and set the ItemListView
@@ -240,7 +238,7 @@ namespace EBISX_POS.Views
                         break;
                     case "TAKE OUT":
                         // Handle Take Out logic
-                       TenderState.tenderOrder.OrderType = "Take Out";
+                        TenderState.tenderOrder.OrderType = "Take Out";
                         break;
                     default:
                         // Handle other cases if necessary
@@ -250,34 +248,13 @@ namespace EBISX_POS.Views
                 TenderState.tenderOrder.Reset();
                 TenderState.tenderOrder.HasScDiscount = OrderState.CurrentOrder.Any(d => d.IsSeniorDiscounted);
                 TenderState.tenderOrder.HasPwdDiscount = OrderState.CurrentOrder.Any(d => d.IsPwdDiscounted);
-                
-                //if (TenderState.tenderOrder.CalculateTotalAmount())
-                //{
 
-                //    var box = MessageBoxManager.GetMessageBoxStandard(
-                //        new MessageBoxStandardParams
-                //        {
-                //            ContentHeader = "No Order Yet!",
-                //            ContentMessage = "Please Select Order.",
-                //            ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
-                //            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                //            CanResize = false,
-                //            SizeToContent = SizeToContent.WidthAndHeight,
-                //            Width = 400,
-                //            ShowInCenter = true,
-                //            Icon = MsBox.Avalonia.Enums.Icon.Warning
-                //        });
-
-                //    var result = await box.ShowAsPopupAsync(this);
-
-                //    switch (result)
-                //    {
-                //        case ButtonResult.Ok:
-                //            return;
-                //        default:
-                //            return;
-                //    }
-                //}
+                // Select the PromoDiscountAmount from the first order that has a non-null value
+                TenderState.tenderOrder.PromoDiscountAmount = OrderState.CurrentOrder
+                    .Where(d => d.PromoDiscountAmount != null)
+                    .Select(d => d.PromoDiscountAmount)
+                    .FirstOrDefault() ?? 0m;
+                TenderState.tenderOrder.CalculateTotalAmount();
 
                 // Open the TenderOrderWindow
                 var tenderOrderWindow = new TenderOrderWindow();

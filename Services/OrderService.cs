@@ -211,9 +211,46 @@ namespace EBISX_POS.Services
 
                 // Execute the request and return the result
                 var result = await ExecuteRequestAsync(request);
-                return result.Item1
-                    ? (true, result.Item2 ?? "Promo applied.")
-                    : result;
+
+                if (result.Item1)
+                {
+                    // Remove surrounding quotes from the response content if present
+                    var cleanedContent = result.Item2.Trim('\"');
+                    return (true, cleanedContent);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($" Error: {ex.Message}");
+                return (false, "An unexpected error occurred.");
+            }
+        }
+        
+        public async Task<(bool, string)> AvailCoupon(string managerEmail, string couponCode)
+        {
+            try
+            {
+                ValidateOrderEndpoint(); // Validate API endpoint configuration
+
+                // Build URL and create request with JSON body using PUT method
+                var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/AvailCoupon";
+                var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("managerEmail", managerEmail)
+                    .AddQueryParameter("couponCode", couponCode);
+
+                // Execute the request and return the result
+                var result = await ExecuteRequestAsync(request);
+
+                if (result.Item1)
+                {
+                    // Remove surrounding quotes from the response content if present
+                    var cleanedContent = result.Item2.Trim('\"');
+                    return (true, cleanedContent);
+                }
+
+                return result;
             }
             catch (Exception ex)
             {

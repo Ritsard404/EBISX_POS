@@ -26,9 +26,11 @@ namespace EBISX_POS.Models
 
         public decimal TotalDiscountPrice { get; set; }
         public bool HasDiscount { get; set; }
+        public bool HasPwdScDiscount { get; set; }
         public bool IsEnableEdit { get; set; } = true;
         public bool IsPwdDiscounted { get; set; } = false;
         public bool IsSeniorDiscounted { get; set; } = false;
+        public decimal? PromoDiscountAmount { get; set; }
 
         // Using ObservableCollection so UI is notified on add/remove.
         [ObservableProperty]

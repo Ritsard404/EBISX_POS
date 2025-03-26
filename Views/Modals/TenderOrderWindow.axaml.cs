@@ -108,7 +108,7 @@ namespace EBISX_POS.Views
         private async void PromoAndCouponDiscount_Click(object? sender, RoutedEventArgs e)
         {
             // Prevent multiple discounts on the same order.
-            if (TenderState.tenderOrder.HasScDiscount || TenderState.tenderOrder.HasPwdDiscount)
+            if (TenderState.tenderOrder.HasScDiscount || TenderState.tenderOrder.HasPwdDiscount || TenderState.tenderOrder.HasPromoDiscount)
             {
                 await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
                 {

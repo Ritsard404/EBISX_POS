@@ -9,6 +9,7 @@ using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace EBISX_POS.Views
 {
@@ -67,29 +68,44 @@ namespace EBISX_POS.Views
                 return;
             }
 
-            // If promo applied successfully, confirm with the user
-            var confirmationBox = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
-            {
-                ContentHeader = $"Promo Code: {trimmedPromoCode}",
-                ContentMessage = "Promo applied successfully. Do you want to confirm?",
-                ButtonDefinitions = ButtonEnum.Ok,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                CanResize = false,
-                SizeToContent = SizeToContent.WidthAndHeight,
-                Width = 400,
-                ShowInCenter = true,
-                Icon = MsBox.Avalonia.Enums.Icon.Info
-            });
 
-            var result = await confirmationBox.ShowAsPopupAsync(this);
-            if (result == ButtonResult.Ok)
-            {
-                // Update the tender order if confirmed
-                if (decimal.TryParse(message, out decimal discountAmount))
-                    TenderState.tenderOrder.PromoDiscountAmount = discountAmount;
 
-                Close();
+            // Update the tender order if confirmed using InvariantCulture for consistent decimal parsing
+            if (decimal.TryParse(message, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal discountAmount))
+            {
+                TenderState.tenderOrder.PromoDiscountAmount = discountAmount;
+                TenderState.tenderOrder.CalculateTotalAmount();
+
             }
+            Close();
+
+            // If promo applied successfully, confirm with the user
+            //var confirmationBox = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+            //{
+            //    ContentHeader = $"Promo Code: {trimmedPromoCode}",
+            //    ContentMessage = "Promo applied successfully. Do you want to confirm?",
+            //    ButtonDefinitions = ButtonEnum.Ok,
+            //    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            //    CanResize = false,
+            //    SizeToContent = SizeToContent.WidthAndHeight,
+            //    Width = 400,
+            //    ShowInCenter = true,
+            //    Icon = MsBox.Avalonia.Enums.Icon.Info
+            //});
+
+            //var result = await confirmationBox.ShowAsPopupAsync(this);
+            //if (result == ButtonResult.Ok)
+            //{
+
+            //    // Update the tender order if confirmed using InvariantCulture for consistent decimal parsing
+            //    if (decimal.TryParse(message, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal discountAmount))
+            //    {
+            //        TenderState.tenderOrder.PromoDiscountAmount = discountAmount; 
+            //        TenderState.tenderOrder.CalculateTotalAmount();
+
+            //    }
+            //    Close();
+            //}
         }
 
 
