@@ -10,6 +10,8 @@ using System;
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using SkiaSharp;
+using System.Diagnostics;
 
 
 namespace EBISX_POS.Views {
@@ -42,10 +44,9 @@ namespace EBISX_POS.Views {
                 string folderPath = _configuration["SalesReport:DailySalesReport"];
                 Directory.CreateDirectory(folderPath); // Create if it doesn't exist
 
-                // Define the file path
-                string fileName = "DailySalesReport.txt";
+                // Define the PDF file path
+                string fileName = "DailySalesReport.pdf";
                 string filePath = Path.Combine(folderPath, fileName);
-
 
                 // Get the data from ViewModel
                 var viewModel = (InvoiceReceiptViewModel)DataContext;
@@ -59,62 +60,82 @@ namespace EBISX_POS.Views {
                     return;
                 }
 
-                // Format the report content
-                string reportContent = $@"
-            ==================================
-                    Daily Sales Report
-            ==================================
-                  {invoice.BusinessName}
-                   {invoice.Operator}
-                   {invoice.Address}
-            VAT Reg TIN: {invoice.VATRegTIN}
-            MIN: {invoice.MIN}
-            Serial Number: {invoice.SerialNumber}
-            Report Type: {invoice.ReportType}
-            -------------------------------------
-            Report Date: {invoice.ReportDate}
-            Report Time: {invoice.ReportTime}
-            Start Date/Time: {invoice.StartDateTime}
-            End Date/Time: {invoice.EndDateTime}
-            Cashier: {invoice.Cashier}
-            ----------------------------
-            Beginning SI: {invoice.BeginningSI}
-            Ending SI: {invoice.EndingSI}
-            Beginning VOID: {invoice.BeginningVOID}
-            Ending VOID: {invoice.EndingVOID}
-            ----------------------------
-            Opening Fund: {invoice.OpeningFund:C}
-            Cash Received: {invoice.CashReceived:C}
-            Cheque Received: {invoice.ChequeReceived:C}
-            Credit Card Received: {invoice.CreditCardReceived:C}
-            Total Payments: {invoice.TotalPayments:C}
-            ----------------------------
-            Present Accumulated Sales: {invoice.PresentAccumulatedSales:C}
-            Previous Accumulated Sales: {invoice.PreviousAccumulatedSales:C}
-            Sales For The Day: {invoice.SalesForTheDay:C}
-            ----------------------------
-            Zero Rated Sales: {invoice.ZeroRatedSales:C}
-            VAT Exempt Sales: {invoice.VatExemptSales:C}
-            Vatable Sales: {invoice.VatableSales:C}
-            VAT Amount: {invoice.VatAmount:C}
-            ----------------------------
-            Cash In Drawer: {invoice.CashInDrawer:C}
-            Withdrawal Amount: {invoice.WithdrawalAmount:C}
-            Short/Over: {invoice.ShortOver:C}
-            ----------------------------
+                // Create a new PDF document
+                using (var stream = new SKFileWStream(filePath))
+                using (var document = SKDocument.CreatePdf(stream))
+                {
+                    var pdfCanvas = document.BeginPage(612, 792); // A4 size in points (8.5x11 inches)
 
-        ";
+                    using (var paint = new SKPaint())
+                    {
+                        paint.TextSize = 16;
+                        paint.Color = SKColors.Black;
+                        paint.IsAntialias = true;
+                        paint.Typeface = SKTypeface.FromFamilyName("Arial");
 
-                // Remove extra spaces at the start of each line
-                reportContent = string.Join("\n", reportContent.Split("\n").Select(line => line.Trim()));
+                        float yOffset = 40;
 
-                // Write to the file
-                File.WriteAllText(filePath, reportContent);
+                        void DrawText(string text, float x, float y, float textSize = 14)
+                        {
+                            paint.TextSize = textSize;
+                            pdfCanvas.DrawText(text, x, y, paint);
+                        }
+
+                        // Header
+                        DrawText("===================================", 50, yOffset);
+                        yOffset += 20;
+                        DrawText("      Daily Sales Report", 50, yOffset, 18);
+                        yOffset += 20;
+                        DrawText("===================================", 50, yOffset);
+                        yOffset += 30;
+
+                        // Business details
+                        DrawText(invoice.BusinessName, 50, yOffset);
+                        yOffset += 20;
+                        DrawText(invoice.Operator, 50, yOffset);
+                        yOffset += 20;
+                        DrawText(invoice.Address, 50, yOffset);
+                        yOffset += 20;
+
+                        // Report details
+                        DrawText($"VAT Reg TIN: {invoice.VATRegTIN}", 50, yOffset);
+                        yOffset += 20;
+                        DrawText($"MIN: {invoice.MIN}", 50, yOffset);
+                        yOffset += 20;
+                        DrawText($"Serial Number: {invoice.SerialNumber}", 50, yOffset);
+                        yOffset += 20;
+                        DrawText($"Report Type: {invoice.ReportType}", 50, yOffset);
+                        yOffset += 30;
+
+                        // Sales data
+                        DrawText($"Sales For The Day: {invoice.SalesForTheDay:C}", 50, yOffset, 16);
+                        yOffset += 20;
+                        DrawText($"Vatable Sales: {invoice.VatableSales:C}", 50, yOffset);
+                        yOffset += 20;
+                        DrawText($"VAT Amount: {invoice.VatAmount:C}", 50, yOffset);
+                        yOffset += 20;
+                        DrawText($"Cash In Drawer: {invoice.CashInDrawer:C}", 50, yOffset);
+                        yOffset += 30;
+
+                        // End of report
+                        DrawText("===================================", 50, yOffset);
+                        yOffset += 20;
+                        DrawText("      End of Report", 50, yOffset, 18);
+                        DrawText("===================================", 50, yOffset + 20);
+
+                        // Finish writing to the page
+                        document.EndPage();
+                        document.Close();
+                    }
+                }
 
                 // Show success message
                 await MessageBoxManager
                     .GetMessageBoxStandard("Success", $"Report saved to {filePath}", ButtonEnum.Ok)
                     .ShowAsPopupAsync(this);
+
+                // Open PDF automatically
+                Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
             }
             catch (UnauthorizedAccessException)
             {
@@ -129,6 +150,7 @@ namespace EBISX_POS.Views {
                     .ShowAsPopupAsync(this);
             }
         }
+
     }
 
 };

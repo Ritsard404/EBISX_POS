@@ -37,5 +37,11 @@ namespace EBISX_POS.Views
                 cashTrack.GenerateCashTrack(sender, e);
             }
         }
+
+        private async void Receipt_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var receipt = _serviceProvider?.GetRequiredService<CustomerInvoiceReceipt>();
+            receipt?.Show();
+        }
     }
 }

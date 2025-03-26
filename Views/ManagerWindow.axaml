@@ -107,6 +107,7 @@
 				</Button>
 				<!--  Button 4 with Refund  -->
 				<Button
+					Click="Receipt_Button"
                     Grid.Row="0"
                     Grid.Column="2"
                     Margin="5">

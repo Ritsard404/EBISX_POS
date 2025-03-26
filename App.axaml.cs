@@ -96,6 +96,11 @@ namespace EBISX_POS
             });
 
 
+            services.AddTransient<CustomerInvoiceReceipt>(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                return new CustomerInvoiceReceipt();
+            });
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
