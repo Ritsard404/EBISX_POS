@@ -9,10 +9,10 @@
         Title="Customer Invoice Receipt">
 
 	<Viewbox Stretch="Uniform">
+		
 		<ScrollViewer VerticalScrollBarVisibility="Auto">
 			<Grid Name="print">
 				<Button Content="Print to Text File" HorizontalAlignment="Center" Margin="10" Click="Button_Click"/>
-
 				<StackPanel HorizontalAlignment="Center" Margin="20">
 					<!-- Company Header -->
 					<StackPanel HorizontalAlignment="Center" Margin="0,0,0,10">
