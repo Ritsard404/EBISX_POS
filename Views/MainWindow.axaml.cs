@@ -264,7 +264,7 @@ namespace EBISX_POS.Views
 
         private async void DiscountPwdSc_Click(object sender, RoutedEventArgs e)
         {
-            if (OrderState.CurrentOrder.Any(d => d.HasDiscount))
+            if (OrderState.CurrentOrder.Any(d => d.HasDiscount) || OrderState.CurrentOrder.Any(d => d.CouponCode != null))
             {
 
                 var dbox = MessageBoxManager.GetMessageBoxStandard(

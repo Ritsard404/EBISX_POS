@@ -31,6 +31,7 @@ namespace EBISX_POS.Models
         public bool IsPwdDiscounted { get; set; } = false;
         public bool IsSeniorDiscounted { get; set; } = false;
         public decimal? PromoDiscountAmount { get; set; }
+        public string? CouponCode { get; set; }
 
         // Using ObservableCollection so UI is notified on add/remove.
         [ObservableProperty]
@@ -110,16 +111,44 @@ namespace EBISX_POS.Models
 
         public string Name { get; set; } = string.Empty;
         public decimal ItemPrice { get; set; } = 0;
-        public decimal ItemSubTotal => ItemPrice * Quantity;
+        public decimal ItemSubTotal => AddOnId == null && MenuId == null && DrinkId == null
+            ? ItemPrice :
+            ItemPrice * Quantity;
         public string? Size { get; set; }
 
         public bool IsFirstItem { get; set; } = false;
         public int Quantity { get; set; } = 0; // Store Quantity for first item
 
-        public string DisplayName => string.IsNullOrEmpty(Size) ? Name + $" @{ItemPrice.ToString("G29")}" :
-            MenuId == null && DrinkId == null && AddOnId == null ? Name :
-            ItemPrice > 0 ? Name + $" ({Size}) @{ItemPrice.ToString("G29")}" :
-            $"{Name} ({Size})";
+        public string DisplayName
+        {
+            get
+            {
+                // If size is null or whitespace, safeSize will be null.
+                var safeSize = string.IsNullOrWhiteSpace(Size) ? null : Size.Trim();
+
+                // If no IDs are set, return just the name.
+                if (MenuId == null && DrinkId == null && AddOnId == null)
+                {
+                    return Name;
+                }
+
+                // If item has a positive price:
+                if (ItemPrice > 0)
+                {
+                    // If there's a valid size, include it; otherwise, omit the size.
+                    return string.IsNullOrEmpty(safeSize)
+                        ? $"{Name} @{ItemPrice:G29}"
+                        : $"{Name} ({safeSize}) @{ItemPrice:G29}";
+                }
+
+                // Fallback: if no price is present, return name with size (if available).
+                return string.IsNullOrEmpty(safeSize)
+                    ? Name
+                    : $"{Name} ({safeSize})";
+            }
+        }
+
+
 
         // Opacity Property (replaces a converter)
         public double Opacity => IsFirstItem ? 1.0 : 0.0;

@@ -19,7 +19,7 @@
 				 Margin="0,0,0, 40"/>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
-				<Button Content="Close"
+				<!--<Button Content="Close"
 						Click="CloseButton_Click"
 						Width="130" Height="40"
 						FontWeight="SemiBold"
@@ -27,7 +27,7 @@
 						FontFamily="{StaticResource NunitoFont}"
 						Background="Red"
 						VerticalContentAlignment="Center"
-						HorizontalContentAlignment="Center"/>
+						HorizontalContentAlignment="Center"/>-->
 				<Button Content="Apply"
 						Width="130" Height="40"
 						FontWeight="SemiBold"

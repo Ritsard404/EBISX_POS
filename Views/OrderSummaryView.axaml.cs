@@ -41,8 +41,8 @@ namespace EBISX_POS.Views
                     DataContext = new OrderItemEditWindowViewModel(SelectedCurrentOrderItem)
                 };
 
-                Debug.WriteLine("EditOrder_Button: " + SelectedCurrentOrderItem.DisplaySubOrders.Count);
-
+                if (SelectedCurrentOrderItem.CouponCode != null)
+                    return;
 
                 await detailsWindow.ShowDialog((Window)this.VisualRoot);
             }
@@ -88,7 +88,7 @@ namespace EBISX_POS.Views
                     OrderState.CurrentOrderItem = new OrderItemState();
                     OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
 
-                    if (OrderState.CurrentOrderItem.TotalPrice > 0 || OrderState.CurrentOrderItem.Quantity > 0 || OrderState.CurrentOrderItem.SubOrders.Any(i=>i.Name != "Select Menu"))
+                    if (OrderState.CurrentOrderItem.TotalPrice > 0 || OrderState.CurrentOrderItem.Quantity > 0 || OrderState.CurrentOrderItem.SubOrders.Any(i => i.Name != "Select Menu"))
                     {
                         var (success, message) = await _orderService.AddCurrentOrderVoid(voidOrder);
 

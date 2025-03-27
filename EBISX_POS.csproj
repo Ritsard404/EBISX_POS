@@ -64,4 +64,10 @@
   <ItemGroup>
     <ProjectReference Include="..\EBISX_POS.API\EBISX_POS.API.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Modals\PromoCodeWindow.axaml.cs">
+      <DependentUpon>PromoCodeWindow.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

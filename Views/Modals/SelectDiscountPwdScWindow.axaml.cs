@@ -265,7 +265,8 @@ namespace EBISX_POS.Views
                     IsPwdDiscounted = dto.IsPwdDiscounted,
                     IsSeniorDiscounted = dto.IsSeniorDiscounted,
                     PromoDiscountAmount = dto.PromoDiscountAmount,
-                    HasPwdScDiscount = dto.HasDiscount && dto.PromoDiscountAmount == null
+                    HasPwdScDiscount = dto.HasDiscount && dto.PromoDiscountAmount == null,
+                    CouponCode = dto.CouponCode
 
                 };
 

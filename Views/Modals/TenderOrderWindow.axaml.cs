@@ -107,13 +107,13 @@ namespace EBISX_POS.Views
 
         private async void PromoAndCouponDiscount_Click(object? sender, RoutedEventArgs e)
         {
-            // Prevent multiple discounts on the same order.
+            // Prevent applying multiple discounts to the same order.
             if (TenderState.tenderOrder.HasScDiscount || TenderState.tenderOrder.HasPwdDiscount || TenderState.tenderOrder.HasPromoDiscount)
             {
                 await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ContentHeader = "Discounted Already",
-                    ContentMessage = "This order is already discounted.",
+                    ContentHeader = "Discount Already Applied",
+                    ContentMessage = "A discount has already been applied to this order. Please complete or cancel the current order before applying another discount.",
                     ButtonDefinitions = ButtonEnum.Ok,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     CanResize = false,
@@ -134,10 +134,27 @@ namespace EBISX_POS.Views
                 {
                     case "PROMO":
                         {
+                            if (OrderState.CurrentOrder.Any(d => d.CouponCode != null))
+                            {
+                                await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+                                {
+                                    ContentHeader = "Coupon Discount Detected",
+                                    ContentMessage = "This order already has a coupon discount applied.",
+                                    ButtonDefinitions = ButtonEnum.Ok,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    CanResize = false,
+                                    SizeToContent = SizeToContent.WidthAndHeight,
+                                    Width = 400,
+                                    ShowInCenter = true,
+                                    Icon = MsBox.Avalonia.Enums.Icon.Warning
+                                }).ShowAsPopupAsync(this);
+                                return;
+                            }
+
                             var result = await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
                             {
-                                ContentHeader = "Promo Discount",
-                                ContentMessage = "Please ask the manager to swipe.",
+                                ContentHeader = "Apply Promo Discount",
+                                ContentMessage = "Manager authorization is required to apply a promo discount. Please ask the manager to swipe their card.",
                                 ButtonDefinitions = ButtonEnum.OkCancel,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                                 CanResize = false,
@@ -149,24 +166,71 @@ namespace EBISX_POS.Views
 
                             if (result == ButtonResult.Ok)
                             {
-                                var promoWindow = new PromoCodeWindow();
+                                var promoWindow = new DiscountCodeWindow("PROMO");
                                 await promoWindow.ShowDialog((Window)this.VisualRoot);
                             }
                             break;
                         }
                     case "COUPON":
                         {
-                            // TODO: Implement coupon discount handling.
+                            if (OrderState.CurrentOrder.Count(d => d.CouponCode != null) >= 3)
+                            {
+                                await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+                                {
+                                    ContentHeader = "Maximum Coupon Discount Reached",
+                                    ContentMessage = "This order already has the maximum allowed coupon discounts applied (3 coupons). You cannot apply any additional coupon discounts.",
+                                    ButtonDefinitions = ButtonEnum.Ok,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    CanResize = false,
+                                    SizeToContent = SizeToContent.WidthAndHeight,
+                                    Width = 400,
+                                    ShowInCenter = true,
+                                    Icon = MsBox.Avalonia.Enums.Icon.Warning
+                                }).ShowAsPopupAsync(this);
+                                return;
+                            }
+
+
+                            var result = await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+                            {
+                                ContentHeader = "Apply Coupon Discount",
+                                ContentMessage = "Manager authorization is required to apply a coupon discount. Please ask the manager to swipe their card.",
+                                ButtonDefinitions = ButtonEnum.OkCancel,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                CanResize = false,
+                                SizeToContent = SizeToContent.WidthAndHeight,
+                                Width = 400,
+                                ShowInCenter = true,
+                                Icon = MsBox.Avalonia.Enums.Icon.Warning
+                            }).ShowAsPopupAsync(this);
+
+                            if (result == ButtonResult.Ok)
+                            {
+                                var promoWindow = new DiscountCodeWindow("COUPON");
+                                await promoWindow.ShowDialog((Window)this.VisualRoot);
+                            }
                             break;
                         }
                     default:
                         {
-                            // Optionally, handle unexpected discount types.
+                            await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+                            {
+                                ContentHeader = "Unknown Discount Type",
+                                ContentMessage = "The selected discount type is not recognized. Please try again or contact support.",
+                                ButtonDefinitions = ButtonEnum.Ok,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                CanResize = false,
+                                SizeToContent = SizeToContent.WidthAndHeight,
+                                Width = 400,
+                                ShowInCenter = true,
+                                Icon = MsBox.Avalonia.Enums.Icon.Warning
+                            }).ShowAsPopupAsync(this);
                             break;
                         }
                 }
             }
         }
+
 
         private string GetDiscountType(ContentControl control)
         {
