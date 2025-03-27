@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBISX_POS", "EBISX_POS.csproj", "{43853727-68AA-49B0-A435-D67E4199193F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBISX_POS.API", "..\EBISX_POS.API\EBISX_POS.API.csproj", "{554754B3-A029-483E-43AA-32E3574561EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +17,15 @@ Global
 		{43853727-68AA-49B0-A435-D67E4199193F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43853727-68AA-49B0-A435-D67E4199193F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43853727-68AA-49B0-A435-D67E4199193F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{554754B3-A029-483E-43AA-32E3574561EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{554754B3-A029-483E-43AA-32E3574561EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{554754B3-A029-483E-43AA-32E3574561EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{554754B3-A029-483E-43AA-32E3574561EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B0C64394-6F25-4E90-B30C-03D9BB3BA8E3}
 	EndGlobalSection
 EndGlobal

@@ -24,5 +24,6 @@ namespace EBISX_POS
         public required string MenuEndpoint { get; set; }
     }
 
+    
 
 }
