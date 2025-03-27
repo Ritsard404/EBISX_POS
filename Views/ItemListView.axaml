@@ -8,29 +8,30 @@
              x:Class="EBISX_POS.Views.ItemListView"
              x:DataType="vm:ItemListViewModel">
 
-	<Grid VerticalAlignment="Stretch">
-		<!-- Center Content -->
-		<ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Stretch">
-			<ItemsControl x:Name="ItemsList" ItemsSource="{Binding MenuItems}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<ToggleButton Click="OnItemClicked"
+    <Grid VerticalAlignment="Stretch">
+        <!-- Center Content -->
+        <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Stretch">
+            <ItemsControl x:Name="ItemsList" ItemsSource="{Binding MenuItems}" IsVisible="{Binding HasMenus}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Click="OnItemClicked"
                                 Margin="5"
                                 Padding="0"
                                 Width="135"
                                 Background="Transparent"
-								CornerRadius="10">
-							<views:ItemCardView DataContext="{Binding}" />
-						</ToggleButton>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
-	</Grid>
-	
+                                CornerRadius="10">
+                            <views:ItemCardView DataContext="{Binding}" />
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+		
+    </Grid>
 </UserControl>

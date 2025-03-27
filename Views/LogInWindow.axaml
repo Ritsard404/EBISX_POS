@@ -35,10 +35,12 @@
 						   Foreground="#D2691E"/>
 
 				<ComboBox ItemsSource="{Binding Cashiers}"
+						  SelectedItem="{Binding SelectedCashier}"
 						  HorizontalAlignment="Center"
-						  Width="260"
+						 Width="260"
 						 FontFamily="{StaticResource NunitoFont}"
 						 MaxDropDownHeight="300"
+						 Height="30"
 						 Background="#FFF8DC"
 						 Foreground="#8B4513"
 						 BorderBrush="#D2691E"
@@ -49,7 +51,13 @@
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
 				</ComboBox>
-				
+
+
+				<TextBox Text="{Binding ManagerEmail}"
+						 Watermark="Email"
+						 UseFloatingWatermark="True"
+						 Height="40"/>
+
 				<Button Content="Sign In"
 						HorizontalAlignment="Stretch"
 						HorizontalContentAlignment="Center"
@@ -59,16 +67,19 @@
 						Background="#D2691E"
 						Foreground="White"
 						VerticalContentAlignment="Center"
-						CornerRadius="5"/>
-				
+						CornerRadius="5"
+						Command="{Binding LogInCommand}"
+						IsEnabled="{Binding !IsLoading}"/>
+
 				<TextBlock
-				Text="error message"
+				Text="{Binding ErrorMessage}"
+                       IsVisible="{Binding HasError}"
 						   Foreground="Red"
 						   TextAlignment="Center"/>
 
-			<ProgressBar IsIndeterminate="True"  IsVisible="{Binding IsLoading}"/>
-						
-				
+				<ProgressBar IsIndeterminate="True"  IsVisible="{Binding IsLoading}"/>
+
+
 			</StackPanel>
 		</Border>
 	</Grid>

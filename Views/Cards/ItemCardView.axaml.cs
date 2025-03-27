@@ -1,15 +1,13 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 namespace EBISX_POS.Views
 {
-    public partial class SubItemWindow : Window
+    public partial class ItemCardView : UserControl
     {
-        public SubItemWindow()
+        public ItemCardView()
         {
             InitializeComponent();
-            DataContext = this;
         }
 
         private void InitializeComponent()
@@ -17,4 +15,4 @@ namespace EBISX_POS.Views
             AvaloniaXamlLoader.Load(this);
         }
     }
-};
+}
