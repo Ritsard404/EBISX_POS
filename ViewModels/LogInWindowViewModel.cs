@@ -30,6 +30,11 @@ namespace EBISX_POS.ViewModels
         private readonly AuthService _authService;
         public ObservableCollection<CashierDTO> Cashiers { get; } = new();
 
+        private void SetProperty(ref bool isLoading, bool value)
+        {
+            throw new NotImplementedException();
+        }
+
         public LogInWindowViewModel(AuthService authService)
         {
             _authService = authService;

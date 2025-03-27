@@ -25,5 +25,6 @@ namespace EBISX_POS
         public required string OrderEndpoint { get; set; }
     }
 
+    
 
 }

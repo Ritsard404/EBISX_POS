@@ -38,8 +38,11 @@ namespace EBISX_POS
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
+
                 desktop.MainWindow = Services.GetRequiredService<MainWindow>();
-                //desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
+                //desktop.MainWindow = Services.GetRequiredService<LogInWindow>();                
+//                 desktop.MainWindow = Services.GetRequiredService<ManagerWindow>();
+
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -64,8 +67,10 @@ namespace EBISX_POS
 
             // Register services
             services.AddSingleton<AuthService>();
+
             services.AddSingleton<MenuService>(); // Register MenuService
             services.AddSingleton<OrderService>(); 
+            services.AddSingleton<ManagerWindow>();
 
             // Register ViewModels
             services.AddTransient<LogInWindowViewModel>();
@@ -73,12 +78,40 @@ namespace EBISX_POS
             services.AddTransient<ItemListViewModel>(); // Register ItemListViewModel
             services.AddTransient<OrderSummaryViewModel>(); 
             services.AddTransient<SubItemWindowViewModel>(); 
+            services.AddTransient<ManagerWindow>(); 
 
             // Register Views
             services.AddTransient<LogInWindow>();
             services.AddTransient<MainWindow>(); // Register MainWindow
             services.AddTransient<OrderSummaryView>();
             services.AddTransient<ItemListView>(provider => new ItemListView(provider.GetRequiredService<MenuService>())); // Register ItemListView
+  // Sales report
+            services.AddTransient<DailySalesReportView>(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                return new DailySalesReportView(configuration);
+            });
+
+            // Cash Track logs view
+            services.AddTransient<CashTrackView>(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                return new CashTrackView(configuration);
+            });
+
+            // T logs view
+            services.AddTransient<TransactionView>(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                return new TransactionView(configuration);
+            });
+
+
+            services.AddTransient<CustomerInvoiceReceipt>(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                return new CustomerInvoiceReceipt();
+            });
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
@@ -89,6 +122,7 @@ namespace EBISX_POS
 
             // Correct way to register ApiSettings from appsettings.json
             services.Configure<ApiSettings>(configuration);
+            services.Configure<ReportSetting>(configuration);
 
             // Register logging
             services.AddLogging(configure => configure.AddConsole());
