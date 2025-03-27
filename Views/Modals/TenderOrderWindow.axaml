@@ -72,15 +72,32 @@
 									   IsVisible="{Binding TenderCurrentOrder.HasPromoDiscount}"
 									   FontWeight="ExtraBold"
 									   />
+							<TextBlock Grid.Column="1"
+									   VerticalAlignment="Center"
+									   HorizontalAlignment="Left"
+									   Text=" (PROMO)"
+									   FontFamily="{StaticResource NunitoFont}"
+									   FontSize="18"
+									   IsVisible="{Binding TenderCurrentOrder.HasCouponDiscount}"
+									   FontWeight="ExtraBold"
+									   />
 						</Grid>
 						<TextBlock Grid.Column="1"/>
 						<TextBlock Grid.Column="2"
-								   VerticalAlignment="Center"
-								   HorizontalAlignment="Right"
-								   Text="{Binding TenderCurrentOrder.DiscountAmount, StringFormat='₱ {0:G29}'}}"
-								   FontFamily="{StaticResource NunitoFont}"
-								   FontSize="16"
-								   FontWeight="SemiBold"/>
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Right"
+							   Text="{Binding TenderCurrentOrder.DiscountAmount, StringFormat='₱ {0:G29}'}"
+							   FontFamily="{StaticResource NunitoFont}"
+							   FontSize="16"
+							   FontWeight="SemiBold"
+							   Classes.HasCouponDiscount="{Binding TenderCurrentOrder.HasCouponDiscount}">
+							<TextBlock.Styles>
+								<Style Selector="TextBlock.HasCouponDiscount">
+									<Setter Property="IsVisible" Value="False"/>
+								</Style>
+							</TextBlock.Styles>
+						</TextBlock>
+
 					</Grid>
 					<Grid ColumnDefinitions="*,*,*">
 						<TextBlock Grid.Column="0"

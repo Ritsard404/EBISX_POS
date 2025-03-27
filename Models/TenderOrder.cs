@@ -16,6 +16,7 @@ namespace EBISX_POS.Models
         [ObservableProperty] private decimal changeAmount = 0m;
         [ObservableProperty] private decimal amountDue = 0m;
         [ObservableProperty] private bool hasPromoDiscount;
+        [ObservableProperty] private bool hasCouponDiscount;
         [ObservableProperty] private bool hasPwdDiscount;
         [ObservableProperty] private bool hasScDiscount;
         [ObservableProperty] private bool hasOrderDiscount;
@@ -30,6 +31,7 @@ namespace EBISX_POS.Models
         partial void OnHasPwdDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
         partial void OnHasScDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
         partial void OnHasPromoDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
+        partial void OnHasCouponDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
 
         public void Reset()
         {
@@ -49,7 +51,9 @@ namespace EBISX_POS.Models
         private void UpdateComputedValues()
         {
             HasPromoDiscount = PromoDiscountAmount > 0 || PromoDiscountPercent > 0;
-            HasOrderDiscount = HasPromoDiscount || HasScDiscount || HasPwdDiscount;
+            HasCouponDiscount = OrderState.CurrentOrder
+                .Any(orderItem => orderItem.CouponCode != null);
+            HasOrderDiscount = HasPromoDiscount || HasScDiscount || HasPwdDiscount || HasCouponDiscount;
 
             if (HasPromoDiscount)
             {

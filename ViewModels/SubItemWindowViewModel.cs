@@ -18,6 +18,7 @@ using System.ComponentModel;
 
 namespace EBISX_POS.ViewModels
 {
+
     public partial class SubItemWindowViewModel : ViewModelBase
     {
         private readonly MenuService _menuService;
@@ -28,7 +29,7 @@ namespace EBISX_POS.ViewModels
         private bool _isLoading;
 
         [ObservableProperty]
-        private bool _HasOptions;
+        private bool _hasOptions;
 
 
         public string ItemNameAndQuantity

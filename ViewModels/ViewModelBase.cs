@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace EBISX_POS.ViewModels
 {
-    public class ViewModelBase : INotifyPropertyChanged
+    public class ViewModelBase : ObservableObject
     {
         // Unique identifier for the ViewModel instance for tracking purposes
         public string ViewModelId { get; } = Guid.NewGuid().ToString();
