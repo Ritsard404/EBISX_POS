@@ -216,67 +216,8 @@ namespace EBISX_POS.Views
                 return;
             }
 
-            Debug.WriteLine("SelectedIDs: " + string.Join(", ", SelectedIDs));
-
-            var orderService = App.Current.Services.GetRequiredService<OrderService>();
-
-
-            await orderService.AddPwdScDiscount(new AddPwdScDiscountDTO()
-            {
-                EntryId = SelectedIDs,
-                ManagerEmail = "qwee",
-                PwdScCount = MaxSelectionCount,
-                IsSeniorDisc = !IsPwdSelected
-            }); // Fetch the pending orders (grouped by EntryId) from the API.
-
-            var ordersDto = await orderService.GetCurrentOrderItems();
-
-            // If the items collection has empty items, exit.
-            if (!ordersDto.Any())
-                return;
-
-            OrderState.CurrentOrder.Clear();
-            foreach (var dto in ordersDto)
-            {
-                // Map the DTO's SubOrders to an ObservableCollection<SubOrderItem>
-                var subOrders = new ObservableCollection<SubOrderItem>(
-                    dto.SubOrders.Select(s => new SubOrderItem
-                    {
-                        MenuId = s.MenuId,
-                        DrinkId = s.DrinkId,
-                        AddOnId = s.AddOnId,
-                        Name = s.Name,
-                        ItemPrice = s.ItemPrice,
-                        Size = s.Size,
-                        Quantity = s.Quantity,
-                        IsFirstItem = s.IsFirstItem,
-                    })
-                );
-
-                // Create a new OrderItemState from the DTO.
-                var pendingItem = new OrderItemState()
-                {
-                    ID = dto.EntryId,             // Using EntryId from the DTO.
-                    Quantity = dto.TotalQuantity, // Total quantity from the DTO.
-                    TotalPrice = dto.TotalPrice,  // Total price from the DTO.
-                    HasCurrentOrder = dto.HasCurrentOrder,
-                    SubOrders = subOrders,
-                    HasDiscount = dto.HasDiscount,// Mapped sub-orders.
-                    TotalDiscountPrice = dto.DiscountAmount,
-                    IsPwdDiscounted = dto.IsPwdDiscounted,
-                    IsSeniorDiscounted = dto.IsSeniorDiscounted,
-                    PromoDiscountAmount = dto.PromoDiscountAmount,
-                    HasPwdScDiscount = dto.HasDiscount && dto.PromoDiscountAmount == null,
-                    CouponCode = dto.CouponCode
-
-                };
-
-                // Add the mapped OrderItemState to the static collection.
-                OrderState.CurrentOrder.Add(pendingItem);
-            }
-
-            // Refresh UI display (if needed by your application).
-            OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+            var promoWindow = new GetSeniorPwdInfo(SelectedIDs: SelectedIDs, IsPwdSelected: IsPwdSelected, inputCount: MaxSelectionCount);
+            await promoWindow.ShowDialog((Window)this.VisualRoot);
 
             Close();
         }

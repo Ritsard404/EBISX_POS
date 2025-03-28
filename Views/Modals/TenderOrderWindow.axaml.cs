@@ -48,7 +48,7 @@ namespace EBISX_POS.Views
                     TotalAmount = TenderState.tenderOrder.TotalAmount,
                     CashTendered = TenderState.tenderOrder.TenderAmount,
                     OrderType = TenderState.tenderOrder.OrderType,
-                    DiscountAmount = TenderState.tenderOrder.DiscountAmount,    
+                    DiscountAmount = TenderState.tenderOrder.DiscountAmount,
                 };
 
                 await orderService.FinalizeOrder(finalOrder);
