@@ -41,7 +41,7 @@ namespace EBISX_POS
 
                 desktop.MainWindow = Services.GetRequiredService<MainWindow>();
                 //desktop.MainWindow = Services.GetRequiredService<LogInWindow>();                
-//                 desktop.MainWindow = Services.GetRequiredService<ManagerWindow>();
+                 //desktop.MainWindow = Services.GetRequiredService<ManagerWindow>();
 
             }
 

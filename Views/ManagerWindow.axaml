@@ -5,7 +5,8 @@
         mc:Ignorable="d" d:DesignWidth="" d:DesignHeight=""
         x:Class="EBISX_POS.Views.ManagerWindow"
 		xmlns:vm="using:EBISX_POS.ViewModels"
-        Title="ManagerWindow">
+        Title="ManagerWindow"
+        WindowState="Maximized">
 
 	<Window.Styles>
 		<Style Selector="Button">

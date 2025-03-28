@@ -228,6 +228,7 @@ namespace EBISX_POS.Views
                 PwdScCount = MaxSelectionCount,
                 IsSeniorDisc = !IsPwdSelected
             }); // Fetch the pending orders (grouped by EntryId) from the API.
+
             var ordersDto = await orderService.GetCurrentOrderItems();
 
             // If the items collection has empty items, exit.
