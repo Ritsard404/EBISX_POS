@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System;
+using System.IO;
 
 namespace EBISX_POS.Models
 {
@@ -38,17 +39,25 @@ namespace EBISX_POS.Models
                 }
 
                 var uri = new Uri(path);
-                var assets = AssetLoader.Open(uri);
-                return new Bitmap(assets);
+
+                // If the URI is a file, load it from disk
+                if (uri.IsFile)
+                {
+                    using var stream = File.OpenRead(path);
+                    return new Bitmap(stream);
+                }
+                else
+                {
+                    // Otherwise, assume it's an asset URI
+                    var assets = AssetLoader.Open(uri);
+                    return new Bitmap(assets);
+                }
             }
-            catch (ArgumentNullException ex)
-            {
-                return null;
-            }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
         }
+
     }
 }

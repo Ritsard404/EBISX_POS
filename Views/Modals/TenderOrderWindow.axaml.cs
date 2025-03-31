@@ -369,9 +369,12 @@ namespace EBISX_POS.Views
                 writer.WriteLine();
 
                 writer.WriteLine(CenterText($"{"Vat Zero Sales:",-20}{0.ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"Vat Exempt Sales:",-20}{(TenderState.tenderOrder.HasScDiscount || TenderState.tenderOrder.HasPwdDiscount ? TenderState.tenderOrder.DiscountAmount : 0m).ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"Vatables Sales:",-20}{(!TenderState.tenderOrder.HasOrderDiscount ? TenderState.tenderOrder.TotalAmount / 1.12m : 0m).ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"VAT Amount:",-20}{(!TenderState.tenderOrder.HasOrderDiscount ? TenderState.tenderOrder.TotalAmount - (TenderState.tenderOrder.TotalAmount / 1.12m) : 0m).ToString("C", pesoCulture),20}"));
+                writer.WriteLine(CenterText($"{"Vat Exempt Sales:",-20}{(TenderState.tenderOrder.VatExemptSales).ToString("C", pesoCulture),20}"));
+                writer.WriteLine(CenterText($"{"Vatables Sales:",-20}{(TenderState.tenderOrder.VatSales).ToString("C", pesoCulture),20}"));
+                writer.WriteLine(CenterText($"{"VAT Amount:",-20}{(TenderState.tenderOrder.VatAmount).ToString("C", pesoCulture),20}"));
+                // writer.WriteLine(CenterText($"{"Vat Exempt Sales:",-20}{(TenderState.tenderOrder.HasScDiscount || TenderState.tenderOrder.HasPwdDiscount ? TenderState.tenderOrder.DiscountAmount : 0m).ToString("C", pesoCulture),20}"));
+                //writer.WriteLine(CenterText($"{"Vatables Sales:",-20}{(!TenderState.tenderOrder.HasOrderDiscount ? TenderState.tenderOrder.TotalAmount / 1.12m : 0m).ToString("C", pesoCulture),20}"));
+                //writer.WriteLine(CenterText($"{"VAT Amount:",-20}{(!TenderState.tenderOrder.HasOrderDiscount ? TenderState.tenderOrder.TotalAmount - (TenderState.tenderOrder.TotalAmount / 1.12m) : 0m).ToString("C", pesoCulture),20}"));
                 writer.WriteLine();
 
                 foreach (var order in OrderState.CurrentOrder.Where(i => i.IsPwdDiscounted || i.IsSeniorDiscounted))

@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using MsBox.Avalonia.Dto;
+using Avalonia.Interactivity;
 
 namespace EBISX_POS.Views
 {
@@ -90,7 +91,7 @@ namespace EBISX_POS.Views
             }
         }
 
-        private async Task SubmitButton_ClickAsync(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private async void SubmitButton_Click(object? sender, RoutedEventArgs e)
         {
             var inputStackPanel = this.FindControl<StackPanel>("InputStackPanel");
             if (inputStackPanel == null)

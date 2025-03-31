@@ -8,6 +8,10 @@ namespace EBISX_POS.Models
 {
     public partial class TenderOrder : ObservableObject
     {
+        [ObservableProperty] private decimal vatSales = 0m;
+        [ObservableProperty] private decimal vatAmount = 0m;
+        [ObservableProperty] private decimal vatExemptSales = 0m;
+
         [ObservableProperty] private decimal totalAmount = 0m;
         [ObservableProperty] private decimal tenderAmount = 0m;
         [ObservableProperty] private decimal discountAmount = 0m;
@@ -44,6 +48,13 @@ namespace EBISX_POS.Models
         {
             TotalAmount = OrderState.CurrentOrder
                 .Sum(orderItem => orderItem.TotalPrice);
+
+            VatExemptSales = (HasScDiscount || HasPwdDiscount) ? DiscountAmount : 0m;
+            VatSales = (!HasOrderDiscount ? TotalAmount / 1.12m : OrderState.CurrentOrder
+                .Where(d => !d.IsPwdDiscounted && !d.IsSeniorDiscounted)
+                .Sum(orderItem => orderItem.TotalPrice) / 1.12m);
+            VatAmount = (!HasOrderDiscount ? TotalAmount - (TotalAmount / 1.12m) : VatSales - (VatSales / 1.12m));
+
             UpdateComputedValues();
             return TotalAmount <= 0;
         }
