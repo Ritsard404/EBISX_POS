@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using EBISX_POS.Services;
 
 namespace EBISX_POS.Views
 {
@@ -15,6 +16,11 @@ namespace EBISX_POS.Views
             InitializeComponent();
             DataContext = this;
             _serviceProvider = serviceProvider;
+        }
+
+        public ManagerWindow() : this(App.Current.Services.GetRequiredService<IServiceProvider>())
+        {
+            // This constructor is required for Avalonia to instantiate the view in XAML.
         }
 
         private void SummaryReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -36,12 +42,6 @@ namespace EBISX_POS.Views
             {
                 cashTrack.GenerateCashTrack(sender, e);
             }
-        }
-
-        private async void Receipt_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            var receipt = _serviceProvider?.GetRequiredService<CustomerInvoiceReceipt>();
-            receipt?.Show();
         }
     }
 }

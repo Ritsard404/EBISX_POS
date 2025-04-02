@@ -13,7 +13,7 @@ namespace EBISX_POS.Views
             InitializeComponent();
             var viewModel = App.Current.Services.GetRequiredService<LogInWindowViewModel>();
             DataContext = viewModel;
-            Loaded += async (sender, e) => await viewModel.LoadCashiers();
+            //Loaded += async (sender, e) => await viewModel.LoadCashiers();
         }
     }
 }

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
-using static EBISX_POS.Services.AuthService;
 
 namespace EBISX_POS.Services
 {

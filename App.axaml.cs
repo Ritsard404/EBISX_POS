@@ -39,10 +39,18 @@ namespace EBISX_POS
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
 
-                desktop.MainWindow = Services.GetRequiredService<MainWindow>();
-                //desktop.MainWindow = Services.GetRequiredService<LogInWindow>();                
-                 //desktop.MainWindow = Services.GetRequiredService<ManagerWindow>();
+                //desktop.MainWindow = Services.GetRequiredService<MainWindow>();
+                //desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
+                //desktop.MainWindow = Services.GetRequiredService<ManagerWindow>();
+                if (CashierState.CashierName == null)
+                {
+                    desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
+                }
+                else
+                {
+                    desktop.MainWindow = Services.GetRequiredService<MainWindow>();
 
+                }
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -69,23 +77,23 @@ namespace EBISX_POS
             services.AddSingleton<AuthService>();
 
             services.AddSingleton<MenuService>(); // Register MenuService
-            services.AddSingleton<OrderService>(); 
+            services.AddSingleton<OrderService>();
             services.AddSingleton<ManagerWindow>();
 
             // Register ViewModels
             services.AddTransient<LogInWindowViewModel>();
             services.AddTransient<MainViewModel>(); // Register MainViewModel
             services.AddTransient<ItemListViewModel>(); // Register ItemListViewModel
-            services.AddTransient<OrderSummaryViewModel>(); 
-            services.AddTransient<SubItemWindowViewModel>(); 
-            services.AddTransient<ManagerWindow>(); 
+            services.AddTransient<OrderSummaryViewModel>();
+            services.AddTransient<SubItemWindowViewModel>();
+            services.AddTransient<ManagerWindow>();
 
             // Register Views
             services.AddTransient<LogInWindow>();
             services.AddTransient<MainWindow>(); // Register MainWindow
             services.AddTransient<OrderSummaryView>();
             services.AddTransient<ItemListView>(provider => new ItemListView(provider.GetRequiredService<MenuService>())); // Register ItemListView
-  // Sales report
+                                                                                                                           // Sales report
             services.AddTransient<DailySalesReportView>(provider =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
@@ -104,13 +112,6 @@ namespace EBISX_POS
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 return new TransactionView(configuration);
-            });
-
-
-            services.AddTransient<CustomerInvoiceReceipt>(provider =>
-            {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                return new CustomerInvoiceReceipt();
             });
 
             var configuration = new ConfigurationBuilder()

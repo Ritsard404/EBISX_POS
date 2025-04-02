@@ -16,6 +16,7 @@ using EBISX_POS.Models;
 using System;
 using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace EBISX_POS.Views
 {
@@ -312,6 +313,42 @@ namespace EBISX_POS.Views
                     // Open the TenderOrderWindow
                     var discountPwdSw = new SelectDiscountPwdScWindow();
                     await discountPwdSw.ShowDialog((Window)this.VisualRoot);
+
+                    if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+                    {
+                        desktopLifetime.MainWindow?.Close();
+                    }
+                    return;
+                case ButtonResult.Cancel:
+                    return;
+                default:
+                    return;
+            }
+
+        }
+        private async void Manager_Click(object sender, RoutedEventArgs e)
+        {
+            var box = MessageBoxManager.GetMessageBoxStandard(
+                new MessageBoxStandardParams
+                {
+                    ContentHeader = $"Manager",
+                    ContentMessage = "Please ask the manager to swipe.",
+                    ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    Width = 400,
+                    ShowInCenter = true,
+                    Icon = MsBox.Avalonia.Enums.Icon.Warning
+                });
+
+            var result = await box.ShowAsPopupAsync(this);
+            switch (result)
+            {
+                case ButtonResult.Ok:
+                    // Open the TenderOrderWindow
+                    var managerView = new ManagerWindow();
+                    managerView.Show();
                     return;
                 case ButtonResult.Cancel:
                     return;

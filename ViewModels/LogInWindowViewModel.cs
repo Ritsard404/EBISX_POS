@@ -1,8 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EBISX_POS.API.Services.DTO.Auth;
 using EBISX_POS.Services;
 using EBISX_POS.State;
+using EBISX_POS.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,50 +15,52 @@ namespace EBISX_POS.ViewModels
 {
     public partial class LogInWindowViewModel : ViewModelBase
     {
+        private readonly MenuService _menuService;
+        private readonly AuthService _authService;
 
         [ObservableProperty]
-        private bool _isLoading;
+        private bool isLoading;
 
         [ObservableProperty]
-        private string _errorMessage; 
-        
-        [ObservableProperty]
-        private CashierDTO? _selectedCashier;
+        private string errorMessage;
 
         [ObservableProperty]
-        private string _managerEmail;
+        private CashierDTO? selectedCashier;
+
+        [ObservableProperty]
+        private string managerEmail;
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-        private readonly AuthService _authService;
         public ObservableCollection<CashierDTO> Cashiers { get; } = new();
 
-        private void SetProperty(ref bool isLoading, bool value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public LogInWindowViewModel(AuthService authService)
+        public LogInWindowViewModel(AuthService authService, MenuService menuService)
         {
             _authService = authService;
-            LoadCashiers();
+            _menuService = menuService;
+
+            // Fire-and-forget async calls
+            _ = LoadCashiersAsync();
+            _ = CheckPendingOrderAsync();
         }
 
-        public async Task LoadCashiers()
+        private async Task LoadCashiersAsync()
         {
             try
             {
                 IsLoading = true;
                 var cashiers = await _authService.GetCashiersAsync();
                 Cashiers.Clear();
-                cashiers.ForEach(cashier => Cashiers.Add(cashier));
+                foreach (var cashier in cashiers)
+                {
+                    Cashiers.Add(cashier);
+                }
                 Debug.WriteLine($"Loaded {Cashiers.Count} cashiers.");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error: {ex.Message}"); 
+                Debug.WriteLine($"Error loading cashiers: {ex.Message}");
                 NotificationService.NetworkIssueMessage();
-
             }
             finally
             {
@@ -63,13 +68,34 @@ namespace EBISX_POS.ViewModels
             }
         }
 
-        // #TODO: Implement Transition to POS Dashboard
+        private async Task CheckPendingOrderAsync()
+        {
+
+            try
+            {
+                IsLoading = true;
+                var (success, message) = await _authService.HasPendingOrder();
+                if (success)
+                {
+                    NavigateToMainWindow(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error checking pending order: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
         [RelayCommand]
-        private async Task LogIn()
+        private async Task LogInAsync()
         {
             try
             {
-                ErrorMessage = "";
+                ErrorMessage = string.Empty;
                 IsLoading = true;
 
                 if (SelectedCashier == null)
@@ -86,7 +112,6 @@ namespace EBISX_POS.ViewModels
                 };
 
                 var (success, message) = await _authService.LogInAsync(logInDTO);
-
                 if (!success)
                 {
                     ErrorMessage = message;
@@ -94,21 +119,34 @@ namespace EBISX_POS.ViewModels
                     return;
                 }
 
-                // Set Cashier Name in Global State
-                CashierState.CashierName = message;
-                Debug.WriteLine($"Log in success: {message}"); // Debug line
+                NavigateToMainWindow(message);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error: {ex.Message}");
+                Debug.WriteLine($"Log in error: {ex.Message}");
                 ErrorMessage = "An unexpected error occurred.";
-                OnPropertyChanged(nameof(HasError)); 
+                OnPropertyChanged(nameof(HasError));
                 NotificationService.NetworkIssueMessage();
-
             }
             finally
             {
                 IsLoading = false;
+            }
+        }
+
+        private void NavigateToMainWindow(string cashierName)
+        {
+            CashierState.CashierName = cashierName;
+            Debug.WriteLine($"Navigating to main window. Cashier: {cashierName}");
+            var mainWindow = new MainWindow(_menuService)
+            {
+                DataContext = new MainWindowViewModel(_menuService)
+            };
+            mainWindow.Show();
+
+            if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+            {
+                desktopLifetime.MainWindow?.Close();
             }
         }
     }

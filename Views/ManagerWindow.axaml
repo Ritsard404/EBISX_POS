@@ -4,189 +4,128 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="" d:DesignHeight=""
         x:Class="EBISX_POS.Views.ManagerWindow"
-		xmlns:vm="using:EBISX_POS.ViewModels"
+        xmlns:vm="using:EBISX_POS.ViewModels"
         Title="ManagerWindow"
-        WindowState="Maximized">
+        WindowState="Maximized"
+        SystemDecorations="None">
 
 	<Window.Styles>
-		<Style Selector="Button">
-			<Setter Property="Width" Value="200" />
-			<Setter Property="Height" Value="150" />
-			<Setter Property="FontSize" Value="13" />
-			<Setter Property="HorizontalAlignment" Value="Center" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-		<Style Selector="PathIcon">
-			<Setter Property="Width" Value="75" />
-			<Setter Property="Height" Value="75" />
-			<Setter Property="Foreground" Value="#D2691E" />
-			<Setter Property="HorizontalAlignment" Value="Center" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-		<Style Selector="TextBlock">
-			<Setter Property="HorizontalAlignment" Value="Center" />
-			<Setter Property="VerticalAlignment" Value="Center" />
+		<Style Selector="Button.myButton">
+			<Setter Property="Width" Value="170"/>
+			<Setter Property="Height" Value="120"/>
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="CornerRadius" Value="10"/>
+			<Setter Property="Padding" Value="10"/>
+			<Setter Property="Margin" Value="5"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
 		</Style>
 	</Window.Styles>
 
-	<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*,Auto">
-		<!--  Header  -->
-		<Grid
-            Grid.Row="0"
-            Grid.ColumnSpan="3"
-            Height="40">
-			<TextBlock
-                Margin="20,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontWeight="Bold"
-                Foreground="Black"
-                Text="Ebisx POS" />
-			<TextBlock
-                Margin="0,0,20,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                FontWeight="Bold"
-                Foreground="Black"
-                Text="Manager" />
-			<Border BorderBrush="DarkOrange" BorderThickness="0,0,0,2" />
-		</Grid>
-
-		<!--  Left Sidebar  -->
-		<Grid
-            Grid.Row="1"
-            Grid.Column="0"
-            Width="150"
-            Background="White">
-			<Border BorderBrush="DarkOrange" BorderThickness="0,0,2,0" />
-		</Grid>
-
-		<!--  Main Content  -->
-		<Grid
-            Grid.Row="1"
-            Grid.Column="1"
-            Background="white"
-            RowDefinitions="*,Auto">
-			<Grid
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                ColumnDefinitions="Auto,Auto,Auto,Auto"
-                RowDefinitions="Auto,Auto,Auto">
-				<!--  Button 1 with Report  -->
-				<Button
-					Click="SummaryReport_Button"
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="5"
-					VerticalContentAlignment="Center">
-					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-						<TextBlock FontSize="30" Text="Sales" />
-						<TextBlock FontSize="30" Text="Report" />
-
-					</StackPanel>
-				</Button>
-				<!--  Button 2 with User Login  -->
-				<!--
-                <Button Click="CrewLogin"
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Margin="5">
-                    <StackPanel VerticalAlignment="Center" Orientation="Vertical">
-                        <PathIcon Data="{StaticResource person_regular}" />
-                        <TextBlock FontSize="30" Text="Crew" />
-                    </StackPanel>
-                </Button>-->
-				<!--  Button 3 with Transaction Logs  -->
-				<Button Click="TransactionLog"
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Margin="5">
-					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-						<TextBlock FontSize="30" Text="Transact" />
-						<TextBlock FontSize="30" Text="Log" />
-					</StackPanel>
-				</Button>
-				<!--  Button 4 with Refund  -->
-				<Button
-					Click="Receipt_Button"
-                    Grid.Row="0"
-                    Grid.Column="2"
-                    Margin="5">
-					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-						<TextBlock FontSize="30" Text="Refund" />
-					</StackPanel>
-				</Button>
-				<!--  Button 5 with Monthly Report  -->
-				<Button
-					Click="Cash_Track_Button"
-                    Grid.Row="0"
-                    Grid.Column="3"
-                    Margin="5">
-					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-						<TextBlock FontSize="30" Text="Cash" />
-						<TextBlock FontSize="30" Text="Track" />
-					</StackPanel>
-				</Button>
-				<!--  Button 6 with Quarterly Report  -->
-				<Button
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="5">
-					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-						<TextBlock FontSize="30" Text="Quarterly" />
-						<TextBlock FontSize="30" Text="Report" />
-					</StackPanel>
-				</Button>
-				<!--  Button 7 with Yearly Report  -->
-				<Button
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Margin="5">
-					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-						<TextBlock FontSize="30" Text="Yearly" />
-						<TextBlock FontSize="30" Text="Report" />
-					</StackPanel>
-				</Button>
-				<!--  Button 8 with Senior/Pwd  -->
-				<Button
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    Margin="5">
-					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-						<TextBlock FontSize="30" Text="Sc/Pwd" />
-						<TextBlock FontSize="30" Text="Discount" />
-					</StackPanel>
-				</Button>
-				<!--  Button 9 with Bir Summary Report  -->
-				<Button
-                    Grid.Row="1"
-                    Grid.Column="5"
-                    Margin="5">
-					<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-						<TextBlock FontSize="30" Text="BIR.Sum" />
-						<TextBlock FontSize="30" Text="Report" />
-					</StackPanel>
-				</Button>
+	<Grid RowDefinitions="Auto, *">
+		<!-- Header -->
+		<Border BorderBrush="Orange" BorderThickness="0,0,0,3">
+			<Grid Grid.Row="0" Height="70" ColumnDefinitions="Auto, *, Auto">
+				<!-- Title -->
+				<TextBlock Grid.Column="0" Text="Point of Sale"
+                           VerticalAlignment="Center"
+                           FontSize="20" FontWeight="Bold"
+                           Margin="20,0,0,0"/>
+				<!-- User Name -->
+				<TextBlock Grid.Column="2"
+                           Text="Manager"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           FontSize="15" FontWeight="SemiBold"
+                           Margin="0,0,20,0"/>
 			</Grid>
-			<Grid
-                Grid.Row="2"
-                Height="140"
-                Background="White">
-				<Border BorderBrush="DarkOrange" BorderThickness="0,2,0,0" />
+		</Border>
+
+		<!-- Main Content -->
+		<Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto">
+			<!-- Menu Area -->
+			<Border BorderBrush="Orange" BorderThickness="0,0,3,0">
+				<Grid Width="150">
+					<!-- Menu content here -->
+				</Grid>
+			</Border>
+
+			<!-- Content Area -->
+			<Grid Grid.Column="1" RowDefinitions="*, Auto">
+				<Border Grid.Row="0" BorderBrush="Orange" BorderThickness="0,0,3,3">
+					<Grid HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          ColumnDefinitions="Auto,Auto,Auto,Auto"
+                          RowDefinitions="Auto,Auto,Auto">
+						<!-- Sales Report Button -->
+						<Button Classes="myButton"
+                                Click="SummaryReport_Button"
+                                Grid.Row="0" Grid.Column="0"
+                                VerticalContentAlignment="Center">
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<TextBlock FontSize="30" Text="Sales"/>
+								<TextBlock FontSize="30" Text="Report"/>
+							</StackPanel>
+						</Button>
+
+						<!-- Transaction Log Button -->
+						<Button Classes="myButton"
+                                Click="TransactionLog"
+                                Grid.Row="0" Grid.Column="1">
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<TextBlock FontSize="30" Text="Transact"/>
+								<TextBlock FontSize="30" HorizontalAlignment="Center" Text="Log"/>
+							</StackPanel>
+						</Button>
+
+						<!-- Refund Button -->
+						<Button Classes="myButton"
+                                Grid.Row="0" Grid.Column="2">
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<TextBlock FontSize="30" Text="Refund"/>
+							</StackPanel>
+						</Button>
+
+						<!-- Cash Track Button -->
+						<Button Classes="myButton"
+                                Click="Cash_Track_Button"
+                                Grid.Row="0" Grid.Column="3">
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<TextBlock FontSize="30" Text="Cash"/>
+								<TextBlock FontSize="30" Text="Track"/>
+							</StackPanel>
+						</Button>
+
+						<!-- BIR Summary Report Button -->
+						<Button Classes="myButton"
+                                Grid.Row="1" Grid.Column="0">
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<TextBlock FontSize="30" Text="BIR Sum"/>
+								<TextBlock FontSize="30" Text="Report"/>
+							</StackPanel>
+						</Button>
+					</Grid>
+				</Border>
+
+				<!-- Bottom Keyboard -->
+				<Border Grid.Row="1" BorderBrush="Orange" Height="150" BorderThickness="0,0,3,0">
+					<!-- Keyboard content here -->
+				</Border>
+			</Grid>
+
+			<!-- Receipt Area -->
+			<Grid Grid.Column="2" Width="380" RowDefinitions="*, Auto">
+				<!-- Content Area Inside Menu -->
+				<Border Grid.Row="0" BorderBrush="Orange" BorderThickness="0,0,0,3">
+					<!-- Receipt content here -->
+				</Border>
+
+				<!-- Bottom Keyboard -->
+				<Border Grid.Row="1" BorderBrush="Orange" Height="150" BorderThickness="0,0,0,0">
+					<!-- Keyboard content here -->
+				</Border>
 			</Grid>
 		</Grid>
-
-		<!--  Right Sidebar  -->
-		<Grid
-            Grid.Row="1"
-            Grid.Column="2"
-            Width="200"
-            Background="White">
-			<Border BorderBrush="DarkOrange" BorderThickness="2,0,0,0" />
-		</Grid>
-
-		<!--  Footer  -->
-
 	</Grid>
-
 </Window>

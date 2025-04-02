@@ -6,7 +6,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="EBISX_POS.Views.LogInWindow"
              x:DataType="vm:LogInWindowViewModel"
-			 WindowState="Maximized">
+			 WindowState="Maximized"
+			 SystemDecorations="None">
 
 	<Grid RowDefinitions="Auto, *">
 		<Border Grid.Row="1"

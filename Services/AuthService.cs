@@ -1,11 +1,10 @@
 ﻿using EBISX_POS.API.Services.DTO.Auth;
 using Microsoft.Extensions.Options;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -14,50 +13,40 @@ namespace EBISX_POS.Services
     public class AuthService
     {
         private readonly ApiSettings _apiSettings;
-        private readonly HttpClient _httpClient;
+        private readonly RestClient _client;
 
-        public AuthService(IOptions<ApiSettings> apiSettings, HttpClient? httpClient = null)
+        public AuthService(IOptions<ApiSettings> apiSettings)
         {
             _apiSettings = apiSettings.Value;
-            _httpClient = httpClient ?? new HttpClient(new HttpClientHandler { UseCookies = true });
+            _client = new RestClient(_apiSettings.LocalAPI.BaseUrl);
         }
 
         public async Task<List<CashierDTO>> GetCashiersAsync()
         {
             try
             {
-                if (_apiSettings?.LocalAPI?.BaseUrl == null || _apiSettings.LocalAPI.AuthEndpoint == null)
+                if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
                 {
                     throw new InvalidOperationException("API settings are not properly configured.");
                 }
 
-                var url = $"{_apiSettings.LocalAPI.BaseUrl}/{_apiSettings.LocalAPI.AuthEndpoint}/Cashiers";
-               
-                var response = await _httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode(); // Throws exception if status code is not success
+                var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/Cashiers", Method.Get);
+                var response = await _client.ExecuteAsync<List<CashierDTO>>(request);
 
-                var jsonString = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                if (response.IsSuccessful && response.Data != null)
+                {
+                    return response.Data;
+                }
 
-                return JsonSerializer.Deserialize<List<CashierDTO>>(jsonString, options) ?? new List<CashierDTO>();
-            }
-            catch (HttpRequestException ex)
-            {
-                Debug.WriteLine($"HTTP Error: {ex.Message}");
-                return new List<CashierDTO>(); // Return empty list on HTTP error
-            }
-            catch (JsonException ex)
-            {
-                Debug.WriteLine($"JSON Parsing Error: {ex.Message}");
-                return new List<CashierDTO>(); // Return empty list if JSON parsing fails
+                Debug.WriteLine($"HTTP Error: {response.ErrorMessage}");
+                return new List<CashierDTO>();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unexpected Error: {ex.Message}");
-                return new List<CashierDTO>(); // Catch any other unexpected errors
+                return new List<CashierDTO>();
             }
         }
-
 
         public class LoginResponseDTO
         {
@@ -68,27 +57,21 @@ namespace EBISX_POS.Services
         {
             try
             {
-                if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.BaseUrl) || string.IsNullOrEmpty(_apiSettings.LocalAPI.AuthEndpoint))
+                if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
                 {
                     throw new InvalidOperationException("API settings are not properly configured.");
                 }
 
-                var url = $"{_apiSettings.LocalAPI.BaseUrl}/{_apiSettings.LocalAPI.AuthEndpoint}/login";
-                var response = await _httpClient.PostAsJsonAsync(url, logInDTO);
+                var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/login", Method.Post)
+                    .AddJsonBody(logInDTO);
 
-                // ✅ Handle Success Response (200)
-                if (response.IsSuccessStatusCode)
+                var response = await _client.ExecuteAsync<LoginResponseDTO>(request);
+
+                if (response.IsSuccessful && response.Data != null)
                 {
-                    var jsonString = await response.Content.ReadAsStringAsync();
-                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                    var result = JsonSerializer.Deserialize<LoginResponseDTO>(jsonString, options);
-
-                    string cashierName = result?.CashierName ?? "Unknown";
-                    Debug.WriteLine($"Login Successful! Welcome, {cashierName}.");
-                    return (true, $"Login Successful! Welcome, {cashierName}.");
+                    return (true, response.Data.CashierName);
                 }
 
-                // ❌ Handle Unauthorized Response (401)
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     return (false, "Invalid credentials. Please try again.");
@@ -96,23 +79,42 @@ namespace EBISX_POS.Services
 
                 return (false, $"Login failed. Status Code: {response.StatusCode}");
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
-                Debug.WriteLine($"HTTP Error: {ex.Message}");
-                return (false, "HTTP Error"); // Return empty list on HTTP error
+                Debug.WriteLine($"Unexpected Error: {ex.Message}");
+                return (false, "Unexpected error occurred.");
             }
-            catch (JsonException ex)
+        }
+
+        public async Task<(bool, string)> HasPendingOrder()
+        {
+            try
             {
-                Debug.WriteLine($"JSON Parsing Error: {ex.Message}");
-                return (false, "JSON Parsing Error"); // Return empty list if JSON parsing fails
+                if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
+                {
+                    throw new InvalidOperationException("API settings are not properly configured.");
+                }
+
+                var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/HasPendingOrder", Method.Get);
+                var response = await _client.ExecuteAsync<LoginResponseDTO>(request);
+
+                if (response.IsSuccessful && response.Data != null)
+                {
+                    return (true, response.Data.CashierName);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    return (false, "Invalid credentials. Please try again.");
+                }
+
+                return (false, $"Request failed. Status Code: {response.StatusCode}");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unexpected Error: {ex.Message}");
                 return (false, "Unexpected error occurred.");
             }
-
         }
-
     }
 }
