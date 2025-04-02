@@ -13,20 +13,21 @@ namespace EBISX_POS.Services
     {
         private readonly ApiSettings _apiSettings;
         private readonly RestClient _restClient; // Use RestClient instead of HttpClient
+        private readonly CookieContainer _cookieContainer;
+
 
         // Constructor to initialize RestClient and validate API configuration
-        public OrderService(IOptions<ApiSettings> apiSettings)
+        public OrderService(IOptions<ApiSettings> apiSettings, CookieContainer cookieContainer)
         {
-            _apiSettings = apiSettings.Value ?? throw new InvalidOperationException("API settings not provided.");
+            _apiSettings = apiSettings.Value;
+            _cookieContainer = cookieContainer; // ✅ Use shared cookie container
 
-            // Check if the BaseUrl is configured properly
-            if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.BaseUrl))
+            var options = new RestClientOptions(_apiSettings.LocalAPI.BaseUrl)
             {
-                throw new InvalidOperationException("API BaseUrl is not configured.");
-            }
+                CookieContainer = _cookieContainer
+            };
 
-            // Initialize RestClient with BaseUrl
-            _restClient = new RestClient(_apiSettings.LocalAPI.BaseUrl);
+            _restClient = new RestClient(options);
         }
 
         // Validates that the OrderEndpoint is configured in the API settings

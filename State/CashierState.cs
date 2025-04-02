@@ -1,9 +1,21 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
 
-namespace EBISX_POS.State
+public static class CashierState
 {
-    public static class CashierState
+    private static string? _cashierName;
+    public static string? CashierName
     {
-        public static string? CashierName;
+        get => _cashierName;
+        set
+        {
+            if (_cashierName != value)
+            {
+                _cashierName = value;
+                OnCashierNameChanged?.Invoke(); // Trigger UI updates
+            }
+        }
     }
+
+    // Event to notify UI
+    public static event Action? OnCashierNameChanged;
 }

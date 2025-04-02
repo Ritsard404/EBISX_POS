@@ -349,6 +349,7 @@ namespace EBISX_POS.Views
                     // Open the TenderOrderWindow
                     var managerView = new ManagerWindow();
                     managerView.Show();
+                    Close();
                     return;
                 case ButtonResult.Cancel:
                     return;

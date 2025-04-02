@@ -7,6 +7,7 @@
         xmlns:vm="using:EBISX_POS.ViewModels"
         Title="ManagerWindow"
         WindowState="Maximized"
+        Icon="/Assets/Images/logo.jpg"
         SystemDecorations="None">
 
 	<Window.Styles>
@@ -28,10 +29,34 @@
 		<Border BorderBrush="Orange" BorderThickness="0,0,0,3">
 			<Grid Grid.Row="0" Height="70" ColumnDefinitions="Auto, *, Auto">
 				<!-- Title -->
-				<TextBlock Grid.Column="0" Text="Point of Sale"
-                           VerticalAlignment="Center"
-                           FontSize="20" FontWeight="Bold"
-                           Margin="20,0,0,0"/>
+				<StackPanel Grid.Column="0" Orientation="Horizontal">
+
+					<Button VerticalContentAlignment="Center"
+							HorizontalContentAlignment="Center"
+							Margin="20"
+							Height="35"
+							Click="Back_Click">
+						<StackPanel Orientation="Horizontal" Spacing="5">
+							<Path Data="{StaticResource arrow_reply_regular}"
+								  Width="20"
+								  Height="20"
+								  Fill="Black"
+								  Stretch="Uniform"
+								  Stroke="Black"
+								  StrokeThickness="2"/>
+							<TextBlock Text="Back"
+									   VerticalAlignment="Center"
+									   FontFamily="{StaticResource NunitoFont}"
+									   FontWeight="Black"
+									   FontSize="18"
+									   Margin="5,0,0,0"/>
+						</StackPanel>
+					</Button>
+					<TextBlock Text="Point of Sale"
+							   VerticalAlignment="Center"
+							   FontSize="20" FontWeight="Bold"
+							   Margin="20,0,0,0"/>
+				</StackPanel>
 				<!-- User Name -->
 				<TextBlock Grid.Column="2"
                            Text="Manager"
@@ -103,6 +128,16 @@
 							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
 								<TextBlock FontSize="30" Text="BIR Sum"/>
 								<TextBlock FontSize="30" Text="Report"/>
+							</StackPanel>
+						</Button>
+
+						<!-- Log Out Summary Report Button -->
+						<Button Classes="myButton"
+                                Grid.Row="1" Grid.Column="3"
+                                Click="LogOut_Button">
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<TextBlock FontSize="30" Text="Log Out"/>
+								<TextBlock FontSize="30" Text="Cashier"/>
 							</StackPanel>
 						</Button>
 					</Grid>

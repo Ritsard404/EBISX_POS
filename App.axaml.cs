@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
@@ -40,17 +41,9 @@ namespace EBISX_POS
                 DisableAvaloniaDataAnnotationValidation();
 
                 //desktop.MainWindow = Services.GetRequiredService<MainWindow>();
-                //desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
+                desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
                 //desktop.MainWindow = Services.GetRequiredService<ManagerWindow>();
-                if (CashierState.CashierName == null)
-                {
-                    desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
-                }
-                else
-                {
-                    desktop.MainWindow = Services.GetRequiredService<MainWindow>();
 
-                }
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -78,7 +71,9 @@ namespace EBISX_POS
 
             services.AddSingleton<MenuService>(); // Register MenuService
             services.AddSingleton<OrderService>();
-            services.AddSingleton<ManagerWindow>();
+            services.AddSingleton<ManagerWindow>(); 
+            services.AddSingleton<CookieContainer>();
+
 
             // Register ViewModels
             services.AddTransient<LogInWindowViewModel>();

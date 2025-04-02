@@ -7,6 +7,7 @@
              x:Class="EBISX_POS.Views.LogInWindow"
              x:DataType="vm:LogInWindowViewModel"
 			 WindowState="Maximized"
+			 Icon="/Assets/Images/logo.jpg"
 			 SystemDecorations="None">
 
 	<Grid RowDefinitions="Auto, *">

@@ -137,7 +137,6 @@ namespace EBISX_POS.ViewModels
         private void NavigateToMainWindow(string cashierName)
         {
             CashierState.CashierName = cashierName;
-            Debug.WriteLine($"Navigating to main window. Cashier: {cashierName}");
             var mainWindow = new MainWindow(_menuService)
             {
                 DataContext = new MainWindowViewModel(_menuService)
@@ -146,7 +145,8 @@ namespace EBISX_POS.ViewModels
 
             if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
-                desktopLifetime.MainWindow?.Close();
+                var loginWindow = desktopLifetime.MainWindow as LogInWindow;
+                loginWindow?.Close();  // Close the login window
             }
         }
     }

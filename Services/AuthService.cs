@@ -14,12 +14,20 @@ namespace EBISX_POS.Services
     {
         private readonly ApiSettings _apiSettings;
         private readonly RestClient _client;
-
-        public AuthService(IOptions<ApiSettings> apiSettings)
+        private readonly CookieContainer _cookieContainer;
+        public AuthService(IOptions<ApiSettings> apiSettings, CookieContainer cookieContainer)
         {
             _apiSettings = apiSettings.Value;
-            _client = new RestClient(_apiSettings.LocalAPI.BaseUrl);
+            _cookieContainer = cookieContainer; // ✅ Use shared cookie container
+
+            var options = new RestClientOptions(_apiSettings.LocalAPI.BaseUrl)
+            {
+                CookieContainer = _cookieContainer
+            };
+
+            _client = new RestClient(options);
         }
+
 
         public async Task<List<CashierDTO>> GetCashiersAsync()
         {
@@ -78,6 +86,46 @@ namespace EBISX_POS.Services
                 }
 
                 return (false, $"Login failed. Status Code: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unexpected Error: {ex.Message}");
+                return (false, "Unexpected error occurred.");
+            }
+        }
+        public class LogOutResponseDTO
+        {
+            public string Message { get; set; } = string.Empty;
+        }
+
+        public async Task<(bool, string)> LogOut(string managerEmail)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
+                {
+                    throw new InvalidOperationException("API settings are not properly configured.");
+                }
+
+                // Build URL and create request with JSON body using PUT method
+                var url = $"{_apiSettings.LocalAPI.AuthEndpoint}/LogOut";
+                var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("managerEmail", managerEmail);
+
+
+                var response = await _client.ExecuteAsync(request);
+
+                if (response.IsSuccessful)
+                {
+                    return (true, response.Content ?? string.Empty);
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    // Return the error message provided by the API.
+                    return (false, response.Content ?? string.Empty);
+                }
+
+                return (false, $"LogOut failed. Status Code: {response.StatusCode}");
             }
             catch (Exception ex)
             {
