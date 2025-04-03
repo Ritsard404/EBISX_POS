@@ -112,15 +112,20 @@ namespace EBISX_POS.Views
             {
                 case ButtonResult.Ok:
                     // Open the TenderOrderWindow
-                    var logOut = await _authService.LogOut(managerEmail);
-                    CashierState.CashierName = string.Empty;
-                    OrderState.CurrentOrder.Clear();
-                    OrderState.CurrentOrderItem = new OrderItemState();
-                    TenderState.tenderOrder.Reset();
+                    var (isSuccess, Message) = await _authService.LogOut(managerEmail);
+                    if (isSuccess)
+                    {
+                        CashierState.CashierName = null;
+                        CashierState.CashierEmail = null;
+                        OrderState.CurrentOrder.Clear();
+                        OrderState.CurrentOrderItem = new OrderItemState();
+                        TenderState.tenderOrder.Reset();
 
-                    var logInWindow = new LogInWindow();
-                    logInWindow.Show();
-                    Close();
+                        var logInWindow = new LogInWindow();
+                        logInWindow.Show();
+                        Close();
+                    }
+                    Debug.WriteLineIf(!isSuccess, Message);
                     return;
                 case ButtonResult.Cancel:
                     return;

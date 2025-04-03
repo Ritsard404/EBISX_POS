@@ -1,9 +1,9 @@
-﻿using EBISX_POS.API.Services.DTO.Menu;
+﻿using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using EBISX_POS.API.Services.DTO.Menu;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace EBISX_POS.Services.DTO.Menu
 {
@@ -54,9 +54,51 @@ namespace EBISX_POS.Services.DTO.Menu
     {
         public int MenuId { get; set; }
         public string MenuName { get; set; }
-        public string? MenuImagePath { get; set; }
+
+        private string? _menuImagePath;
+        public Bitmap? ItemImage { get; private set; }
+
+        public string? MenuImagePath
+        {
+            get => _menuImagePath;
+            set
+            {
+                _menuImagePath = value;
+                ItemImage = string.IsNullOrEmpty(value) ? null : LoadBitmap(value);
+            }
+        }
         public decimal MenuPrice { get; set; }
         public string? Size { get; set; }
         public bool IsUpgradeMeal { get; set; }
+        private Bitmap? LoadBitmap(string path)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(path))
+                {
+                    return null;
+                }
+
+                var uri = new Uri(path);
+
+                // If the URI is a file, load it from disk
+                if (uri.IsFile)
+                {
+                    using var stream = File.OpenRead(path);
+                    return new Bitmap(stream);
+                }
+                else
+                {
+                    // Otherwise, assume it's an asset URI
+                    var assets = AssetLoader.Open(uri);
+                    return new Bitmap(assets);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
     }
 }

@@ -21,7 +21,7 @@
                 VerticalAlignment="Top"
                 Margin="5"
                 Opacity="0.8">
-                <TextBlock Text="{Binding Price, StringFormat='${0:F2}'}"
+                <TextBlock Text="{Binding Price, StringFormat='₱{0:F2}'}"
                            Foreground="White"
                            FontWeight="Bold"
                            FontSize="18"/>

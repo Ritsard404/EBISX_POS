@@ -68,7 +68,7 @@
 									<Border BorderBrush="Orange" BorderThickness="3" IsHitTestVisible="False" CornerRadius="10">
 										<Grid>
 											<!--Image-->
-											<Image Source="{Binding MenuImagePath}" Width="100"/>
+											<Image Source="{Binding ItemImage}" Width="100"/>
 											<!--<Image Source="avares://EBISX_POS/Assets/Images/Burgers/burger.png" MaxWidth="100" />-->
 
 
@@ -222,7 +222,7 @@
 									<Border BorderBrush="Orange" BorderThickness="3" IsHitTestVisible="False" CornerRadius="10">
 										<Grid>
 											<!--Image-->
-											<Image Source="{Binding MenuImagePath}" Width="100"/>
+											<Image Source="{Binding ItemImage}" Width="100"/>
 											<!--<Image Source="avares://EBISX_POS/Assets/Images/Burgers/burger.png" MaxWidth="100" />-->
 
 

@@ -48,6 +48,16 @@ namespace EBISX_POS.State
                 {
                     addOn.HasSize = !string.IsNullOrEmpty(addOn.Size);
                     AddOns.Add(addOn);
+                    //AddOns.Add(new AddOnDetailDTO
+                    //{
+                    //    MenuId = addOn.MenuId,
+                    //    MenuName = addOn.MenuName,
+                    //    Size = addOn.Size,
+                    //    Price = addOn.Price,
+                    //    IsUpgradeMeal = addOn.IsUpgradeMeal,
+
+                    //    MenuImagePath = addOn.MenuImagePath,
+                    //});
                 }
             }
         }

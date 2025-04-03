@@ -79,7 +79,8 @@ namespace EBISX_POS.Views
                 addOnId = subOrders?.FirstOrDefault(m => m.AddOnId != null)?.AddOnId ?? 0,
                 drinkPrice = subOrders?.FirstOrDefault(m => m.DrinkId != null)?.ItemPrice ?? 0,
                 addOnPrice = subOrders?.FirstOrDefault(m => m.AddOnId != null)?.ItemPrice ?? 0,
-                managerEmail = "user1@example.com"
+                managerEmail = "user1@example.com",
+                cashierEmail = CashierState.CashierEmail ?? ""
             };
 
             switch (result)

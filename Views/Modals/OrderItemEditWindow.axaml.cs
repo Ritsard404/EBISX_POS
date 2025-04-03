@@ -46,7 +46,9 @@ namespace EBISX_POS.Views
             var newQty = new EditOrderItemQuantityDTO()
             {
                 entryId = orderItem.ID,
-                qty = orderItem.Quantity
+                qty = orderItem.Quantity,
+                CashierEmail = CashierState.CashierEmail ?? ""
+
             };
             
             await orderService.EditQtyOrderItem(newQty);

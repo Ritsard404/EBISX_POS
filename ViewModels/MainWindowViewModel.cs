@@ -55,6 +55,7 @@ namespace EBISX_POS.ViewModels
             if (!ordersDto.Any())
                 return;
 
+            OrderState.CurrentOrder.Clear();
             foreach (var dto in ordersDto)
             {
                 // Map the DTO's SubOrders to an ObservableCollection<SubOrderItem>

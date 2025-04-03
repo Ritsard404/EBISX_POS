@@ -134,6 +134,8 @@ namespace EBISX_POS.Views
                 }
             }
 
+            TenderState.ElligiblePWDSCDiscount = new List<string>(names);
+
             // Combine the values into comma-separated strings
             string namesCombined = string.Join(", ", names);
             string oscaCombined = string.Join(", ", oscaNumbers);
@@ -149,11 +151,13 @@ namespace EBISX_POS.Views
             await orderService.AddPwdScDiscount(new AddPwdScDiscountDTO()
             {
                 EntryId = _selectedIDs,
-                ManagerEmail = "qwee",
+                ManagerEmail = "user1@example.com",
                 PwdScCount = _inputCount,
                 IsSeniorDisc = !_isPwdSelected,
                 EligiblePwdScNames = namesCombined,
-                OSCAIdsNum = oscaCombined
+                OSCAIdsNum = oscaCombined,
+                CashierEmail = CashierState.CashierEmail ?? ""
+
 
             }); // Fetch the pending orders (grouped by EntryId) from the API.
 

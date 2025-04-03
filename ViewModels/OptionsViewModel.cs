@@ -15,7 +15,6 @@ namespace EBISX_POS.ViewModels
 {
     public partial class OptionsViewModel : ViewModelBase
     {
-        public ObservableCollection<ItemMenu> OptionItems { get; set; }
         public bool HasDrinks => OptionsState.DrinkTypes.Any();
         public bool HasAddOns => OptionsState.AddOnsType.Any();
 
@@ -28,13 +27,6 @@ namespace EBISX_POS.ViewModels
 
         public OptionsViewModel()
         {
-            OptionItems = new ObservableCollection<ItemMenu>
-            {
-                new ItemMenu { Id = 1, ItemName = "Coke", Price = 0.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Drinks/coke.jpg" },
-                new ItemMenu { Id = 2, ItemName = "Coke Zero", Price = 1.99m, ImagePath = "avares://EBISX_POS/Assets/Images/Drinks/zero.jpg" },
-                new ItemMenu { Id = 3, ItemName = "Ice Tea", Price = 0.59m, ImagePath = "avares://EBISX_POS/Assets/Images/Drinks/tea.jpg" },
-                new ItemMenu { Id = 4, ItemName = "Sprite", Price = 9m, ImagePath  = "avares://EBISX_POS/Assets/Images/Drinks/sprite.jpg" }
-            };
 
             OptionsState.DrinkTypes.CollectionChanged += (s, e) =>
             {

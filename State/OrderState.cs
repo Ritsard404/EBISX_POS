@@ -153,6 +153,7 @@ namespace EBISX_POS.State
                 addOnId = subOrders?.FirstOrDefault(m => m.AddOnId != null)?.AddOnId ?? 0,
                 drinkPrice = subOrders?.FirstOrDefault(m => m.DrinkId != null)?.Quantity > 0 ? subOrders?.FirstOrDefault(m => m.DrinkId != null)?.ItemPrice : 0,
                 addOnPrice = subOrders?.FirstOrDefault(m => m.AddOnId != null)?.Quantity > 0 ? subOrders?.FirstOrDefault(m => m.AddOnId != null)?.ItemPrice : 0,
+                cashierEmail = CashierState.CashierEmail ?? ""
             };
 
             // Reset the current order item to a new instance for the next order\
@@ -195,6 +196,8 @@ namespace EBISX_POS.State
             {
                 entryId = orderItem.ID,
                 managerEmail = "",
+                cashierEmail = CashierState.CashierEmail ?? ""
+
             };
 
             // Call the AddOrderItem method.

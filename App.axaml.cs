@@ -41,8 +41,21 @@ namespace EBISX_POS
                 DisableAvaloniaDataAnnotationValidation();
 
                 //desktop.MainWindow = Services.GetRequiredService<MainWindow>();
-                desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
+                //desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
                 //desktop.MainWindow = Services.GetRequiredService<ManagerWindow>();
+
+                // Dynamically switch between LogInWindow and MainWindow based on CashierState.
+                CashierState.OnCashierStateChanged += () =>
+                {
+                    desktop.MainWindow = !string.IsNullOrEmpty(CashierState.CashierName)
+                        ? Services.GetRequiredService<MainWindow>()
+                        : Services.GetRequiredService<LogInWindow>();
+                };
+
+                // Set the initial window based on CashierState.
+                desktop.MainWindow = !string.IsNullOrEmpty(CashierState.CashierName) 
+                    ? Services.GetRequiredService<MainWindow>() 
+                    : Services.GetRequiredService<LogInWindow>();
 
             }
 
@@ -71,7 +84,7 @@ namespace EBISX_POS
 
             services.AddSingleton<MenuService>(); // Register MenuService
             services.AddSingleton<OrderService>();
-            services.AddSingleton<ManagerWindow>(); 
+            services.AddSingleton<ManagerWindow>();
             services.AddSingleton<CookieContainer>();
 
 

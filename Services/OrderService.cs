@@ -185,7 +185,8 @@ namespace EBISX_POS.Services
                 var request = new RestRequest(url, Method.Put).AddJsonBody(addPwdScDiscount);
 
                 // Execute the request and return the result
-                var result = await ExecuteRequestAsync(request);
+                var result = await ExecuteRequestAsync(request); 
+
                 return result.Item1
                     ? (true, result.Item2 ?? "Order voided successfully.")
                     : result;
@@ -196,7 +197,7 @@ namespace EBISX_POS.Services
                 return (false, "An unexpected error occurred.");
             }
         }
-        
+
         public async Task<(bool, string)> PromoDiscount(string managerEmail, string promoCode)
         {
             try
@@ -227,7 +228,7 @@ namespace EBISX_POS.Services
                 return (false, "An unexpected error occurred.");
             }
         }
-        
+
         public async Task<(bool, string)> AvailCoupon(string managerEmail, string couponCode)
         {
             try
@@ -258,7 +259,7 @@ namespace EBISX_POS.Services
                 return (false, "An unexpected error occurred.");
             }
         }
-        
+
         // Calls the FinalizeOrder endpoint to void a specific order item
         public async Task<(bool, string)> FinalizeOrder(FinalizeOrderDTO finalizeOrder)
         {
@@ -289,10 +290,10 @@ namespace EBISX_POS.Services
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
-
                 // Build URL and create a GET request
                 var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/GetCurrentOrderItems";
-                var request = new RestRequest(url, Method.Get);
+                var request = new RestRequest(url, Method.Get)
+                    .AddQueryParameter("cashierEmail", CashierState.CashierEmail);
 
                 // Execute the request and return the data, or an empty list if null
                 var response = await _restClient.ExecuteAsync<List<GetCurrentOrderItemsDTO>>(request);

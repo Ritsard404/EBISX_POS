@@ -58,10 +58,11 @@ namespace EBISX_POS.Services
 
         public class LoginResponseDTO
         {
+            public string CashierEmail { get; set; } = string.Empty;
             public string CashierName { get; set; } = string.Empty;
         }
 
-        public async Task<(bool, string)> LogInAsync(LogInDTO logInDTO)
+        public async Task<(bool, string, string)> LogInAsync(LogInDTO logInDTO)
         {
             try
             {
@@ -77,20 +78,20 @@ namespace EBISX_POS.Services
 
                 if (response.IsSuccessful && response.Data != null)
                 {
-                    return (true, response.Data.CashierName);
+                    return (true, response.Data.CashierName, response.Data.CashierEmail);
                 }
 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    return (false, "Invalid credentials. Please try again.");
+                    return (false, "Invalid credentials. Please try again.", "");
                 }
 
-                return (false, $"Login failed. Status Code: {response.StatusCode}");
+                return (false, $"Login failed. Status Code: {response.StatusCode}", "");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unexpected Error: {ex.Message}");
-                return (false, "Unexpected error occurred.");
+                return (false, "Unexpected error occurred.", "");
             }
         }
         public class LogOutResponseDTO
@@ -110,6 +111,7 @@ namespace EBISX_POS.Services
                 // Build URL and create request with JSON body using PUT method
                 var url = $"{_apiSettings.LocalAPI.AuthEndpoint}/LogOut";
                 var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("cashierEmail", CashierState.CashierEmail)
                     .AddQueryParameter("managerEmail", managerEmail);
 
 
@@ -134,7 +136,7 @@ namespace EBISX_POS.Services
             }
         }
 
-        public async Task<(bool, string)> HasPendingOrder()
+        public async Task<(bool, string, string)> HasPendingOrder()
         {
             try
             {
@@ -148,20 +150,20 @@ namespace EBISX_POS.Services
 
                 if (response.IsSuccessful && response.Data != null)
                 {
-                    return (true, response.Data.CashierName);
+                    return (true, response.Data.CashierName, response.Data.CashierEmail);
                 }
 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    return (false, "Invalid credentials. Please try again.");
+                    return (false, "Invalid credentials. Please try again.", "");
                 }
 
-                return (false, $"Request failed. Status Code: {response.StatusCode}");
+                return (false, $"Request failed. Status Code: {response.StatusCode}", "");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unexpected Error: {ex.Message}");
-                return (false, "Unexpected error occurred.");
+                return (false, "Unexpected error occurred.", "");
             }
         }
     }

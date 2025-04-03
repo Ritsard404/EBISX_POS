@@ -6,6 +6,9 @@ using EBISX_POS.API.Services.DTO.Auth;
 using EBISX_POS.Services;
 using EBISX_POS.State;
 using EBISX_POS.Views;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -74,10 +77,28 @@ namespace EBISX_POS.ViewModels
             try
             {
                 IsLoading = true;
-                var (success, message) = await _authService.HasPendingOrder();
+                var (success, cashierName, cashierEmail) = await _authService.HasPendingOrder();
                 if (success)
                 {
-                    NavigateToMainWindow(message);
+                    var owner = GetCurrentWindow();
+
+                    var alertBox = MessageBoxManager.GetMessageBoxStandard(
+                        new MessageBoxStandardParams
+                        {
+                            ContentHeader = "Cashier Session Restored",
+                            ContentMessage = "Your previous session has been successfully restored after an unexpected closure. Please review your cashier data and continue. If you experience further issues, verify your network connection.",
+                            ButtonDefinitions = ButtonEnum.Ok,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            CanResize = false,
+                            SizeToContent = SizeToContent.WidthAndHeight,
+                            Width = 400,
+                            ShowInCenter = true
+                        });
+
+                    await alertBox.ShowAsPopupAsync(owner);
+
+                    NavigateToMainWindow(cashierEmail: cashierEmail, cashierName: cashierName);
+                    owner.Close();
                 }
             }
             catch (Exception ex)
@@ -95,6 +116,7 @@ namespace EBISX_POS.ViewModels
         {
             try
             {
+                var owner = GetCurrentWindow();
                 ErrorMessage = string.Empty;
                 IsLoading = true;
 
@@ -111,15 +133,16 @@ namespace EBISX_POS.ViewModels
                     ManagerEmail = ManagerEmail
                 };
 
-                var (success, message) = await _authService.LogInAsync(logInDTO);
+                var (success, cashierName, cashierEmail) = await _authService.LogInAsync(logInDTO);
                 if (!success)
                 {
-                    ErrorMessage = message;
+                    ErrorMessage = cashierName;
                     OnPropertyChanged(nameof(HasError));
                     return;
                 }
 
-                NavigateToMainWindow(message);
+                NavigateToMainWindow(cashierEmail: cashierEmail, cashierName: cashierName);
+                owner.Close();
             }
             catch (Exception ex)
             {
@@ -133,21 +156,24 @@ namespace EBISX_POS.ViewModels
                 IsLoading = false;
             }
         }
-
-        private void NavigateToMainWindow(string cashierName)
+        private Window? GetCurrentWindow()
         {
+            if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+            {
+                return desktopLifetime.MainWindow;
+            }
+            return null;
+        }
+
+        private void NavigateToMainWindow(string cashierEmail, string cashierName)
+        {
+            CashierState.CashierEmail = cashierEmail;
             CashierState.CashierName = cashierName;
             var mainWindow = new MainWindow(_menuService)
             {
                 DataContext = new MainWindowViewModel(_menuService)
             };
             mainWindow.Show();
-
-            if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-            {
-                var loginWindow = desktopLifetime.MainWindow as LogInWindow;
-                loginWindow?.Close();  // Close the login window
-            }
         }
     }
 }

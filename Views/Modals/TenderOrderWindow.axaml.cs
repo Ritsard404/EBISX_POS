@@ -17,6 +17,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace EBISX_POS.Views
 {
@@ -49,6 +50,8 @@ namespace EBISX_POS.Views
                     CashTendered = TenderState.tenderOrder.TenderAmount,
                     OrderType = TenderState.tenderOrder.OrderType,
                     DiscountAmount = TenderState.tenderOrder.DiscountAmount,
+                    CashierEmail = CashierState.CashierEmail ?? ""
+
                 };
 
                 await orderService.FinalizeOrder(finalOrder);
@@ -377,15 +380,45 @@ namespace EBISX_POS.Views
                 //writer.WriteLine(CenterText($"{"VAT Amount:",-20}{(!TenderState.tenderOrder.HasOrderDiscount ? TenderState.tenderOrder.TotalAmount - (TenderState.tenderOrder.TotalAmount / 1.12m) : 0m).ToString("C", pesoCulture),20}"));
                 writer.WriteLine();
 
-                foreach (var order in OrderState.CurrentOrder.Where(i => i.IsPwdDiscounted || i.IsSeniorDiscounted))
+
+                if (TenderState.ElligiblePWDSCDiscount == null || !TenderState.ElligiblePWDSCDiscount.Any())
                 {
-                    // Signature section
+                    // Print the signature section once if no eligible discount state is available.
                     writer.WriteLine(CenterText("Name:____________________________"));
                     writer.WriteLine(CenterText("Address:_________________________"));
                     writer.WriteLine(CenterText("TIN: _____________________________"));
                     writer.WriteLine(CenterText("Signature: _______________________"));
                     writer.WriteLine();
                 }
+                else
+                {
+                    var names = (TenderState.ElligiblePWDSCDiscount?.Any() == true)
+                        ? TenderState.ElligiblePWDSCDiscount
+                        : new List<string> { string.Empty };
+
+                    foreach (var pwdSc in names)
+                    {
+                        // Build the centered name text.
+                        string nameText = CenterText($"Name: ______{pwdSc.ToUpper()}________");
+                        writer.WriteLine(nameText);
+                        // Create an underline using dashes; using the trimmed length of the nameText ensures a matching underline.
+                        writer.WriteLine(CenterText("Address: ___________________________"));
+                        writer.WriteLine(CenterText("TIN: _____________________________"));
+                        writer.WriteLine(CenterText("Signature: _______________________"));
+                        writer.WriteLine();
+                    }
+                }
+
+                TenderState.ElligiblePWDSCDiscount?.Clear();
+                //foreach (var order in OrderState.CurrentOrder.Where(i => i.IsPwdDiscounted || i.IsSeniorDiscounted))
+                //{
+                //    // Signature section
+                //    writer.WriteLine(CenterText("Name:____________________________"));
+                //    writer.WriteLine(CenterText("Address:_________________________"));
+                //    writer.WriteLine(CenterText("TIN: _____________________________"));
+                //    writer.WriteLine(CenterText("Signature: _______________________"));
+                //    writer.WriteLine();
+                //}
 
                 // Footer
                 writer.WriteLine(CenterText("This Serve as Sales Invoice"));

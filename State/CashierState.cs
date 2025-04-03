@@ -2,6 +2,8 @@
 
 public static class CashierState
 {
+    public static event Action? OnCashierStateChanged;
+
     private static string? _cashierName;
     public static string? CashierName
     {
@@ -11,11 +13,22 @@ public static class CashierState
             if (_cashierName != value)
             {
                 _cashierName = value;
-                OnCashierNameChanged?.Invoke(); // Trigger UI updates
+                OnCashierStateChanged?.Invoke();
             }
         }
     }
 
-    // Event to notify UI
-    public static event Action? OnCashierNameChanged;
+    private static string? _cashierEmail;
+    public static string? CashierEmail
+    {
+        get => _cashierEmail;
+        set
+        {
+            if (_cashierEmail != value)
+            {
+                _cashierEmail = value;
+                OnCashierStateChanged?.Invoke();
+            }
+        }
+    }
 }
