@@ -9,6 +9,7 @@ using MsBox.Avalonia;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace EBISX_POS.ViewModels
 {
@@ -19,34 +20,42 @@ namespace EBISX_POS.ViewModels
 
         [ObservableProperty]
         private string tenderInput = "";
+
+        // Event to notify changes in other payments
+        public event Action OnOtherPaymentsChanged;
+
         public string TenderInputDisplay
         {
             get
             {
-                // If the raw input ends with a decimal point, preserve it.
+                var otherPayment = TenderState.tenderOrder.OtherPayments?.Sum(p => p.Amount) ?? 0m;
+
                 if (TenderInput.EndsWith("."))
                 {
-                    // Remove the trailing dot temporarily.
                     string intPart = TenderInput.TrimEnd('.');
                     if (decimal.TryParse(intPart, out decimal amt))
                     {
-                        // Format the integer part with thousand separators.
-                        string formattedInt = amt.ToString("N0");
+                        string formattedInt = (otherPayment + amt).ToString("N0");
                         return $"₱ {formattedInt}.";
                     }
                     return $"₱ {TenderInput}";
                 }
                 else if (decimal.TryParse(TenderInput, out decimal amt2))
                 {
-                    // If there is a decimal point within the string (and not ending with one),
-                    // format with two decimals; otherwise, with no decimals.
                     string format = TenderInput.Contains(".") ? "N2" : "N0";
-                    string formatted = amt2.ToString(format);
+                    string formatted = (otherPayment + amt2).ToString(format);
                     return $"₱ {formatted}";
                 }
                 return $"₱ {TenderInput}";
             }
         }
+
+        // This method will trigger when OtherPayments is updated from another viewmodel
+        public void HandleOtherPaymentsChanged()
+        {
+            OnPropertyChanged(nameof(TenderInputDisplay));
+        }
+
         public TenderOrderViewModel()
         {
             TenderCurrentOrder = TenderState.tenderOrder;
@@ -58,15 +67,15 @@ namespace EBISX_POS.ViewModels
             Debug.WriteLine($"Preset button clicked: {content}");
             if (decimal.TryParse(content, out decimal preset))
             {
-                TenderCurrentOrder.TenderAmount += preset;
+                TenderCurrentOrder.CashTenderAmount += preset;
 
                 // Update TenderInput to reflect the new amount with 2 decimal places.
-                TenderInput = TenderCurrentOrder.TenderAmount.ToString("F2");
+                TenderInput = TenderCurrentOrder.CashTenderAmount.ToString("F2");
                 // Optionally update any input string if you’re using one.
                 OnPropertyChanged(nameof(TenderCurrentOrder));
                 OnPropertyChanged(nameof(TenderInput));
                 OnPropertyChanged(nameof(TenderInputDisplay));
-                Debug.WriteLine($"New Tender Amount: {TenderCurrentOrder.TenderAmount}");
+                Debug.WriteLine($"New Tender Amount: {TenderCurrentOrder.CashTenderAmount}");
             }
             else
             {
@@ -82,7 +91,7 @@ namespace EBISX_POS.ViewModels
             if (content == "CLEAR")
             {
                 TenderInput = "";
-                TenderCurrentOrder.TenderAmount = 0m;
+                TenderCurrentOrder.CashTenderAmount = 0m;
                 OnPropertyChanged(nameof(TenderInput));
                 OnPropertyChanged(nameof(TenderInputDisplay));
                 OnPropertyChanged(nameof(TenderCurrentOrder));
@@ -136,7 +145,7 @@ namespace EBISX_POS.ViewModels
             if (decimal.TryParse(TenderInput, out decimal newAmount))
             {
                 newAmount = Math.Round(newAmount, 2);
-                TenderCurrentOrder.TenderAmount = newAmount;
+                TenderCurrentOrder.CashTenderAmount = newAmount;
             }
 
             // Notify the UI that both the raw input and its display have changed.
@@ -144,7 +153,7 @@ namespace EBISX_POS.ViewModels
             OnPropertyChanged(nameof(TenderInputDisplay));
             OnPropertyChanged(nameof(TenderCurrentOrder));
 
-            Debug.WriteLine($"Tender amount updated to: {TenderCurrentOrder.TenderAmount}");
+            Debug.WriteLine($"Tender amount updated to: {TenderCurrentOrder.CashTenderAmount}");
         }
     }
 }

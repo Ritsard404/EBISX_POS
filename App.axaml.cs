@@ -81,9 +81,10 @@ namespace EBISX_POS
 
             // Register services
             services.AddSingleton<AuthService>();
-
             services.AddSingleton<MenuService>(); // Register MenuService
             services.AddSingleton<OrderService>();
+            services.AddSingleton<PaymentService>();
+
             services.AddSingleton<ManagerWindow>();
             services.AddSingleton<CookieContainer>();
 
@@ -95,6 +96,9 @@ namespace EBISX_POS
             services.AddTransient<OrderSummaryViewModel>();
             services.AddTransient<SubItemWindowViewModel>();
             services.AddTransient<ManagerWindow>();
+            services.AddTransient<TenderOrderViewModel>(); // Register your ViewModel
+            services.AddTransient<TenderOrderWindow>(); // Register the window
+
 
             // Register Views
             services.AddTransient<LogInWindow>();

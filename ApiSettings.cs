@@ -23,6 +23,7 @@ namespace EBISX_POS
         public required string AuthEndpoint { get; set; }
         public required string MenuEndpoint { get; set; }
         public required string OrderEndpoint { get; set; }
+        public required string PaymentEndpoint { get; set; }
     }
 
     

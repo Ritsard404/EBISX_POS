@@ -11,8 +11,6 @@ namespace EBISX_POS.Views
 {
     public partial class SubItemWindow : Window
     {
-
-
         public SubItemWindow(ItemMenu item, MenuService menuService)
         {
             InitializeComponent();

@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using EBISX_POS.API.Services.DTO.Payment;
 using EBISX_POS.State;
+using iTextSharp.text;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -14,6 +17,7 @@ namespace EBISX_POS.Models
 
         [ObservableProperty] private decimal totalAmount = 0m;
         [ObservableProperty] private decimal tenderAmount = 0m;
+        [ObservableProperty] private decimal cashTenderAmount = 0m;
         [ObservableProperty] private decimal discountAmount = 0m;
         [ObservableProperty] private decimal promoDiscountAmount = 0m;
         [ObservableProperty] private decimal promoDiscountPercent = 0m;
@@ -24,11 +28,17 @@ namespace EBISX_POS.Models
         [ObservableProperty] private bool hasPwdDiscount;
         [ObservableProperty] private bool hasScDiscount;
         [ObservableProperty] private bool hasOrderDiscount;
+
+        [ObservableProperty] private bool hasOtherPayments;
+
+        [ObservableProperty]
+        private List<AddAlternativePaymentsDTO>? otherPayments;
         public string OrderType { get; set; } = "";
 
         // Trigger recalculations when key properties change
         partial void OnTotalAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnTenderAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
+        partial void OnCashTenderAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnDiscountAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnPromoDiscountAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnPromoDiscountPercentChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
@@ -36,11 +46,17 @@ namespace EBISX_POS.Models
         partial void OnHasScDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
         partial void OnHasPromoDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
         partial void OnHasCouponDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
+        partial void OnOtherPaymentsChanged(List<AddAlternativePaymentsDTO>? oldValue, List<AddAlternativePaymentsDTO>? newValue)
+        {
+            UpdateComputedValues();
+            CalculateTotalAmount();
+        }
 
         public void Reset()
         {
             TotalAmount = TenderAmount = DiscountAmount = PromoDiscountAmount = PromoDiscountPercent = 0m;
             HasPromoDiscount = HasScDiscount = HasPwdDiscount = HasOrderDiscount = false;
+            OtherPayments = null;
             UpdateComputedValues();
         }
 
@@ -54,7 +70,7 @@ namespace EBISX_POS.Models
                 .Where(d => !d.IsPwdDiscounted && !d.IsSeniorDiscounted)
                 .Sum(orderItem => orderItem.TotalPrice) / 1.12m);
             VatAmount = (!HasOrderDiscount ? TotalAmount - (TotalAmount / 1.12m) : VatSales - (VatSales / 1.12m));
-
+            
             UpdateComputedValues();
             return TotalAmount <= 0;
         }
@@ -65,6 +81,7 @@ namespace EBISX_POS.Models
             HasCouponDiscount = OrderState.CurrentOrder
                 .Any(orderItem => orderItem.CouponCode != null);
             HasOrderDiscount = HasPromoDiscount || HasScDiscount || HasPwdDiscount || HasCouponDiscount;
+            HasOtherPayments = OtherPayments != null && OtherPayments.Count > 0;
 
             if (HasPromoDiscount)
             {
@@ -81,6 +98,10 @@ namespace EBISX_POS.Models
                 DiscountAmount = 0m;
             }
 
+            var otherPaymentsTotal = OtherPayments?.Sum(payment => payment.Amount) ?? 0m;
+            TenderAmount = CashTenderAmount + otherPaymentsTotal;
+
+
             if (PromoDiscountAmount >= TotalAmount)
             {
                 AmountDue = 0;
@@ -88,6 +109,7 @@ namespace EBISX_POS.Models
             }
             else
             {
+
                 AmountDue = TotalAmount - DiscountAmount;
                 ChangeAmount = TenderAmount - AmountDue;
             }

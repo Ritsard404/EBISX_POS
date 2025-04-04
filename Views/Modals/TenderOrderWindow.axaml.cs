@@ -42,7 +42,7 @@ namespace EBISX_POS.Views
             var orderService = App.Current.Services.GetRequiredService<OrderService>();
 
             // Check if the tendered amount is sufficient
-            if (TenderState.tenderOrder.TenderAmount >= TenderState.tenderOrder.AmountDue)
+            if (TenderState.tenderOrder.TenderAmount >= TenderState.tenderOrder.AmountDue && TenderState.tenderOrder.TenderAmount > 0)
             {
                 var finalOrder = new FinalizeOrderDTO()
                 {
@@ -241,6 +241,14 @@ namespace EBISX_POS.Views
                         }
                 }
             }
+        }
+
+        private async void OtherPayment_Click(object? sender, RoutedEventArgs e)
+        {
+            var tenderOrderViewModel = App.Current.Services.GetRequiredService<TenderOrderViewModel>();
+            var otherPayment = new AlternativePaymentsWindow(tenderOrderViewModel);
+            await otherPayment.ShowDialog((Window)this.VisualRoot);
+
         }
 
         private string GetDiscountType(ContentControl control)

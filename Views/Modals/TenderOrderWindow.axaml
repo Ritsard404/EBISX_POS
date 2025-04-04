@@ -447,7 +447,19 @@
 							HorizontalContentAlignment="Center"
 							Command="{Binding TenderButtonClickCommand}"
 							CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"/>
-					<Border Width="100" Height="50" Background="Transparent"/>
+					<Button Width="100"
+						Height="50"
+						VerticalContentAlignment="Center"
+						HorizontalContentAlignment="Center"
+						Click="OtherPayment_Click">
+						<StackPanel Orientation="Vertical">
+							<TextBlock Text="E-Wallet"
+									   FontSize="16"
+									   HorizontalAlignment="Center"
+									   FontFamily="{StaticResource NunitoFont}"
+									   FontWeight="Black"/>
+						</StackPanel>
+					</Button>
 				</StackPanel>
 			</Grid>
 		</Grid>

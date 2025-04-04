@@ -59,7 +59,6 @@ namespace EBISX_POS.Views
 
         private async void VoidButton_Click(object sender, RoutedEventArgs e)
         {
-
             // Get the view model from DataContext
             var viewModel = DataContext as OrderItemEditWindowViewModel;
             if (viewModel == null)
@@ -68,32 +67,44 @@ namespace EBISX_POS.Views
             // Retrieve the order item from the view model
             var orderItem = viewModel.OrderItem;
 
-            var box = MessageBoxManager.GetMessageBoxStandard(
-                new MessageBoxStandardParams
-                {
-                    ContentHeader = $"Void Order",
-                    ContentMessage = "Please ask the manager to swipe.",
-                    ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    CanResize = false,
-                    SizeToContent = SizeToContent.WidthAndHeight,
-                    Width = 400,
-                    ShowInCenter = true,
-                    Icon = MsBox.Avalonia.Enums.Icon.Warning
-                });
 
-            var result = await box.ShowAsPopupAsync(this);
-            switch (result)
+            var parentWindow = this.VisualRoot as Window; // Find the parent window
+
+            var swipeManager = new ManagerSwipeWindow(header: "Manager", message: "Please ask the manager to swipe.", ButtonName: "Void");
+            bool isSwiped = await swipeManager.ShowDialogAsync(parentWindow);
+
+            if (isSwiped)
             {
-                case ButtonResult.Ok:
-                    OrderState.VoidCurrentOrder(orderItem);
-                    Close();
-                    return;
-                case ButtonResult.Cancel:
-                    return;
-                default:
-                    return;
+                OrderState.VoidCurrentOrder(orderItem);
+                Close();
             }
+
+            //var box = MessageBoxManager.GetMessageBoxStandard(
+            //    new MessageBoxStandardParams
+            //    {
+            //        ContentHeader = $"Void Order",
+            //        ContentMessage = "Please ask the manager to swipe.",
+            //        ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
+            //        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            //        CanResize = false,
+            //        SizeToContent = SizeToContent.WidthAndHeight,
+            //        Width = 400,
+            //        ShowInCenter = true,
+            //        Icon = MsBox.Avalonia.Enums.Icon.Warning
+            //    });
+
+            //var result = await box.ShowAsPopupAsync(this);
+            //switch (result)
+            //{
+            //    case ButtonResult.Ok:
+            //        OrderState.VoidCurrentOrder(orderItem);
+            //        Close();
+            //        return;
+            //    case ButtonResult.Cancel:
+            //        return;
+            //    default:
+            //        return;
+            //}
         }
     }
 };

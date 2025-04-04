@@ -328,34 +328,46 @@ namespace EBISX_POS.Views
         }
         private async void Manager_Click(object sender, RoutedEventArgs e)
         {
-            var box = MessageBoxManager.GetMessageBoxStandard(
-                new MessageBoxStandardParams
-                {
-                    ContentHeader = $"Manager",
-                    ContentMessage = "Please ask the manager to swipe.",
-                    ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    CanResize = false,
-                    SizeToContent = SizeToContent.WidthAndHeight,
-                    Width = 400,
-                    ShowInCenter = true,
-                    Icon = MsBox.Avalonia.Enums.Icon.Warning
-                });
+            var parentWindow = this.VisualRoot as Window; // Find the parent window
 
-            var result = await box.ShowAsPopupAsync(this);
-            switch (result)
+            var swipeManager = new ManagerSwipeWindow(header: "Manager", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
+            bool isSwiped = await swipeManager.ShowDialogAsync(parentWindow);
+
+            if (isSwiped)
             {
-                case ButtonResult.Ok:
-                    // Open the TenderOrderWindow
-                    var managerView = new ManagerWindow();
-                    managerView.Show();
-                    Close();
-                    return;
-                case ButtonResult.Cancel:
-                    return;
-                default:
-                    return;
+                var managerView = new ManagerWindow();
+                managerView.Show();
+                Close();
             }
+
+            //var box = MessageBoxManager.GetMessageBoxStandard(
+            //    new MessageBoxStandardParams
+            //    {
+            //        ContentHeader = $"Manager",
+            //        ContentMessage = "Please ask the manager to swipe.",
+            //        ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
+            //        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            //        CanResize = false,
+            //        SizeToContent = SizeToContent.WidthAndHeight,
+            //        Width = 400,
+            //        ShowInCenter = true,
+            //        Icon = MsBox.Avalonia.Enums.Icon.Warning
+            //    });
+
+            //var result = await box.ShowAsPopupAsync(this);
+            //switch (result)
+            //{
+            //    case ButtonResult.Ok:
+            //        // Open the TenderOrderWindow
+            //        var managerView = new ManagerWindow();
+            //        managerView.Show();
+            //        Close();
+            //        return;
+            //    case ButtonResult.Cancel:
+            //        return;
+            //    default:
+            //        return;
+            //}
 
         }
     }

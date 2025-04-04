@@ -11,19 +11,30 @@
         Width="500" Height="650"
         CornerRadius="10">
 	<Border BorderThickness="15" CornerRadius="10" BorderBrush="Orange">
-		<ScrollViewer Margin="10">
-			<StackPanel Orientation="Vertical" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+		<Grid Margin="10">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<!-- Takes available space -->
+				<RowDefinition Height="Auto"/>
+				<!-- Button row -->
+			</Grid.RowDefinitions>
+
+			<ScrollViewer Grid.Row="0" Margin="10">
 				<StackPanel x:Name="InputStackPanel" Spacing="10"/>
-				<Button Content="Submit"
-						Width="130" Height="40"
-						FontWeight="SemiBold"
-						FontFamily="{StaticResource NunitoFont}"
-						FontSize="16"
-						Margin="20,0,0,0"
-						VerticalContentAlignment="Center"
-						HorizontalContentAlignment="Center"
-						Click="SubmitButton_Click"/>
-			</StackPanel>
-		</ScrollViewer>
+			</ScrollViewer>
+
+			<Button Grid.Row="1"
+					Content="Submit"
+					Width="130" Height="40"
+					FontWeight="SemiBold"
+					FontFamily="{StaticResource NunitoFont}"
+					FontSize="16"
+					Margin="0,0,10,10"
+					VerticalContentAlignment="Center"
+					HorizontalContentAlignment="Center"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Bottom"
+					Click="SubmitButton_Click"/>
+		</Grid>
 	</Border>
 </Window>

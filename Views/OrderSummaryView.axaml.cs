@@ -13,12 +13,13 @@ using EBISX_POS.Services;
 using EBISX_POS.API.Services.DTO.Order;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace EBISX_POS.Views
 {
     public partial class OrderSummaryView : UserControl
     {
-        private readonly OrderService _orderService;
+        private readonly OrderService _orderService; 
 
         public OrderSummaryView(OrderService orderService)
         {
@@ -50,24 +51,26 @@ namespace EBISX_POS.Views
 
         private async void VoidCurrentOrder_Button(object? sender, RoutedEventArgs e)
         {
-            var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            var owner = lifetime?.MainWindow;
+            var parentWindow = this.VisualRoot as Window; // Find the parent window
 
-            var box = MessageBoxManager.GetMessageBoxStandard(
-                new MessageBoxStandardParams
-                {
-                    ContentHeader = "Void Order",
-                    ContentMessage = "Please ask the manager to swipe.",
-                    ButtonDefinitions = ButtonEnum.OkCancel,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    CanResize = false,
-                    SizeToContent = SizeToContent.WidthAndHeight,
-                    Width = 300,
-                    ShowInCenter = true,
-                    Icon = Icon.Warning
-                });
+            var swipeManager = new ManagerSwipeWindow(header: "Void Order", message: "Please swipe your manager card to void the order.", ButtonName: "Void");
+            bool isSwiped = await swipeManager.ShowDialogAsync(parentWindow);
 
-            var result = await box.ShowAsPopupAsync(owner);
+            //var box = MessageBoxManager.GetMessageBoxStandard(
+            //    new MessageBoxStandardParams
+            //    {
+            //        ContentHeader = "Void Order",
+            //        ContentMessage = "Please ask the manager to swipe.",
+            //        ButtonDefinitions = ButtonEnum.OkCancel,
+            //        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            //        CanResize = false,
+            //        SizeToContent = SizeToContent.WidthAndHeight,
+            //        Width = 300,
+            //        ShowInCenter = true,
+            //        Icon = Icon.Warning
+            //    });
+
+            //var result = await box.ShowAsPopupAsync(owner);
 
             var subOrders = OrderState.CurrentOrderItem?.DisplaySubOrders;
 
@@ -83,34 +86,63 @@ namespace EBISX_POS.Views
                 cashierEmail = CashierState.CashierEmail ?? ""
             };
 
-            switch (result)
+
+            if (isSwiped)
             {
-                case ButtonResult.Ok:
-                    OrderState.CurrentOrderItem = new OrderItemState();
-                    OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
 
-                    if (OrderState.CurrentOrderItem.TotalPrice > 0 || OrderState.CurrentOrderItem.Quantity > 0 || OrderState.CurrentOrderItem.SubOrders.Any(i => i.Name != "Select Menu"))
+                if (OrderState.CurrentOrderItem.TotalPrice > 0 || OrderState.CurrentOrderItem.Quantity > 0 || OrderState.CurrentOrderItem.SubOrders.Any(i => i.Name != "Select Menu"))
+                {
+                    var (success, message) = await _orderService.AddCurrentOrderVoid(voidOrder);
+
+
+                    if (success)
                     {
-                        var (success, message) = await _orderService.AddCurrentOrderVoid(voidOrder);
-
-
-                        if (success)
-                        {
-                            Debug.WriteLine("VoidCurrentOrder_Button: Order voided successfully.");
-                        }
-                        else
-                        {
-                            Debug.WriteLine($"VoidCurrentOrder_Button: Error - {message}");
-                        }
+                        Debug.WriteLine("VoidCurrentOrder_Button: Order voided successfully.");
+                        OrderState.CurrentOrderItem = new OrderItemState();
+                        OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
                     }
+                    else
+                    {
+                        Debug.WriteLine($"VoidCurrentOrder_Button: Error - {message}");
+                    }
+                }
 
-                    return;
-                case ButtonResult.Cancel:
-                    Debug.WriteLine("VoidCurrentOrder_Button: Order voiding canceled.");
-                    return;
-                default:
-                    return;
+                return;
             }
+            else
+            {
+                // Handle failed swipe logic here
+                Console.WriteLine("Manager card not swiped. Order voiding cancelled.");
+            }
+
+            //switch (isSwiped)
+            //{
+            //    case ButtonResult.Ok:
+            //        OrderState.CurrentOrderItem = new OrderItemState();
+            //        OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+
+            //        if (OrderState.CurrentOrderItem.TotalPrice > 0 || OrderState.CurrentOrderItem.Quantity > 0 || OrderState.CurrentOrderItem.SubOrders.Any(i => i.Name != "Select Menu"))
+            //        {
+            //            var (success, message) = await _orderService.AddCurrentOrderVoid(voidOrder);
+
+
+            //            if (success)
+            //            {
+            //                Debug.WriteLine("VoidCurrentOrder_Button: Order voided successfully.");
+            //            }
+            //            else
+            //            {
+            //                Debug.WriteLine($"VoidCurrentOrder_Button: Error - {message}");
+            //            }
+            //        }
+
+            //        return;
+            //    case ButtonResult.Cancel:
+            //        Debug.WriteLine("VoidCurrentOrder_Button: Order voiding canceled.");
+            //        return;
+            //    default:
+            //        return;
+            //}
 
         }
     }

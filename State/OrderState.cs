@@ -2,6 +2,7 @@
 using EBISX_POS.API.Services.DTO.Order;
 using EBISX_POS.Models;
 using EBISX_POS.Services;
+using EBISX_POS.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MsBox.Avalonia;
@@ -114,6 +115,14 @@ namespace EBISX_POS.State
 
             if (!isSolo && (isNoDrinks || isNoAddOn))
             {
+
+                //var parentWindow = this.VisualRoot as Window; // Find the parent window
+
+                var swipeManager = new ManagerSwipeWindow(header: "Required Drink/Side!", message: "Please select a drink/side.", ButtonName: "Ok");
+                bool isSwiped = await swipeManager.ShowDialogAsync(owner);
+
+                return false;
+
                 var box = MessageBoxManager.GetMessageBoxStandard(
                     new MessageBoxStandardParams
                     {
