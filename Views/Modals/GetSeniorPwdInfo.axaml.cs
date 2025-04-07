@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MsBox.Avalonia.Dto;
 using Avalonia.Interactivity;
+using EBISX_POS.API.Services.DTO.Journal;
 
 namespace EBISX_POS.Views
 {
@@ -99,6 +100,8 @@ namespace EBISX_POS.Views
 
             List<string> names = new List<string>();
             List<string> oscaNumbers = new List<string>();
+            List<PwdScInfoDTO> pwdScInfos = new List<PwdScInfoDTO>();
+
 
             // Loop through each horizontal panel in the InputStackPanel
 
@@ -126,11 +129,13 @@ namespace EBISX_POS.Views
                         }).ShowAsPopupAsync(this);
                         names.Clear();
                         oscaNumbers.Clear();
+                        pwdScInfos.Clear();
                         return;
                     }
 
-                    names.Add(nameBox.Text);
-                    oscaNumbers.Add(oscaBox.Text);
+                    names.Add(nameBox.Text.ToUpper());
+                    oscaNumbers.Add(oscaBox.Text.ToUpper());
+                    pwdScInfos.Add(new PwdScInfoDTO { Name = nameBox.Text.ToUpper(), OscaNum = oscaBox.Text.ToUpper() });
                 }
             }
 
@@ -156,8 +161,8 @@ namespace EBISX_POS.Views
                 IsSeniorDisc = !_isPwdSelected,
                 EligiblePwdScNames = namesCombined,
                 OSCAIdsNum = oscaCombined,
-                CashierEmail = CashierState.CashierEmail ?? ""
-
+                CashierEmail = CashierState.CashierEmail ?? "",
+                PwdScInfo = pwdScInfos
 
             }); // Fetch the pending orders (grouped by EntryId) from the API.
 
