@@ -40,6 +40,7 @@ namespace EBISX_POS.Views
         private async void EnterButton_Click(object? sender, RoutedEventArgs e)
         {
             var orderService = App.Current.Services.GetRequiredService<OrderService>();
+            var paymentService = App.Current.Services.GetRequiredService<PaymentService>();
 
             // Check if the tendered amount is sufficient
             if (TenderState.tenderOrder.TenderAmount >= TenderState.tenderOrder.AmountDue && TenderState.tenderOrder.TenderAmount > 0)
@@ -53,6 +54,7 @@ namespace EBISX_POS.Views
                     CashierEmail = CashierState.CashierEmail ?? ""
 
                 };
+                await paymentService.AddAlternativePayments(TenderState.tenderOrder.OtherPayments);
 
                 await orderService.FinalizeOrder(finalOrder);
 
@@ -62,6 +64,7 @@ namespace EBISX_POS.Views
                 OrderState.CurrentOrderItem = new OrderItemState();
                 OrderState.CurrentOrder.Clear();
                 OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+                TenderState.tenderOrder.Reset();
 
                 Close();
                 return;
@@ -246,9 +249,8 @@ namespace EBISX_POS.Views
         private async void OtherPayment_Click(object? sender, RoutedEventArgs e)
         {
             var tenderOrderViewModel = App.Current.Services.GetRequiredService<TenderOrderViewModel>();
-            var otherPayment = new AlternativePaymentsWindow(tenderOrderViewModel);
+            var otherPayment = new AlternativePaymentsWindow();
             await otherPayment.ShowDialog((Window)this.VisualRoot);
-
         }
 
         private string GetDiscountType(ContentControl control)

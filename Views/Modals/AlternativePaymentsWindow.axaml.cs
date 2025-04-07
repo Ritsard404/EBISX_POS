@@ -10,6 +10,7 @@ using EBISX_POS.State;
 using EBISX_POS.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -18,13 +19,10 @@ namespace EBISX_POS.Views
 {
     public partial class AlternativePaymentsWindow : Window
     {
-        private readonly TenderOrderViewModel _tenderOrderViewModel;
-        public AlternativePaymentsWindow(TenderOrderViewModel tenderOrderViewModel)
+        public AlternativePaymentsWindow()
         {
             InitializeComponent();
             CreateFields();
-
-            _tenderOrderViewModel = tenderOrderViewModel;
         }
 
         private async void CreateFields()
@@ -124,7 +122,7 @@ namespace EBISX_POS.Views
 
         private void Save_Click(object? sender, RoutedEventArgs e)
         {
-            var dtos = new List<AddAlternativePaymentsDTO>();
+            var dtos = new ObservableCollection<AddAlternativePaymentsDTO>();
 
             // Iterate over each container in InputStackPanel
             foreach (var child in InputStackPanel.Children)
@@ -174,19 +172,9 @@ namespace EBISX_POS.Views
                 }
             }
 
-            // Output the created DTOs to Debug
-            Debug.WriteLine("=== AddAlternativePaymentsDTO List ===");
-            foreach (var dto in dtos)
-            {
-                Debug.WriteLine($"SaleTypeId: {dto.SaleTypeId}, Reference: {dto.Reference}, Amount: {dto.Amount}");
-            }
-
             if (TenderState.tenderOrder.OtherPayments != null)
                 TenderState.tenderOrder.OtherPayments.Clear();
             TenderState.tenderOrder.OtherPayments = dtos;
-            _tenderOrderViewModel.HandleOtherPaymentsChanged();
-
-
             Close();
         }
 

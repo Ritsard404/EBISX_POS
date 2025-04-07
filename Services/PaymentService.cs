@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -65,7 +66,7 @@ namespace EBISX_POS.Services
             }
         }
 
-        public async Task<(bool, string)> AddAlternativePayments(List<AddAlternativePaymentsDTO> addAlternatives, string cashierEmail)
+        public async Task<(bool, string)> AddAlternativePayments(ObservableCollection<AddAlternativePaymentsDTO> addAlternatives)
         {
             try
             { 
@@ -73,7 +74,7 @@ namespace EBISX_POS.Services
                 var url = $"{_apiSettings.LocalAPI.PaymentEndpoint}/AddAlternativePayments";
                 var request = new RestRequest(url, Method.Post)
                     .AddJsonBody(addAlternatives)
-                    .AddQueryParameter("cashierEmail", cashierEmail);
+                    .AddQueryParameter("cashierEmail", CashierState.CashierEmail);
 
                 // Execute the request and return the data, or an empty list if null
                 var response = await _restClient.ExecuteAsync(request);

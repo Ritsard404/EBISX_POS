@@ -4,6 +4,7 @@ using EBISX_POS.State;
 using iTextSharp.text;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 
@@ -32,7 +33,7 @@ namespace EBISX_POS.Models
         [ObservableProperty] private bool hasOtherPayments;
 
         [ObservableProperty]
-        private List<AddAlternativePaymentsDTO>? otherPayments;
+        private ObservableCollection<AddAlternativePaymentsDTO>? otherPayments;
         public string OrderType { get; set; } = "";
 
         // Trigger recalculations when key properties change
@@ -46,10 +47,10 @@ namespace EBISX_POS.Models
         partial void OnHasScDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
         partial void OnHasPromoDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
         partial void OnHasCouponDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
-        partial void OnOtherPaymentsChanged(List<AddAlternativePaymentsDTO>? oldValue, List<AddAlternativePaymentsDTO>? newValue)
+        partial void OnOtherPaymentsChanged(ObservableCollection<AddAlternativePaymentsDTO>? oldValue, ObservableCollection<AddAlternativePaymentsDTO>? newValue)
         {
             UpdateComputedValues();
-            CalculateTotalAmount();
+            //CalculateTotalAmount();
         }
 
         public void Reset()

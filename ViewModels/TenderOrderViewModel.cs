@@ -24,41 +24,73 @@ namespace EBISX_POS.ViewModels
         // Event to notify changes in other payments
         public event Action OnOtherPaymentsChanged;
 
+        //public string TenderInputDisplay
+        //{
+        //    get
+        //    {
+        //        var otherPayment = TenderState.tenderOrder.OtherPayments?.Sum(p => p.Amount) ?? 0m;
+
+        //        if (TenderInput.EndsWith("."))
+        //        {
+        //            string intPart = TenderInput.TrimEnd('.');
+        //            if (decimal.TryParse(intPart, out decimal amt))
+        //            {
+        //                string formattedInt = (otherPayment + amt).ToString("N0");
+        //                return $"₱ {formattedInt}.";
+        //            }
+        //            return $"₱ {TenderInput}";
+        //        }
+        //        else if (decimal.TryParse(TenderInput, out decimal amt2))
+        //        {
+        //            string format = TenderInput.Contains(".") ? "N2" : "N0";
+        //            string formatted = (otherPayment + amt2).ToString(format);
+        //            return $"₱ {formatted}";
+        //        }
+        //        return $"₱ {TenderInput}";
+        //    }
+        //}
+
         public string TenderInputDisplay
         {
             get
             {
-                var otherPayment = TenderState.tenderOrder.OtherPayments?.Sum(p => p.Amount) ?? 0m;
-
+                decimal total = TenderState.tenderOrder.TenderAmount;
                 if (TenderInput.EndsWith("."))
                 {
-                    string intPart = TenderInput.TrimEnd('.');
-                    if (decimal.TryParse(intPart, out decimal amt))
-                    {
-                        string formattedInt = (otherPayment + amt).ToString("N0");
-                        return $"₱ {formattedInt}.";
-                    }
-                    return $"₱ {TenderInput}";
+                    // Format using no decimals since the dot indicates an incomplete input.
+                    return $"₱ {total.ToString("N0")}.";
                 }
-                else if (decimal.TryParse(TenderInput, out decimal amt2))
+                // If TenderInput contains a decimal point, format with 2 decimal places.
+                else if (TenderInput.Contains("."))
                 {
-                    string format = TenderInput.Contains(".") ? "N2" : "N0";
-                    string formatted = (otherPayment + amt2).ToString(format);
-                    return $"₱ {formatted}";
+                    return $"₱ {total.ToString("N2")}";
                 }
-                return $"₱ {TenderInput}";
+                else
+                {
+                    // For integers (or when TenderInput is empty) use no decimal places.
+                    return $"₱ {total.ToString("N0")}";
+                }
             }
         }
 
+
         // This method will trigger when OtherPayments is updated from another viewmodel
-        public void HandleOtherPaymentsChanged()
-        {
-            OnPropertyChanged(nameof(TenderInputDisplay));
-        }
+        //public void HandleOtherPaymentsChanged()
+        //{
+        //    OnPropertyChanged(nameof(TenderInputDisplay));
+        //}
 
         public TenderOrderViewModel()
         {
             TenderCurrentOrder = TenderState.tenderOrder;
+
+            TenderCurrentOrder.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(TenderCurrentOrder.TenderAmount))
+                {
+                    OnPropertyChanged(nameof(TenderInputDisplay));
+                }
+            };
         }
 
         [RelayCommand]
@@ -92,6 +124,7 @@ namespace EBISX_POS.ViewModels
             {
                 TenderInput = "";
                 TenderCurrentOrder.CashTenderAmount = 0m;
+                TenderState.tenderOrder.OtherPayments = null;
                 OnPropertyChanged(nameof(TenderInput));
                 OnPropertyChanged(nameof(TenderInputDisplay));
                 OnPropertyChanged(nameof(TenderCurrentOrder));
