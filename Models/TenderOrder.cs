@@ -55,7 +55,7 @@ namespace EBISX_POS.Models
 
         public void Reset()
         {
-            TotalAmount = TenderAmount = DiscountAmount = PromoDiscountAmount = PromoDiscountPercent = 0m;
+            TotalAmount = TenderAmount = CashTenderAmount = DiscountAmount = PromoDiscountAmount = PromoDiscountPercent = 0m;
             HasPromoDiscount = HasScDiscount = HasPwdDiscount = HasOrderDiscount = false;
             OtherPayments = null;
             UpdateComputedValues();

@@ -94,9 +94,17 @@ namespace EBISX_POS.Views
 
         private async void SubmitButton_Click(object? sender, RoutedEventArgs e)
         {
+            if (Submit_Button == null)
+                Submit_Button = this.FindControl<Button>("Submit_Button");
+
+            Submit_Button.IsEnabled = false;
+
             var inputStackPanel = this.FindControl<StackPanel>("InputStackPanel");
             if (inputStackPanel == null)
+            {
+                Submit_Button.IsEnabled = true;
                 return;
+            }
 
             List<string> names = new List<string>();
             List<string> oscaNumbers = new List<string>();
@@ -130,6 +138,8 @@ namespace EBISX_POS.Views
                         names.Clear();
                         oscaNumbers.Clear();
                         pwdScInfos.Clear();
+
+                        Submit_Button.IsEnabled = true;
                         return;
                     }
 
@@ -170,7 +180,10 @@ namespace EBISX_POS.Views
 
             // If the items collection has empty items, exit.
             if (!ordersDto.Any())
+            {
+                Submit_Button.IsEnabled = true;
                 return;
+            }
 
             OrderState.CurrentOrder.Clear();
 
@@ -220,6 +233,8 @@ namespace EBISX_POS.Views
             OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
 
             Close();
+            Submit_Button.IsEnabled = true;
+
         }
     }
 }

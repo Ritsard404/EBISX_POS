@@ -129,6 +129,8 @@ namespace EBISX_POS.Views
             {
                 if (child is StackPanel container && container.Children.Count >= 2)
                 {
+                    var saleTypeNameTextBlock = container.Children[0] as TextBlock;
+
                     // The second child is the horizontal panel with inputs
                     if (container.Children[1] is StackPanel inputPanel && inputPanel.Children.Count >= 2)
                     {
@@ -160,7 +162,8 @@ namespace EBISX_POS.Views
                                 {
                                     Reference = textBoxReference.Text,
                                     Amount = amount,
-                                    SaleTypeId = saleTypeId
+                                    SaleTypeId = saleTypeId,
+                                    SaleTypeName = saleTypeNameTextBlock?.Text ?? string.Empty
                                 });
                             }
                             else

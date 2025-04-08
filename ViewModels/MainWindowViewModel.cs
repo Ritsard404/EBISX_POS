@@ -50,9 +50,10 @@ namespace EBISX_POS.ViewModels
 
             // Fetch the pending orders (grouped by EntryId) from the API.
             var ordersDto = await orderService.GetCurrentOrderItems();
+            var eligiblePwdScNames = await orderService.GetElligiblePWDSCDiscount();
 
             // If the items collection has empty items, exit.
-            if (!ordersDto.Any())
+            if (!ordersDto.Any() && !eligiblePwdScNames.Any())
                 return;
 
             OrderState.CurrentOrder.Clear();
@@ -87,7 +88,7 @@ namespace EBISX_POS.ViewModels
                     IsPwdDiscounted = dto.IsPwdDiscounted,
                     IsSeniorDiscounted = dto.IsSeniorDiscounted,
                     PromoDiscountAmount = dto.PromoDiscountAmount,
-                    HasPwdScDiscount= dto.HasDiscount && dto.PromoDiscountAmount == null,
+                    HasPwdScDiscount = dto.HasDiscount && dto.PromoDiscountAmount == null,
                     CouponCode = dto.CouponCode
                 };
 
@@ -97,6 +98,12 @@ namespace EBISX_POS.ViewModels
 
             // Refresh UI display (if needed by your application).
             OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+
+            TenderState.ElligiblePWDSCDiscount = eligiblePwdScNames;
+            foreach (var name in eligiblePwdScNames)
+            {
+                Debug.WriteLine($"Eligible PWD/SC Name: {name}");
+            }
         }
 
 

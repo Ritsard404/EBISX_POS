@@ -4,14 +4,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:models="clr-namespace:EBISX_POS.Models"
         xmlns:views="clr-namespace:EBISX_POS.Views"
-        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="650"
         x:Class="EBISX_POS.Views.SelectDiscountPwdScWindow"
         x:DataType="views:SelectDiscountPwdScWindow"
         Title="Select Discount Pwd/Sc"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"
         SystemDecorations="None"
-        Width="500" Height="600"
+		Width="500" Height="650"
         CornerRadius="10">
 	<Border BorderThickness="15" CornerRadius="10" BorderBrush="Orange">
 

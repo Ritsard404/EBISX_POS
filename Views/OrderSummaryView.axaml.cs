@@ -103,7 +103,8 @@ namespace EBISX_POS.Views
                     }
                     else
                     {
-                        Debug.WriteLine($"VoidCurrentOrder_Button: Error - {message}");
+                        OrderState.CurrentOrderItem = new OrderItemState();
+                        OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
                     }
                 }
 

@@ -224,7 +224,7 @@ namespace EBISX_POS.Views
                                 var promoWindow = new DiscountCodeWindow("COUPON");
                                 await promoWindow.ShowDialog((Window)this.VisualRoot);
                             }
-                            break;
+                            return;
                         }
                     default:
                         {
@@ -240,7 +240,7 @@ namespace EBISX_POS.Views
                                 ShowInCenter = true,
                                 Icon = MsBox.Avalonia.Enums.Icon.Warning
                             }).ShowAsPopupAsync(this);
-                            break;
+                            return;
                         }
                 }
             }
@@ -248,6 +248,9 @@ namespace EBISX_POS.Views
 
         private async void OtherPayment_Click(object? sender, RoutedEventArgs e)
         {
+            if (TenderState.tenderOrder.CashTenderAmount >= TenderState.tenderOrder.AmountDue && TenderState.tenderOrder.TenderAmount > 0)
+                return;
+
             var tenderOrderViewModel = App.Current.Services.GetRequiredService<TenderOrderViewModel>();
             var otherPayment = new AlternativePaymentsWindow();
             await otherPayment.ShowDialog((Window)this.VisualRoot);
@@ -377,7 +380,16 @@ namespace EBISX_POS.Views
                 // Totals
                 writer.WriteLine(CenterText($"{"Total Amount:",-20}{TenderState.tenderOrder.TotalAmount.ToString("C", pesoCulture),20}"));
                 writer.WriteLine(CenterText($"{"Due Amount:",-20}{TenderState.tenderOrder.AmountDue.ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"Cash Tendered:",-20}{TenderState.tenderOrder.TenderAmount.ToString("C", pesoCulture),20}"));
+
+                if (TenderState.tenderOrder.HasOtherPayments && TenderState.tenderOrder.OtherPayments != null)
+                {
+                    foreach (var payment in TenderState.tenderOrder.OtherPayments)
+                    {
+                        writer.WriteLine(CenterText($"{payment.SaleTypeName + ":",-20}{payment.Amount.ToString("C", pesoCulture),20}"));
+                    }
+                }
+                writer.WriteLine(CenterText($"{"Cash Tendered:",-20}{TenderState.tenderOrder.CashTenderAmount.ToString("C", pesoCulture),20}"));
+                writer.WriteLine(CenterText($"{"Total Amount Tendered:",-20}{TenderState.tenderOrder.TenderAmount.ToString("C", pesoCulture),20}"));
                 writer.WriteLine(CenterText($"{"Change:",-20}{TenderState.tenderOrder.ChangeAmount.ToString("C", pesoCulture),20}"));
                 writer.WriteLine();
 
@@ -385,9 +397,6 @@ namespace EBISX_POS.Views
                 writer.WriteLine(CenterText($"{"Vat Exempt Sales:",-20}{(TenderState.tenderOrder.VatExemptSales).ToString("C", pesoCulture),20}"));
                 writer.WriteLine(CenterText($"{"Vatables Sales:",-20}{(TenderState.tenderOrder.VatSales).ToString("C", pesoCulture),20}"));
                 writer.WriteLine(CenterText($"{"VAT Amount:",-20}{(TenderState.tenderOrder.VatAmount).ToString("C", pesoCulture),20}"));
-                // writer.WriteLine(CenterText($"{"Vat Exempt Sales:",-20}{(TenderState.tenderOrder.HasScDiscount || TenderState.tenderOrder.HasPwdDiscount ? TenderState.tenderOrder.DiscountAmount : 0m).ToString("C", pesoCulture),20}"));
-                //writer.WriteLine(CenterText($"{"Vatables Sales:",-20}{(!TenderState.tenderOrder.HasOrderDiscount ? TenderState.tenderOrder.TotalAmount / 1.12m : 0m).ToString("C", pesoCulture),20}"));
-                //writer.WriteLine(CenterText($"{"VAT Amount:",-20}{(!TenderState.tenderOrder.HasOrderDiscount ? TenderState.tenderOrder.TotalAmount - (TenderState.tenderOrder.TotalAmount / 1.12m) : 0m).ToString("C", pesoCulture),20}"));
                 writer.WriteLine();
 
 
@@ -409,12 +418,12 @@ namespace EBISX_POS.Views
                     foreach (var pwdSc in names)
                     {
                         // Build the centered name text.
-                        string nameText = CenterText($"Name: ______{pwdSc.ToUpper()}________");
+                        string nameText = $"Name: {pwdSc.ToUpper()}________";
                         writer.WriteLine(nameText);
                         // Create an underline using dashes; using the trimmed length of the nameText ensures a matching underline.
-                        writer.WriteLine(CenterText("Address: ___________________________"));
-                        writer.WriteLine(CenterText("TIN: _____________________________"));
-                        writer.WriteLine(CenterText("Signature: _______________________"));
+                        writer.WriteLine("Address: ___________________________");
+                        writer.WriteLine("TIN: _____________________________");
+                        writer.WriteLine("Signature: _______________________");
                         writer.WriteLine();
                     }
                 }

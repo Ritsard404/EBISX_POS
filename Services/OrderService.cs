@@ -305,5 +305,27 @@ namespace EBISX_POS.Services
                 return new List<GetCurrentOrderItemsDTO>();
             }
         }
+        
+        public async Task<List<string>> GetElligiblePWDSCDiscount()
+        {
+            try
+            {
+                ValidateOrderEndpoint(); // Validate API endpoint configuration
+                // Build URL and create a GET request
+                var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/GetElligiblePWDSCDiscount";
+                var request = new RestRequest(url, Method.Get)
+                    .AddQueryParameter("cashierEmail", CashierState.CashierEmail);
+
+                // Execute the request and return the data, or an empty list if null
+                var response = await _restClient.ExecuteAsync<List<string>>(request);
+                return response.Data ?? new List<string>();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return new List<string>();
+            }
+        }
+
     }
 }
