@@ -153,6 +153,11 @@ namespace EBISX_POS.Services
                     return (true, response.Data.CashierName, response.Data.CashierEmail);
                 }
 
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    return (false, "No Pending Orders", "");
+                }
+
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     return (false, "Invalid credentials. Please try again.", "");

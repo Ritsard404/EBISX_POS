@@ -1,5 +1,7 @@
-﻿using EBISX_POS.API.Services.DTO.Order;
+﻿using EBISX_POS.API.Models;
+using EBISX_POS.API.Services.DTO.Order;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -261,28 +263,40 @@ namespace EBISX_POS.Services
         }
 
         // Calls the FinalizeOrder endpoint to void a specific order item
-        public async Task<(bool, string)> FinalizeOrder(FinalizeOrderDTO finalizeOrder)
+        public async Task<(bool, string, FinalizeOrderResponseDTO Response)> FinalizeOrder(FinalizeOrderDTO finalizeOrder)
         {
             try
             {
-                ValidateOrderEndpoint(); // Validate API endpoint configuration
+                // Validate the API endpoint configuration
+                ValidateOrderEndpoint();
 
                 // Build URL and create request with JSON body using PUT method
                 var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/FinalizeOrder";
-                var request = new RestRequest(url, Method.Put).AddJsonBody(finalizeOrder);
+                var request = new RestRequest(url, Method.Put)
+                    .AddJsonBody(finalizeOrder);
 
-                // Execute the request and return the result
-                var result = await ExecuteRequestAsync(request);
-                return result.Item1
-                    ? (true, result.Item2 ?? "Order finalized successfully.")
-                    : result;
+                // Execute the request
+                var response = await _restClient.ExecuteAsync<FinalizeOrderResponseDTO>(request);
+
+                // Check if the response is successful and contains valid data
+                if (response.IsSuccessful && response.Data != null)
+                {
+                    return (true, "Order finalized successfully.", response.Data);
+                }
+                else
+                {
+                    // If response is not successful, return the error message
+                    return (false, response.ErrorMessage ?? "Failed to finalize order.", null);
+                }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($" Error: {ex.Message}");
-                return (false, "An unexpected error occurred.");
+                // Log the exception message
+                Debug.WriteLine($"Error: {ex.Message}");
+                return (false, "An unexpected error occurred.", null);
             }
         }
+
 
         // Calls the GetCurrentOrderItems endpoint to retrieve the current order items
         public async Task<List<GetCurrentOrderItemsDTO>> GetCurrentOrderItems()

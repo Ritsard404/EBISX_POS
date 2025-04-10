@@ -13,6 +13,7 @@ using EBISX_POS.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace EBISX_POS
 {
@@ -115,9 +116,10 @@ namespace EBISX_POS
             // Cash Track logs view
             services.AddTransient<CashTrackView>(provider =>
             {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                return new CashTrackView(configuration);
+                var reportOptions = provider.GetRequiredService<IOptions<SalesReport>>();
+                return new CashTrackView(reportOptions);
             });
+
 
             // T logs view
             services.AddTransient<TransactionView>(provider =>
@@ -135,8 +137,9 @@ namespace EBISX_POS
 
             // Correct way to register ApiSettings from appsettings.json
             services.Configure<ApiSettings>(configuration);
-            services.Configure<ReportSetting>(configuration);
-
+            services.Configure<SalesReport>(
+                configuration.GetSection("SalesReport")
+            );
             // Register logging
             services.AddLogging(configure => configure.AddConsole());
 

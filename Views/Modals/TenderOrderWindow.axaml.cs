@@ -43,7 +43,7 @@ namespace EBISX_POS.Views
             var paymentService = App.Current.Services.GetRequiredService<PaymentService>();
 
             // Check if the tendered amount is sufficient
-            if (TenderState.tenderOrder.TenderAmount >= TenderState.tenderOrder.AmountDue && TenderState.tenderOrder.TenderAmount > 0)
+            if (TenderState.tenderOrder.TenderAmount >= TenderState.tenderOrder.AmountDue && TenderState.tenderOrder.TenderAmount > 0 && TenderState.tenderOrder.TotalAmount > 0)
             {
                 var finalOrder = new FinalizeOrderDTO()
                 {
@@ -56,10 +56,10 @@ namespace EBISX_POS.Views
                 };
                 await paymentService.AddAlternativePayments(TenderState.tenderOrder.OtherPayments);
 
-                await orderService.FinalizeOrder(finalOrder);
+                var posInfo = await orderService.FinalizeOrder(finalOrder);
 
                 // Kick off the asynchronous receipt generation task.
-                await GenerateAndPrintReceiptAsync();
+                await GenerateAndPrintReceiptAsync(posInfo.Response);
 
                 OrderState.CurrentOrderItem = new OrderItemState();
                 OrderState.CurrentOrder.Clear();
@@ -248,7 +248,7 @@ namespace EBISX_POS.Views
 
         private async void OtherPayment_Click(object? sender, RoutedEventArgs e)
         {
-            if (TenderState.tenderOrder.CashTenderAmount >= TenderState.tenderOrder.AmountDue && TenderState.tenderOrder.TenderAmount > 0)
+            if (TenderState.tenderOrder.CashTenderAmount >= TenderState.tenderOrder.AmountDue && TenderState.tenderOrder.TenderAmount > 0 || TenderState.tenderOrder.TotalAmount < 1)
                 return;
 
             var tenderOrderViewModel = App.Current.Services.GetRequiredService<TenderOrderViewModel>();
@@ -273,7 +273,7 @@ namespace EBISX_POS.Views
             return control.Content?.ToString() ?? string.Empty;
         }
 
-        private async Task GenerateAndPrintReceiptAsync()
+        private async Task GenerateAndPrintReceiptAsync(FinalizeOrderResponseDTO finalizeOrder)
         {
             // Define target folder and file paths.
             string folderPath = @"C:\POS\Reciepts";
@@ -288,11 +288,8 @@ namespace EBISX_POS.Views
                     Directory.CreateDirectory(folderPath);
                 }
 
-
-                var receiptViewModel = new CustomerInvoiceReceiptViewModel();
-
                 // Write receipt content to file.
-                WriteReceiptContent(filePath, receiptViewModel);
+                WriteReceiptContent(filePath, finalizeOrder);
 
                 //// Notify the user if the file was created.
                 //if (File.Exists(filePath))
@@ -318,7 +315,7 @@ namespace EBISX_POS.Views
                     .ShowAsPopupAsync(this);
             }
         }
-        private void WriteReceiptContent(string filePath, CustomerInvoiceReceiptViewModel viewModel)
+        private void WriteReceiptContent(string filePath, FinalizeOrderResponseDTO finalizeOrder)
         {
             int receiptWidth = 50; // Adjust as necessary for formatting
             var pesoCulture = new CultureInfo("en-PH");
@@ -333,18 +330,18 @@ namespace EBISX_POS.Views
                 writer.WriteLine(new string('=', receiptWidth));
                 writer.WriteLine(CenterText("Customer Invoice Receipt"));
                 writer.WriteLine(new string('=', receiptWidth));
-                writer.WriteLine(CenterText(viewModel.BusinessName));
-                writer.WriteLine(CenterText(viewModel.Address));
-                writer.WriteLine(CenterText($"TIN: {viewModel.Tin}"));
-                writer.WriteLine(CenterText($"MIN: {viewModel.Min}"));
+                writer.WriteLine(CenterText(finalizeOrder.RegisteredName));
+                writer.WriteLine(CenterText(finalizeOrder.Address));
+                writer.WriteLine(CenterText($"TIN: {finalizeOrder.VatTinNumber}"));
+                writer.WriteLine(CenterText($"MIN: {finalizeOrder.MinNumber}"));
                 writer.WriteLine(new string('-', receiptWidth));
                 writer.WriteLine();
 
                 // Invoice details
-                writer.WriteLine($"Invoice No: {viewModel.InvoiceNumber}".PadRight(receiptWidth - 10));
-                writer.WriteLine(CenterText(viewModel.InvoiceType));
-                writer.WriteLine($"Date: {viewModel.InvoiceDate:d}".PadRight(receiptWidth - 10));
-                writer.WriteLine($"Cashier: {viewModel.Cashier}".PadRight(receiptWidth - 10));
+                writer.WriteLine($"Invoice No: {finalizeOrder.InvoiceNumber}".PadRight(receiptWidth - 10));
+                writer.WriteLine(CenterText(TenderState.tenderOrder.OrderType));
+                writer.WriteLine($"Date: {finalizeOrder.InvoiceDate:d}".PadRight(receiptWidth - 10));
+                writer.WriteLine($"Cashier: {CashierState.CashierName}".PadRight(receiptWidth - 10));
                 writer.WriteLine(new string('-', receiptWidth));
 
                 // Items header// Items header
@@ -389,7 +386,7 @@ namespace EBISX_POS.Views
                     }
                 }
                 writer.WriteLine(CenterText($"{"Cash Tendered:",-20}{TenderState.tenderOrder.CashTenderAmount.ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"Total Amount Tendered:",-20}{TenderState.tenderOrder.TenderAmount.ToString("C", pesoCulture),20}"));
+                writer.WriteLine(CenterText($"{"Total Tendered:",-20}{TenderState.tenderOrder.TenderAmount.ToString("C", pesoCulture),20}"));
                 writer.WriteLine(CenterText($"{"Change:",-20}{TenderState.tenderOrder.ChangeAmount.ToString("C", pesoCulture),20}"));
                 writer.WriteLine();
 
@@ -443,9 +440,9 @@ namespace EBISX_POS.Views
                 writer.WriteLine(CenterText("This Serve as Sales Invoice"));
                 writer.WriteLine(CenterText("Arsene Software Solutions"));
                 writer.WriteLine(CenterText("Labangon St. Cebu City, Cebu"));
-                writer.WriteLine(CenterText($"VAT Reg TIN: {viewModel.Tin}"));
-                writer.WriteLine(CenterText($"Date Issue: {viewModel.InvoiceDate:d}"));
-                writer.WriteLine(CenterText($"Valid Until: {viewModel.InvoiceDate:d}"));
+                writer.WriteLine(CenterText($"VAT Reg TIN: {finalizeOrder.VatTinNumber}"));
+                writer.WriteLine(CenterText($"Date Issue: {finalizeOrder.DateIssued:d}"));
+                writer.WriteLine(CenterText($"Valid Until: {finalizeOrder.ValidUntil:d}"));
                 writer.WriteLine();
                 writer.WriteLine(new string('=', receiptWidth));
                 writer.WriteLine(CenterText("Thank you for your purchase!"));

@@ -3,21 +3,20 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using EBISX_POS.ViewModels;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
 using System;
 using System.IO;
 using System.Linq;
-using SixLabors.ImageSharp;
 
-namespace EBISX_POS.Views {
+namespace EBISX_POS.Views
+{
     public partial class CashTrackView : Window
     {
-        private readonly IConfiguration _configuration;
+        private readonly string _cashTrackReportPath;
 
-        // Parameterless constructor for XAML instantiation
-        public CashTrackView(IConfiguration configuration)
+        public CashTrackView(IOptions<SalesReport> reportOptions)
         {
             InitializeComponent();
             DataContext = new CashTrackerViewModel();
@@ -25,39 +24,38 @@ namespace EBISX_POS.Views {
             var _generateButton = this.FindControl<Button>("Print");
             _generateButton.Click += GenerateCashTrack;
 
-            _configuration = configuration;
+            _cashTrackReportPath = reportOptions.Value.CashTrackReport;
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
-
         }
 
         public async void GenerateCashTrack(object? sender, RoutedEventArgs e)
         {
-                // Define the folder path
-                string folderPath = _configuration["SalesReport:CashTrackReport"];
-                Directory.CreateDirectory(folderPath); // Create if it doesn't exist
+            // Ensure the target directory exists
+            if (!Directory.Exists(_cashTrackReportPath))
+            {
+                Directory.CreateDirectory(_cashTrackReportPath);
+            }
 
-                // Define the file path
-                string fileName = "CashTrackReport.txt";
-                string filePath = Path.Combine(folderPath, fileName);
+            // Define the file path
+            string fileName = "CashTrackReport.txt";
+            string filePath = Path.Combine(_cashTrackReportPath, fileName);
 
-                // Get the data from ViewModel
-                var viewModel = (CashTrackerViewModel)DataContext;
-                var cashTrack = viewModel.CashTrack.FirstOrDefault(); // Get the first report
+            var viewModel = (CashTrackerViewModel)DataContext;
+            var cashTrack = viewModel.CashTrack.FirstOrDefault();
 
-                if (cashTrack == null)
-                {
-                    await MessageBoxManager
-                        .GetMessageBoxStandard("Error", "No data available for the report!", ButtonEnum.Ok)
-                        .ShowAsPopupAsync(this);
-                    return;
-                }
+            if (cashTrack == null)
+            {
+                await MessageBoxManager
+                    .GetMessageBoxStandard("Error", "No data available for the report!", ButtonEnum.Ok)
+                    .ShowAsPopupAsync(this);
+                return;
+            }
 
-                // Format the report content
-                string reportContent = $@"
+            string reportContent = $@"
                 ==================================
                         Cash Track Report
                 ==================================
@@ -65,12 +63,8 @@ namespace EBISX_POS.Views {
                 Total Cash Drawer: {cashTrack.WithdrawalAmount:C}
                 ";
 
-                // Remove extra spaces at the start of each line
-                reportContent = string.Join("\n", reportContent.Split("\n").Select(line => line.Trim()));
-
-                // Write to the file
-                File.WriteAllText(filePath, reportContent);
+            reportContent = string.Join("\n", reportContent.Split("\n").Select(line => line.Trim()));
+            File.WriteAllText(filePath, reportContent);
         }
     }
-
-};
+}

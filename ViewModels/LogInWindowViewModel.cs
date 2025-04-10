@@ -58,7 +58,6 @@ namespace EBISX_POS.ViewModels
                 {
                     Cashiers.Add(cashier);
                 }
-                Debug.WriteLine($"Loaded {Cashiers.Count} cashiers.");
             }
             catch (Exception ex)
             {
