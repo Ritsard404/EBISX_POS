@@ -169,7 +169,7 @@ namespace EBISX_POS.ViewModels
             CashierState.CashierEmail = cashierEmail;
             CashierState.CashierName = cashierName;
 
-            var mainWindow = new MainWindow(_menuService)
+            var mainWindow = new MainWindow(_menuService, _authService)
             {
                 DataContext = new MainWindowViewModel(_menuService)
             };

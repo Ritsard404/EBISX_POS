@@ -60,7 +60,7 @@ namespace EBISX_POS.Views
 
         private void Back_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var mainWindow = new MainWindow(_menuService)
+            var mainWindow = new MainWindow(_menuService, _authService)
             {
                 DataContext = new MainWindowViewModel(_menuService)
             };

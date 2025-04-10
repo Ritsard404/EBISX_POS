@@ -23,6 +23,7 @@ namespace EBISX_POS.Views
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly MenuService _menuService;
+        private readonly AuthService _authService;
         private ToggleButton? _selectedMenuButton; // Stores selected menu item
         private Category? _selectedMenuItem;       // Stores selected menu item object
 
@@ -44,10 +45,11 @@ namespace EBISX_POS.Views
         private void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public MainWindow(MenuService menuService)
+        public MainWindow(MenuService menuService, AuthService authService)
         {
             InitializeComponent();
             _menuService = menuService;
+            _authService = authService;
             DataContext = new MainWindowViewModel(menuService);
 
             this.AttachedToVisualTree += OnAttachedToVisualTree;
@@ -59,16 +61,24 @@ namespace EBISX_POS.Views
             // When the window is opened, load the first category's menus.
             this.Opened += async (s, e) =>
             {
+
+                // Set loading flag to true
+                IsLoadCtgry.IsVisible = true;
+                IsLoadMenu.IsVisible = true;
+                IsCtgryAvail.IsVisible = false;
+                IsMenuAvail.IsVisible = false;
+
+                bool isCashedDrawer = await _authService.IsCashedDrawer();
+                if (!isCashedDrawer)
+                {
+                    var setCashDrawer = new SetCashDrawerWindow();
+                    await setCashDrawer.ShowDialog(this);
+                }
+
                 var categories = await _menuService.GetCategoriesAsync();
                 if (categories.Any())
                 {
                     var firstCategory = categories.First();
-
-                    // Set loading flag to true
-                    IsLoadCtgry.IsVisible = true;
-                    IsLoadMenu.IsVisible = true;
-                    IsCtgryAvail.IsVisible = false;
-                    IsMenuAvail.IsVisible = false;
 
                     await itemListView.LoadMenusAsync(firstCategory.Id);
 
@@ -78,10 +88,10 @@ namespace EBISX_POS.Views
                     IsCtgryAvail.IsVisible = true;
                     IsMenuAvail.IsVisible = true;
                 }
+
             };
 
             OnPropertyChanged(nameof(OrderState.CurrentOrderItem));
-
         }
 
 
