@@ -1,0 +1,201 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" 
+        x:Class="EBISX_POS.Views.XInvoiceReceiptView"
+        xmlns:views="clr-namespace:EBISX_POS.Views"
+        xmlns:vm="clr-namespace:EBISX_POS.ViewModels.Manager"
+        x:DataType="vm:SalesReportViewModel">
+
+    <Viewbox>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="5" >
+                <!-- Header -->
+                <TextBlock Text="===================================" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Report.InvoiceType}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="===================================" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Report.Name}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Report.Address}" HorizontalAlignment="Center"/>
+                <TextBlock Text="TIN: {Binding Report.TIN}" HorizontalAlignment="Center"/>
+                <TextBlock Text="MIN: {Binding Report.MIN}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Store Code: {Binding Report.StoreCode}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Report Date: {Binding Report.StartReportDate}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Report End Date: {Binding Report.EndReportDate}" HorizontalAlignment="Center"/>
+                
+				
+                <TextBlock Text="----------------------------------------------------------------" HorizontalAlignment="Center"/>
+                
+                <!-- Sales Summary -->
+                <TextBlock Text="SALES READING SUMMARY" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"/>
+				
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+				   <Grid.RowDefinitions>
+					   <RowDefinition Height="Auto"/>
+					   <RowDefinition Height="Auto"/>
+					   <RowDefinition Height="Auto"/>
+					   <RowDefinition Height="Auto"/>
+					   <RowDefinition Height="Auto"/>
+					   <RowDefinition Height="Auto"/>
+				   </Grid.RowDefinitions>
+				
+				 <TextBlock Text="Gross Sales: " Grid.Row="0" Grid.Column="0"/>
+				<TextBlock Text="00.00" Grid.Row="0" Grid.Column="1"/>
+                <TextBlock Text="Return:" Grid.Row="1" Grid.Column="0"/>
+                <TextBlock Text="{Binding Report.Return}" Grid.Row="1" Grid.Column="1"/>
+                <TextBlock Text="Net of Return"  Grid.Row="2" Grid.Column="0"/>
+                <TextBlock Text="{Binding Report.NetSalesAmount}"  Grid.Row="2" Grid.Column="2"/>
+                <TextBlock Text="Less: Discounts:" Grid.Row="3" Grid.Column="0"/>
+                <TextBlock Text="{Binding Report.TotalDiscount}" Grid.Row="3" Grid.Column="1"/>
+                <TextBlock Text="Net Sales:" Grid.Row="4" Grid.Column="0" />
+			    <TextBlock Text="{Binding Report.NetSalesAmount}" Grid.Row="4" Grid.Column="1"/>
+				</Grid>
+				
+                
+                <TextBlock Text="----------------------------------------------------------------" HorizontalAlignment="Center"/>
+                
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+				
+				     <!-- VAT Summary -->
+                    <TextBlock Text="Vatable Sales:" Grid.Row="0" Grid.Column="0"/>
+					<TextBlock Text="{Binding Report.VATableSales}" Grid.Row="0" Grid.Column="1"/>
+                    <TextBlock Text="Zero Rated Sales:" Grid.Row="1" Grid.Column="0"/>
+					<TextBlock Text="{Binding Report.ZeroRatedSales}" Grid.Row="1" Grid.Column="1"/>
+                    <TextBlock Text="VAT Exempt Sales" Grid.Row="2" Grid.Column="0"/>
+                    <TextBlock Text="{Binding Report.VATExemptSales}" Grid.Row="2" Grid.Column="1"/>
+                    <TextBlock Text="12% VAT:" Grid.Row="3" Grid.Column="0"/>
+				    <TextBlock Text="{Binding Report.VATAmount}" Grid.Row="3" Grid.Column="1"/>
+
+				
+				
+				</Grid>
+				
+				
+               
+                
+                <TextBlock Text="-----------------------------------------------------------------" HorizontalAlignment="Center"/>
+               
+                <!-- Sales Analysis -->
+                <TextBlock Text="SALES ANALYSIS" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"/>
+				 <Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					 
+				    <TextBlock Text="Dine In:" Grid.Row="0" Grid.Column="0"/>
+				    <TextBlock Text="{Binding Report.SCDiscount}" Grid.Row="0" Grid.Column="1"/>
+                    <TextBlock Text="Take Out:"  Grid.Row="1" Grid.Column="0"/>
+			        <TextBlock Text="{Binding Report.SCDiscount}" Grid.Row="1" Grid.Column="1"/>
+                    <TextBlock Text="SC Discount:" Grid.Row="2" Grid.Column="0" />					 
+                    <TextBlock Text="{Binding Report.SCDiscount}" Grid.Row="2" Grid.Column="1"/>
+                    <TextBlock Text="PWD Discount:" Grid.Row="3" Grid.Column="0"/>
+                    <TextBlock Text="{Binding Report.PWDDiscount}" Grid.Row="3" Grid.Column="1"/>
+   					<TextBlock Text="Transaction Count:" Grid.Row="4" Grid.Column="0"/>
+   					<TextBlock Text="{Binding Report.SCDiscount}" Grid.Row="4" Grid.Column="1"/>
+					<TextBlock Text="PAX Count:" Grid.Row="5" Grid.Column="0"/>
+					<TextBlock Text="{Binding Report.SCDiscount}" Grid.Row="5" Grid.Column="1"/>
+                    <TextBlock Text="Average Per Transaction:" Grid.Row="6" Grid.Column="0" />
+                    <TextBlock Text="{Binding Report.SCDiscount}" Grid.Row="6" Grid.Column="1"/>
+				    <TextBlock Text="Last O.R. Number:" Grid.Row="7" Grid.Column="0"/>
+                    <TextBlock Text="{Binding Report.LastORNumber}" Grid.Row="7" Grid.Column="1"/>
+				</Grid>
+                
+                
+                <TextBlock Text="-----------------------------------" HorizontalAlignment="Center"/>
+                
+                <!-- Transaction Summary -->
+                <TextBlock Text="TRANSACTION SUMMARY ANALYSIS" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"/>
+				
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+				
+				 <TextBlock Text="Cash in Drawer:" Grid.Row="0" Grid.Column="0"/>
+                 <TextBlock Text="{Binding Report.CashInDrawer}" Grid.Row="0" Grid.Column="1"/>
+                 <TextBlock Text="Credit Card:" Grid.Row="1" Grid.Column="0"/>
+                 <TextBlock Text="{Binding Report.CreditCard}" Grid.Row="1" Grid.Column="1"/>
+                 <TextBlock Text="Gift Certificate:" Grid.Row="2" Grid.Column="0"/>
+                 <TextBlock Text="{Binding Report.GiftCertificate}" Grid.Row="2" Grid.Column="1"/>
+                 <TextBlock Text="Payment Received:" Grid.Row="3" Grid.Column="0"/>
+                <TextBlock Text="{Binding Report.PaymentsReceived}" Grid.Row="3" Grid.Column="1"/>
+				</Grid>
+               
+                
+                <TextBlock Text="-----------------------------------" HorizontalAlignment="Center"/>
+                
+                <!-- Other Transactions -->
+                <TextBlock Text="OTHER TRANSACTION ANALYSIS" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"/>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+				  <TextBlock Text="Cashier Name:" Grid.Row="0" Grid.Column="0"/>
+                  <TextBlock Text="{Binding Report.CashierName}" Grid.Row="0" Grid.Column="1"/>
+				  <TextBlock Text="Short/Over:" Grid.Row="1" Grid.Column=""/>
+                  <TextBlock Text="{Binding Report.ShortOver}" Grid.Row="1" Grid.Column="1"/>
+				</Grid>
+              
+                
+                <TextBlock Text="===================================" HorizontalAlignment="Center"/>
+                
+                <!-- Print Button -->
+                <Button Content="Print" Click="Print_Click" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Viewbox>
+</Window>
