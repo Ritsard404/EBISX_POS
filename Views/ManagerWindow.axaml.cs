@@ -13,11 +13,16 @@ using EBISX_POS.State;
 using EBISX_POS.Models;
 using System.Linq;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization;
+using Microsoft.Extensions.Options;
 
 namespace EBISX_POS.Views
 {
     public partial class ManagerWindow : Window
     {
+        private readonly string _cashTrackReportPath;
+
         private readonly IServiceProvider? _serviceProvider;
         private readonly MenuService _menuService;
         private readonly AuthService _authService;
@@ -30,6 +35,13 @@ namespace EBISX_POS.Views
             _serviceProvider = serviceProvider;
             _menuService = _serviceProvider.GetRequiredService<MenuService>();
             _authService = _serviceProvider.GetRequiredService<AuthService>();
+
+
+            var reportOptions = _serviceProvider.GetRequiredService<IOptions<SalesReport>>();
+            _cashTrackReportPath = reportOptions.Value.CashTrackReport;
+
+
+            _cashTrackReportPath = reportOptions.Value.CashTrackReport;
         }
 
         public ManagerWindow() : this(App.Current.Services.GetRequiredService<IServiceProvider>())
@@ -51,11 +63,39 @@ namespace EBISX_POS.Views
 
         private async void Cash_Track_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var cashTrack = _serviceProvider?.GetRequiredService<CashTrackView>();
-            if (cashTrack != null)
+            //var cashTrack = _serviceProvider?.GetRequiredService<CashTrackView>();
+            //if (cashTrack != null)
+            //{
+            //    cashTrack.GenerateCashTrack(sender, e);
+            //}
+
+
+            var reportService = App.Current.Services.GetRequiredService<ReportService>();
+
+            var (CashInDrawer, CurrentCashDrawer) = await reportService.CashTrack();
+
+            // Ensure the target directory exists
+            if (!Directory.Exists(_cashTrackReportPath))
             {
-                cashTrack.GenerateCashTrack(sender, e);
+                Directory.CreateDirectory(_cashTrackReportPath);
             }
+
+            // Define the file path
+            string fileName = $"Cash-Track-{CashierState.CashierEmail}-{DateTimeOffset.UtcNow.ToString("MMMM-dd-yyyy-HH-mm-ss")}.txt";
+            string filePath = Path.Combine(_cashTrackReportPath, fileName);
+
+            string reportContent = $@"
+                ==================================
+                        Cash Track Report
+                ==================================
+                Cash In Drawer: {CashInDrawer:C}
+                Total Cash Drawer: {CurrentCashDrawer:C}
+                ";
+
+            reportContent = string.Join("\n", reportContent.Split("\n").Select(line => line.Trim()));
+            File.WriteAllText(filePath, reportContent); 
+            
+            Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
         }
 
         private void Back_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

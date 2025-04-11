@@ -1,18 +1,12 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using EBISX_POS.API.Services.DTO.Payment;
 using EBISX_POS.Services;
-using EBISX_POS.State;
 using Microsoft.Extensions.DependencyInjection;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
-using Tmds.DBus.Protocol;
 
 namespace EBISX_POS.Views
 {

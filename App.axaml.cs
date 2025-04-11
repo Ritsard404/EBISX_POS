@@ -85,6 +85,7 @@ namespace EBISX_POS
             services.AddSingleton<MenuService>(); // Register MenuService
             services.AddSingleton<OrderService>();
             services.AddSingleton<PaymentService>();
+            services.AddSingleton<ReportService>();
 
             services.AddSingleton<ManagerWindow>();
             services.AddSingleton<CookieContainer>();
@@ -111,13 +112,6 @@ namespace EBISX_POS
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 return new DailySalesReportView(configuration);
-            });
-
-            // Cash Track logs view
-            services.AddTransient<CashTrackView>(provider =>
-            {
-                var reportOptions = provider.GetRequiredService<IOptions<SalesReport>>();
-                return new CashTrackView(reportOptions);
             });
 
 

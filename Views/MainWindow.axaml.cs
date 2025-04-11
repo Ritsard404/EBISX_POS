@@ -187,41 +187,58 @@ namespace EBISX_POS.Views
             if (!OrderState.CurrentOrder.Any())
                 return;
 
-            var box = MessageBoxManager.GetMessageBoxStandard(
-                new MessageBoxStandardParams
-                {
-                    ContentHeader = "Cancel Order",
-                    ContentMessage = "Swipe the manager ID.",
-                    ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    CanResize = false,
-                    SizeToContent = SizeToContent.WidthAndHeight,
-                    Width = 400,
-                    ShowInCenter = true,
-                    Icon = MsBox.Avalonia.Enums.Icon.Warning
-                });
+            //var box = MessageBoxManager.GetMessageBoxStandard(
+            //    new MessageBoxStandardParams
+            //    {
+            //        ContentHeader = "Cancel Order",
+            //        ContentMessage = "Swipe the manager ID.",
+            //        ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
+            //        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            //        CanResize = false,
+            //        SizeToContent = SizeToContent.WidthAndHeight,
+            //        Width = 400,
+            //        ShowInCenter = true,
+            //        Icon = MsBox.Avalonia.Enums.Icon.Warning
+            //    });
 
-            var result = await box.ShowAsPopupAsync(this);
+            //var result = await box.ShowAsPopupAsync(this);
 
-            string managerEmail = "buanga uy";
+            string managerEmail = "user1@example.com";
 
-            switch (result)
+            //switch (result)
+            //{
+            //    case ButtonResult.Ok:
+            //        var (isSuccess, message) = await orderService.CancelCurrentOrder(managerEmail);
+            //        Debug.WriteLine($" Cancel Message: {message}");
+
+
+            //        OrderState.CurrentOrderItem = new OrderItemState();
+            //        OrderState.CurrentOrder.Clear();
+            //        OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+            //        return;
+            //    case ButtonResult.Cancel:
+            //        return;
+            //    default:
+            //        return;
+            //}
+
+
+            var parentWindow = this.VisualRoot as Window; // Find the parent window
+
+            var swipeManager = new ManagerSwipeWindow(header: "Manager", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
+            bool isSwiped = await swipeManager.ShowDialogAsync(parentWindow);
+
+            if (isSwiped)
             {
-                case ButtonResult.Ok:
-                    var (isSuccess, message) = await orderService.CancelCurrentOrder(managerEmail);
-                    Debug.WriteLine($" Cancel Message: {message}");
+                var (isSuccess, message) = await orderService.CancelCurrentOrder(managerEmail);
+                Debug.WriteLine($" Cancel Message: {message}");
 
 
-                    OrderState.CurrentOrderItem = new OrderItemState();
-                    OrderState.CurrentOrder.Clear();
-                    OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
-                    return;
-                case ButtonResult.Cancel:
-                    return;
-                default:
-                    return;
+                OrderState.CurrentOrderItem = new OrderItemState();
+                OrderState.CurrentOrder.Clear();
+                OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
+                return;
             }
-
 
         }
 
@@ -302,37 +319,55 @@ namespace EBISX_POS.Views
                 }
             }
 
-            var box = MessageBoxManager.GetMessageBoxStandard(
-                new MessageBoxStandardParams
-                {
-                    ContentHeader = $"Pwd/SC Discount",
-                    ContentMessage = "Please ask the manager to swipe.",
-                    ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    CanResize = false,
-                    SizeToContent = SizeToContent.WidthAndHeight,
-                    Width = 400,
-                    ShowInCenter = true,
-                    Icon = MsBox.Avalonia.Enums.Icon.Warning
-                });
+            //var box = MessageBoxManager.GetMessageBoxStandard(
+            //    new MessageBoxStandardParams
+            //    {
+            //        ContentHeader = $"Pwd/SC Discount",
+            //        ContentMessage = "Please ask the manager to swipe.",
+            //        ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
+            //        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            //        CanResize = false,
+            //        SizeToContent = SizeToContent.WidthAndHeight,
+            //        Width = 400,
+            //        ShowInCenter = true,
+            //        Icon = MsBox.Avalonia.Enums.Icon.Warning
+            //    });
 
-            var result = await box.ShowAsPopupAsync(this);
-            switch (result)
+            //var result = await box.ShowAsPopupAsync(this);
+            //switch (result)
+            //{
+            //    case ButtonResult.Ok:
+            //        // Open the TenderOrderWindow
+            //        var discountPwdSw = new SelectDiscountPwdScWindow();
+            //        await discountPwdSw.ShowDialog((Window)this.VisualRoot);
+
+            //        if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+            //        {
+            //            desktopLifetime.MainWindow?.Close();
+            //        }
+            //        return;
+            //    case ButtonResult.Cancel:
+            //        return;
+            //    default:
+            //        return;
+            //}
+
+
+            var parentWindow = this.VisualRoot as Window; // Find the parent window
+
+            var swipeManager = new ManagerSwipeWindow(header: "Pwd/SC Discount", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
+            bool isSwiped = await swipeManager.ShowDialogAsync(parentWindow);
+
+            if (isSwiped)
             {
-                case ButtonResult.Ok:
-                    // Open the TenderOrderWindow
-                    var discountPwdSw = new SelectDiscountPwdScWindow();
-                    await discountPwdSw.ShowDialog((Window)this.VisualRoot);
+                var discountPwdSw = new SelectDiscountPwdScWindow();
+                await discountPwdSw.ShowDialog((Window)this.VisualRoot);
 
-                    if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-                    {
-                        desktopLifetime.MainWindow?.Close();
-                    }
-                    return;
-                case ButtonResult.Cancel:
-                    return;
-                default:
-                    return;
+                if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+                {
+                    desktopLifetime.MainWindow?.Close();
+                }
+                return;
             }
 
         }
@@ -349,36 +384,6 @@ namespace EBISX_POS.Views
                 managerView.Show();
                 Close();
             }
-
-            //var box = MessageBoxManager.GetMessageBoxStandard(
-            //    new MessageBoxStandardParams
-            //    {
-            //        ContentHeader = $"Manager",
-            //        ContentMessage = "Please ask the manager to swipe.",
-            //        ButtonDefinitions = ButtonEnum.OkCancel, // Defines the available buttons
-            //        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            //        CanResize = false,
-            //        SizeToContent = SizeToContent.WidthAndHeight,
-            //        Width = 400,
-            //        ShowInCenter = true,
-            //        Icon = MsBox.Avalonia.Enums.Icon.Warning
-            //    });
-
-            //var result = await box.ShowAsPopupAsync(this);
-            //switch (result)
-            //{
-            //    case ButtonResult.Ok:
-            //        // Open the TenderOrderWindow
-            //        var managerView = new ManagerWindow();
-            //        managerView.Show();
-            //        Close();
-            //        return;
-            //    case ButtonResult.Cancel:
-            //        return;
-            //    default:
-            //        return;
-            //}
-
         }
     }
 }

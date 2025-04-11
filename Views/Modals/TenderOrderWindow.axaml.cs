@@ -48,9 +48,14 @@ namespace EBISX_POS.Views
                 var finalOrder = new FinalizeOrderDTO()
                 {
                     TotalAmount = TenderState.tenderOrder.TotalAmount,
-                    CashTendered = TenderState.tenderOrder.TenderAmount,
+                    CashTendered = TenderState.tenderOrder.CashTenderAmount,
                     OrderType = TenderState.tenderOrder.OrderType,
                     DiscountAmount = TenderState.tenderOrder.DiscountAmount,
+                    ChangeAmount = TenderState.tenderOrder.ChangeAmount,
+                    DueAmount = TenderState.tenderOrder.AmountDue,
+                    VatExempt = TenderState.tenderOrder.VatExemptSales,
+                    VatAmount = TenderState.tenderOrder.VatAmount,
+                    TotalTendered = TenderState.tenderOrder.TenderAmount,
                     CashierEmail = CashierState.CashierEmail ?? ""
 
                 };
@@ -376,6 +381,10 @@ namespace EBISX_POS.Views
 
                 // Totals
                 writer.WriteLine(CenterText($"{"Total Amount:",-20}{TenderState.tenderOrder.TotalAmount.ToString("C", pesoCulture),20}"));
+                if (TenderState.tenderOrder.HasOrderDiscount)
+                {
+                    writer.WriteLine(CenterText($"{"Discount Amount:",-20}{TenderState.tenderOrder.DiscountAmount.ToString("C", pesoCulture),20}"));
+                }
                 writer.WriteLine(CenterText($"{"Due Amount:",-20}{TenderState.tenderOrder.AmountDue.ToString("C", pesoCulture),20}"));
 
                 if (TenderState.tenderOrder.HasOtherPayments && TenderState.tenderOrder.OtherPayments != null)
