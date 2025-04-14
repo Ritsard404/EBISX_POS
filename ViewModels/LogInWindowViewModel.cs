@@ -94,11 +94,13 @@ namespace EBISX_POS.ViewModels
                             ShowInCenter = true
                         });
 
-                    await alertBox.ShowAsPopupAsync(owner);
+                    await alertBox.ShowWindowDialogAsync(owner);
 
                     NavigateToMainWindow(cashierEmail: cashierEmail, cashierName: cashierName);
                     owner.Close();
                 }
+                IsLoading = false;
+                return;
             }
             catch (Exception ex)
             {

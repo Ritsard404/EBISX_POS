@@ -79,6 +79,13 @@ namespace EBISX_POS.Views
             }
         }
 
+        private bool _isAdjustingSelection;
+
+        public string SelectedIDsDebug
+            => SelectedIDs?.Any() == true
+               ? string.Join(", ", SelectedIDs)
+               : "(none)";
+
         // New property for the selected IDs.
         private List<string> _selectedIDs = new List<string>();
         public List<string> SelectedIDs
@@ -90,6 +97,9 @@ namespace EBISX_POS.Views
                 {
                     _selectedIDs = value;
                     OnPropertyChanged(nameof(SelectedIDs));
+
+                    OnPropertyChanged(nameof(SelectedIDsDebug));
+                    Debug.WriteLine($"[DEBUG] Selected IDs: {SelectedIDsDebug}");
                 }
             }
         }
@@ -178,20 +188,25 @@ namespace EBISX_POS.Views
         // This event is triggered whenever the selection changes in the ListBox.
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var listBox = sender as ListBox;
-            if (listBox == null)
+            if (_isAdjustingSelection)
                 return;
 
-            // If the selected items exceed the allowed count, remove extra items.
-            if (listBox.SelectedItems.Count > MaxSelectionCount)
+            var listBox = (ListBox)sender;
+            var selected = listBox.SelectedItems.Cast<OrderItemState>().ToList();
+
+
+            if (selected.Count > MaxSelectionCount)
             {
-                // Using ToList to iterate safely over a copy
-                foreach (var added in e.AddedItems)
-                {
-                    if (listBox.SelectedItems.Count <= MaxSelectionCount)
-                        break;
-                    listBox.SelectedItems.Remove(added);
-                }
+                _isAdjustingSelection = true;
+
+                // keep only the first MaxSelectionCount items
+                var allowed = selected.Take(MaxSelectionCount).ToList();
+
+                listBox.SelectedItems.Clear();
+                foreach (var item in allowed)
+                    listBox.SelectedItems.Add(item);
+
+                _isAdjustingSelection = false;
             }
 
             // Get the total selected count.

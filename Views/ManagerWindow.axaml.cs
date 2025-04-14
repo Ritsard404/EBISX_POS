@@ -3,19 +3,19 @@ using Avalonia.Markup.Xaml;
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using EBISX_POS.Services;
-using Avalonia.Controls.ApplicationLifetimes;
 using EBISX_POS.ViewModels;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
-using EBISX_POS.API.Services.DTO.Auth;
 using EBISX_POS.State;
 using EBISX_POS.Models;
 using System.Linq;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.Serialization;
 using Microsoft.Extensions.Options;
+using EBISX_POS.API.Services.DTO.Report;
+using System.Globalization;
+using EBISX_POS.Util;
 
 namespace EBISX_POS.Views
 {
@@ -151,6 +151,12 @@ namespace EBISX_POS.Views
             switch (result)
             {
                 case ButtonResult.Ok:
+
+                    var setCashDrawer = new SetCashDrawerWindow(false);
+                    await setCashDrawer.ShowDialog(this);
+
+                    ReceiptPrinterUtil.PrintXReading(_serviceProvider!);
+
                     // Open the TenderOrderWindow
                     var (isSuccess, Message) = await _authService.LogOut(managerEmail);
                     if (isSuccess)
@@ -174,5 +180,7 @@ namespace EBISX_POS.Views
             }
 
         }
+
+      
     }
 }

@@ -459,7 +459,5 @@ namespace EBISX_POS.Views
                 writer.WriteLine();
             }
         }
-
-
     }
 };

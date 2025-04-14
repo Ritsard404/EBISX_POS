@@ -9,6 +9,7 @@ namespace EBISX_POS
     public class SalesReport
     {
         public required  string DailySalesReport { get; set; }
+        public required  string XInvoiceReport { get; set; }
         public required  string CashTrackReport { get; set; }
         public required  string TransactionLogs { get; set; }
     }

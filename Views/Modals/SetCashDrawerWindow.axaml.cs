@@ -12,9 +12,14 @@ namespace EBISX_POS.Views
 {
     public partial class SetCashDrawerWindow : Window
     {
-        public SetCashDrawerWindow()
+        private bool _isCashInDrawer;
+        public SetCashDrawerWindow(bool isCashInDrawer)
         {
             InitializeComponent();
+            _isCashInDrawer = isCashInDrawer;
+
+            StartButton.Content = isCashInDrawer ? "Start" : "Set Drawer";
+
             CashInDrawer.AddHandler(TextInputEvent, AmountTextBox_OnTextInput, RoutingStrategies.Tunnel);
         }
 
@@ -56,7 +61,8 @@ namespace EBISX_POS.Views
             }
             StartButton.IsEnabled = false;
 
-            var (isSuccess, message) = await authService.SetCashInDrawer(amount);
+            var (isSuccess, message) = _isCashInDrawer ? await authService.SetCashInDrawer(amount)
+                : await authService.SetCashOutDrawer(amount);
 
             if (!isSuccess)
             {

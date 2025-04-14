@@ -67,11 +67,8 @@ namespace EBISX_POS.Views
             // Retrieve the order item from the view model
             var orderItem = viewModel.OrderItem;
 
-
-            var parentWindow = this.VisualRoot as Window; // Find the parent window
-
             var swipeManager = new ManagerSwipeWindow(header: "Manager", message: "Please ask the manager to swipe.", ButtonName: "Void");
-            bool isSwiped = await swipeManager.ShowDialogAsync(parentWindow);
+            bool isSwiped = await swipeManager.ShowDialogAsync(this);
 
             if (isSwiped)
             {

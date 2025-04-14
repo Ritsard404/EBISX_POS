@@ -1,11 +1,11 @@
-﻿using EBISX_POS.API.Models;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using RestSharp;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System;
 using Newtonsoft.Json;
+using EBISX_POS.Services.DTO.Report;
 
 namespace EBISX_POS.Services
 {
@@ -59,6 +59,73 @@ namespace EBISX_POS.Services
             {
                 Debug.WriteLine($"Error: {ex.Message}");
                 return (string.Empty, string.Empty);
+            }
+        }
+
+        public async Task<XInvoiceDTO> XInvoiceReport()
+        {
+            try
+            {
+                var url = $"{_apiSettings.LocalAPI.ReportEndpoint}/XInvoiceReport";
+                var request = new RestRequest(url, Method.Get);
+
+                var response = await _restClient.ExecuteAsync<XInvoiceDTO>(request);
+                return response.Data ?? new XInvoiceDTO
+                {
+                    BusinessName = string.Empty,
+                    OperatorName = string.Empty,
+                    AddressLine = string.Empty,
+                    VatRegTin = string.Empty,
+                    Min = string.Empty,
+                    SerialNumber = string.Empty,
+                    ReportDate = string.Empty,
+                    ReportTime = string.Empty,
+                    StartDateTime = string.Empty,
+                    EndDateTime = string.Empty,
+                    Cashier = string.Empty,
+                    BeginningOrNumber = string.Empty,
+                    EndingOrNumber = string.Empty,
+                    OpeningFund = string.Empty,
+                    Payments = new Payment(),
+                    VoidAmount = string.Empty,
+                    Refund = string.Empty,
+                    TransactionSummary = new TransactionSummary
+                    {
+                        CashInDrawer = string.Empty,
+                        OtherPayments = new List<OtherPayment>()
+                    },
+                    ShortOver = string.Empty
+                }; ;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return new XInvoiceDTO
+                {
+                    BusinessName = string.Empty,
+                    OperatorName = string.Empty,
+                    AddressLine = string.Empty,
+                    VatRegTin = string.Empty,
+                    Min = string.Empty,
+                    SerialNumber = string.Empty,
+                    ReportDate = string.Empty,
+                    ReportTime = string.Empty,
+                    StartDateTime = string.Empty,
+                    EndDateTime = string.Empty,
+                    Cashier = string.Empty,
+                    BeginningOrNumber = string.Empty,
+                    EndingOrNumber = string.Empty,
+                    OpeningFund = string.Empty,
+                    Payments = new Payment(),
+                    VoidAmount = string.Empty,
+                    Refund = string.Empty,
+                    TransactionSummary = new TransactionSummary
+                    {
+                        CashInDrawer = string.Empty,
+                        OtherPayments = new List<OtherPayment>()
+                    },
+                    ShortOver = string.Empty
+                };
             }
         }
     }

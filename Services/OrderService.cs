@@ -161,6 +161,7 @@ namespace EBISX_POS.Services
 
                 // Create request using PUT method
                 var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("cashierEmail", CashierState.CashierEmail)
                     .AddQueryParameter("managerEmail", managerEmail);
 
                 // Execute the request and return the result

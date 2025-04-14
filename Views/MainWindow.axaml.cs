@@ -71,7 +71,7 @@ namespace EBISX_POS.Views
                 bool isCashedDrawer = await _authService.IsCashedDrawer();
                 if (!isCashedDrawer)
                 {
-                    var setCashDrawer = new SetCashDrawerWindow();
+                    var setCashDrawer = new SetCashDrawerWindow(true);
                     await setCashDrawer.ShowDialog(this);
                 }
 
@@ -223,10 +223,8 @@ namespace EBISX_POS.Views
             //}
 
 
-            var parentWindow = this.VisualRoot as Window; // Find the parent window
-
             var swipeManager = new ManagerSwipeWindow(header: "Manager", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
-            bool isSwiped = await swipeManager.ShowDialogAsync(parentWindow);
+            bool isSwiped = await swipeManager.ShowDialogAsync(this);
 
             if (isSwiped)
             {
@@ -353,10 +351,8 @@ namespace EBISX_POS.Views
             //}
 
 
-            var parentWindow = this.VisualRoot as Window; // Find the parent window
-
             var swipeManager = new ManagerSwipeWindow(header: "Pwd/SC Discount", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
-            bool isSwiped = await swipeManager.ShowDialogAsync(parentWindow);
+            bool isSwiped = await swipeManager.ShowDialogAsync(this);
 
             if (isSwiped)
             {
@@ -373,10 +369,9 @@ namespace EBISX_POS.Views
         }
         private async void Manager_Click(object sender, RoutedEventArgs e)
         {
-            var parentWindow = this.VisualRoot as Window; // Find the parent window
 
             var swipeManager = new ManagerSwipeWindow(header: "Manager", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
-            bool isSwiped = await swipeManager.ShowDialogAsync(parentWindow);
+            bool isSwiped = await swipeManager.ShowDialogAsync(this);
 
             if (isSwiped)
             {

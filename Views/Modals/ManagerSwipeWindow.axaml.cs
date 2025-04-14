@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 
@@ -10,6 +11,10 @@ namespace EBISX_POS.Views
     public partial class ManagerSwipeWindow : Window
     {
         private readonly TaskCompletionSource<bool> _completionSource = new();
+        private Window? MainAppWindow =>
+            (Application.Current.ApplicationLifetime
+                 as IClassicDesktopStyleApplicationLifetime)?
+                    .MainWindow;
 
         public ManagerSwipeWindow(string header, string message, string ButtonName)
         {
@@ -61,10 +66,16 @@ namespace EBISX_POS.Views
             }, TimeSpan.FromSeconds(5));
         }
 
-        public Task<bool> ShowDialogAsync(Window parent)
+        public Task<bool> ShowDialogAsync(Window? owner = null)
         {
-            ShowDialog(parent);
-            return _completionSource.Task;
+            // pick either the passed‑in owner or your MainWindow:
+            var dialogOwner = owner ?? MainAppWindow;
+
+            if (dialogOwner == null || !dialogOwner.IsVisible)
+                return Task.FromResult(false);
+
+            // directly show the modal dialog and return its result:
+            return ShowDialog<bool>(dialogOwner);
         }
 
         private void OnSwipeClicked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
