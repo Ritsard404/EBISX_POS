@@ -85,7 +85,7 @@
                           RowDefinitions="Auto,Auto,Auto">
 						<!-- Sales Report Button -->
 						<Button Classes="myButton"
-                                Click="SummaryReport_Button"
+                                Click="SalesReport_Button"
                                 Grid.Row="0" Grid.Column="0"
                                 VerticalContentAlignment="Center">
 							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
@@ -140,6 +140,8 @@
 								<TextBlock FontSize="30" Text="Cashier"/>
 							</StackPanel>
 						</Button>
+
+						
 					</Grid>
 				</Border>
 

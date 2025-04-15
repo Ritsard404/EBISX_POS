@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using EBISX_POS.API.Services.DTO.Report;
 using System.Globalization;
 using EBISX_POS.Util;
+using EBISX_POS.Views.Manager;
 
 namespace EBISX_POS.Views
 {
@@ -49,9 +50,9 @@ namespace EBISX_POS.Views
             // This constructor is required for Avalonia to instantiate the view in XAML.
         }
 
-        private void SummaryReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void SalesReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var reportWindow = _serviceProvider?.GetRequiredService<DailySalesReportView>();
+            var reportWindow = _serviceProvider?.GetRequiredService<SalesHistoryWindow>();
             reportWindow?.Show();
         }
 
