@@ -71,7 +71,7 @@ namespace EBISX_POS.Views
                 bool isCashedDrawer = await _authService.IsCashedDrawer();
                 if (!isCashedDrawer)
                 {
-                    var setCashDrawer = new SetCashDrawerWindow(true);
+                    var setCashDrawer = new SetCashDrawerWindow("Cash-In");
                     await setCashDrawer.ShowDialog(this);
                 }
 

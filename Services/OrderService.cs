@@ -177,6 +177,33 @@ namespace EBISX_POS.Services
             }
         }
 
+        public async Task<(bool, string)> RefundOrder(string managerEmail, long orderId)
+        {
+            try
+            {
+                ValidateOrderEndpoint(); // Validate API endpoint configuration
+
+                // Build URL correctly and encode the email to prevent any special character issues
+                var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/RefundOrder";
+
+                // Create request using PUT method
+                var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("orderId", orderId)
+                    .AddQueryParameter("managerEmail", managerEmail);
+
+                // Execute the request and return the result
+                var result = await ExecuteRequestAsync(request);
+                return result.Item1
+                    ? (true, result.Item2 ?? "Order Refund successfully.")
+                    : result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($" Error: {ex.Message}");
+                return (false, "An unexpected error occurred.");
+            }
+        }
+
         public async Task<(bool, string)> AddPwdScDiscount(AddPwdScDiscountDTO addPwdScDiscount)
         {
             try

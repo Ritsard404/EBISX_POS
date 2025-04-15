@@ -62,6 +62,92 @@ namespace EBISX_POS.Services
             }
         }
 
+        public async Task<ZInvoiceDTO> ZInvoiceReport() // Fixed return type
+        {
+            try
+            {
+                var url = $"{_apiSettings.LocalAPI.ReportEndpoint}/ZInvoiceReport";
+                var request = new RestRequest(url, Method.Get);
+
+                var response = await _restClient.ExecuteAsync<ZInvoiceDTO>(request);
+                return response.Data ?? CreateDefaultZInvoice();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return CreateDefaultZInvoice();
+            }
+        }
+
+        private ZInvoiceDTO CreateDefaultZInvoice()
+        {
+            return new ZInvoiceDTO
+            {
+                BusinessName = string.Empty,
+                OperatorName = string.Empty,
+                AddressLine = string.Empty,
+                VatRegTin = string.Empty,
+                Min = string.Empty,
+                SerialNumber = string.Empty,
+                ReportDate = string.Empty,
+                ReportTime = string.Empty,
+                StartDateTime = string.Empty,
+                EndDateTime = string.Empty,
+                BeginningSI = string.Empty,
+                EndingSI = string.Empty,
+                BeginningVoid = string.Empty,
+                EndingVoid = string.Empty,
+                BeginningReturn = string.Empty,
+                EndingReturn = string.Empty,
+                ResetCounter = string.Empty,
+                ZCounter = string.Empty,
+                PresentAccumulatedSales = "₱0.00",
+                PreviousAccumulatedSales = "₱0.00",
+                SalesForTheDay = "₱0.00",
+                SalesBreakdown = new SalesBreakdown
+                {
+                    VatableSales = "₱0.00",
+                    VatAmount = "₱0.00",
+                    VatExemptSales = "₱0.00",
+                    ZeroRatedSales = "₱0.00",
+                    GrossAmount = "₱0.00",
+                    LessDiscount = "₱0.00",
+                    LessReturn = "₱0.00",
+                    LessVoid = "₱0.00",
+                    LessVatAdjustment = "₱0.00",
+                    NetAmount = "₱0.00"
+                },
+                DiscountSummary = new DiscountSummary
+                {
+                    SeniorCitizen = "₱0.00",
+                    Pwd = "₱0.00",
+                    Other = "₱0.00"
+                },
+                SalesAdjustment = new SalesAdjustment
+                {
+                    Void = "₱0.00",
+                    Return = "₱0.00"
+                },
+                VatAdjustment = new VatAdjustment
+                {
+                    ScTrans = "₱0.00",
+                    PwdTrans = "₱0.00",
+                    RegDiscTrans = "₱0.00",
+                    ZeroRatedTrans = "₱0.00",
+                    VatOnReturn = "₱0.00",
+                    OtherAdjustments = "₱0.00"
+                },
+                TransactionSummary = new TransactionSummary
+                {
+                    CashInDrawer = "₱0.00",
+                    OtherPayments = new List<OtherPayment>()
+                },
+                OpeningFund = "₱0.00",
+                Withdrawal = "₱0.00",
+                PaymentsReceived = "₱0.00",
+                ShortOver = "₱0.00"
+            };
+        }
         public async Task<XInvoiceDTO> XInvoiceReport()
         {
             try
@@ -89,6 +175,7 @@ namespace EBISX_POS.Services
                     Payments = new Payment(),
                     VoidAmount = string.Empty,
                     Refund = string.Empty,
+                    Withdrawal = string.Empty,
                     TransactionSummary = new TransactionSummary
                     {
                         CashInDrawer = string.Empty,
@@ -119,6 +206,7 @@ namespace EBISX_POS.Services
                     Payments = new Payment(),
                     VoidAmount = string.Empty,
                     Refund = string.Empty,
+                    Withdrawal = string.Empty,
                     TransactionSummary = new TransactionSummary
                     {
                         CashInDrawer = string.Empty,

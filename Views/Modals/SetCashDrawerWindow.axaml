@@ -18,6 +18,11 @@
                  UseFloatingWatermark="True"
 					 Height="40"
 				 Margin="0,0,0, 40"/>
+			<TextBox x:Name="ManagerEmail"
+                 Watermark="Manager Email"
+                 UseFloatingWatermark="True"
+					 Height="40"
+				 Margin="0,0,0, 40"/>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
 				<Button Content="Start"
