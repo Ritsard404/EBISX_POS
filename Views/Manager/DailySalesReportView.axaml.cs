@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using EBISX_POS.ViewModels;
 using EBISX_POS.ViewModels.Manager;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
@@ -14,7 +12,8 @@ using SkiaSharp;
 using System.Diagnostics;
 
 
-namespace EBISX_POS.Views {
+namespace EBISX_POS.Views
+{
 
     public partial class DailySalesReportView : Window
     {

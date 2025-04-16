@@ -31,7 +31,7 @@ namespace EBISX_POS.Views
             ManagerEmail.IsVisible = _cashDrawer == "Withdraw" || _cashDrawer == "Returned";
 
             if (_cashDrawer == "Returned")
-                CashInDrawer.Text = "Enter Invoice ID";
+                CashInDrawer.Watermark = "Enter Invoice ID";
 
             CashInDrawer.AddHandler(TextInputEvent, AmountTextBox_OnTextInput, RoutingStrategies.Tunnel);
         }

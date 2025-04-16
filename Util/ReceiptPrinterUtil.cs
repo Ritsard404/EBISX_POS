@@ -129,9 +129,7 @@ namespace EBISX_POS.Util
             // Header
             writer.WriteLine(CenterText(rpt.BusinessName));
             writer.WriteLine(CenterText($"Operated by: {rpt.OperatorName}"));
-            writer.WriteLine();
             writer.WriteLine(CenterText(rpt.AddressLine));
-            writer.WriteLine();
             writer.WriteLine(CenterText($"VAT REG TIN: {rpt.VatRegTin}"));
             writer.WriteLine(CenterText($"MIN: {rpt.Min}"));
             writer.WriteLine(CenterText($"S/N: {rpt.SerialNumber}"));

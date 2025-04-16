@@ -50,7 +50,7 @@ namespace EBISX_POS.Views
             InitializeComponent();
             _menuService = menuService;
             _authService = authService;
-            DataContext = new MainWindowViewModel(menuService);
+            //DataContext = new MainWindowViewModel(menuService);
 
             this.AttachedToVisualTree += OnAttachedToVisualTree;
 
