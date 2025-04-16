@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using EBISX_POS.API.Services.DTO.Report;
 using System.Globalization;
 using EBISX_POS.Util;
+using EBISX_POS.Views.Manager;
 
 namespace EBISX_POS.Views
 {
@@ -47,7 +48,11 @@ namespace EBISX_POS.Views
         public ManagerWindow() : this(App.Current.Services.GetRequiredService<IServiceProvider>())
         {
             // This constructor is required for Avalonia to instantiate the view in XAML.
-        }
+       
+        private void SalesReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var reportWindow = _serviceProvider?.GetRequiredService<SalesHistoryWindow>();
+            reportWindow?.Show();
 
         private void ShowLoader(bool show)
         {
@@ -68,6 +73,7 @@ namespace EBISX_POS.Views
                 ReceiptPrinterUtil.PrintZReading(_serviceProvider!);
                 ShowLoader(false);
             }
+
         }
 
         private void TransactionLog(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -147,7 +153,7 @@ namespace EBISX_POS.Views
                     new MessageBoxStandardParams
                     {
                         ContentHeader = $"Error",
-                        ContentMessage = "Unable to log out – there is a pending order.",
+                        ContentMessage = "Unable to log out â€“ there is a pending order.",
                         ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         CanResize = false,

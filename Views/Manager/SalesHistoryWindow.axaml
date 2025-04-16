@@ -1,0 +1,91 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="EBISX_POS.Views.Manager.SalesHistoryWindow"
+	    xmlns:vm="using:EBISX_POS.ViewModels.Manager"
+		x:DataType="vm:SalesHistoryViewModel"
+        Title="SalesHistoryWindow">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<!-- Header & Filter -->
+			<RowDefinition Height="Auto"/>
+			<!-- DatePicker Filter -->
+			<RowDefinition Height="Auto"/>
+			<!-- Search Filter -->
+			<RowDefinition Height="*"/>
+			<!-- DataGrid -->
+		</Grid.RowDefinitions>
+
+		<!-- Header Section -->
+		<StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10,0,20,6">
+			<TextBlock
+				VerticalAlignment="Center"
+				FontSize="20"
+				FontWeight="Bold"
+				Text="Sales History"/>
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
+			<TextBlock Text="Filter by Date:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+			<DatePicker x:Name="datePicker" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" MinWidth="20" />
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="30,0,0,10" >
+			<TextBox Width="200" Watermark="Search Receipt No." Grid.Row="2"
+					 Text="{Binding SearchReceiptNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+		</StackPanel>
+
+		<DataGrid
+				GridLinesVisibility="All"
+				BorderBrush="Gray"
+				BorderThickness="1"
+				Grid.Column="0"
+				Grid.Row="3"
+				Width=""
+				MinHeight="12"
+				MaxHeight="400"
+				AutoGenerateColumns="False"
+				IsReadOnly="True"
+				ItemsSource="{Binding SalesHistoryList}"
+				SelectedItem="{Binding SelectedRecord, Mode=TwoWay}"
+				SelectionMode="Single">
+
+			<!--Columns-->
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					Width="120"
+					Binding="{Binding ReceiptNumber}"
+					Header="Invoice No."/>
+				<DataGridTextColumn
+					Width="200"
+					Binding="{Binding StartReportDateFormatted }"
+					Header="Date"/>
+				<DataGridTextColumn
+					Width="300"
+					Binding="{Binding StartTimeFormatted}"
+					Header="Time"/>
+				<!--View Button-->
+				<DataGridTemplateColumn Width="100" Header="Action">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button
+								HorizontalAlignment="Center"
+								Content="Print"
+								Click="Button_Click"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+
+	</Grid>
+</Window>

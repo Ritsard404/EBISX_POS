@@ -10,6 +10,7 @@ using EBISX_POS.Services;
 using EBISX_POS.State;
 using EBISX_POS.ViewModels;
 using EBISX_POS.Views;
+using EBISX_POS.Views.Manager;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -100,6 +101,8 @@ namespace EBISX_POS
             services.AddTransient<ManagerWindow>();
             services.AddTransient<TenderOrderViewModel>(); // Register your ViewModel
             services.AddTransient<TenderOrderWindow>(); // Register the window
+            
+         
 
 
             // Register Views
@@ -112,6 +115,13 @@ namespace EBISX_POS
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 return new DailySalesReportView(configuration);
+            });
+
+            // SalesHistoryWindow
+            services.AddTransient<SalesHistoryWindow>(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                return new SalesHistoryWindow(configuration);
             });
 
 
