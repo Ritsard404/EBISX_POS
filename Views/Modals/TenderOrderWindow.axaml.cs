@@ -55,6 +55,7 @@ namespace EBISX_POS.Views
                     DueAmount = TenderState.tenderOrder.AmountDue,
                     VatExempt = TenderState.tenderOrder.VatExemptSales,
                     VatAmount = TenderState.tenderOrder.VatAmount,
+                    VatSales = TenderState.tenderOrder.VatSales,
                     TotalTendered = TenderState.tenderOrder.TenderAmount,
                     CashierEmail = CashierState.CashierEmail ?? ""
 

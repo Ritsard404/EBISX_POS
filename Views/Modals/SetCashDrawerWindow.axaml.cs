@@ -12,27 +12,37 @@ namespace EBISX_POS.Views
 {
     public partial class SetCashDrawerWindow : Window
     {
-        private bool _isCashInDrawer;
-        public SetCashDrawerWindow(bool isCashInDrawer)
+        private string _cashDrawer;
+
+        public SetCashDrawerWindow(string cashDrawer)
         {
             InitializeComponent();
-            _isCashInDrawer = isCashInDrawer;
+            _cashDrawer = cashDrawer;
 
-            StartButton.Content = isCashInDrawer ? "Start" : "Set Drawer";
+            StartButton.Content = _cashDrawer switch
+            {
+                "Cash-In" => "Start",
+                "Cash-Out" => "Set Drawer",
+                "Withdraw" => "Withdraw",
+                "Returned" => "Refund",
+                _ => "Submit"
+            };
+
+            ManagerEmail.IsVisible = _cashDrawer == "Withdraw" || _cashDrawer == "Returned";
+
+            if (_cashDrawer == "Returned")
+                CashInDrawer.Text = "Enter Invoice ID";
 
             CashInDrawer.AddHandler(TextInputEvent, AmountTextBox_OnTextInput, RoutingStrategies.Tunnel);
         }
 
-        // Event handler to ensure the text is a valid decimal with up to 3 decimal places
         private void AmountTextBox_OnTextInput(object sender, TextInputEventArgs e)
         {
             if (sender is TextBox textBox)
             {
-                // Use an empty string if Text is null to prevent NullReferenceException
                 var currentText = textBox.Text ?? "";
                 var newText = currentText.Insert(textBox.CaretIndex, e.Text);
 
-                // Regex: any number of digits, optional decimal point with up to 3 digits
                 if (!Regex.IsMatch(newText, @"^\d*(\.\d{0,2})?$"))
                 {
                     e.Handled = true;
@@ -43,34 +53,86 @@ namespace EBISX_POS.Views
         private async void Start_Click(object? sender, RoutedEventArgs e)
         {
             var authService = App.Current.Services.GetRequiredService<AuthService>();
+            var orderService = App.Current.Services.GetRequiredService<OrderService>();
 
             var input = this.FindControl<TextBox>("CashInDrawer")?.Text;
+            var managerEmail = this.FindControl<TextBox>("ManagerEmail")?.Text;
 
-
-            if (string.IsNullOrWhiteSpace(input) ||
-                !decimal.TryParse(input, out var amount) || amount < 1000)
+            if (string.IsNullOrWhiteSpace(input))
             {
-                // Show an error and abort
                 await MessageBoxManager
-                    .GetMessageBoxStandard(
-                        "Invalid Input",
-                        "Please enter a valid number for the cash drawer.",
-                        ButtonEnum.Ok)
+                    .GetMessageBoxStandard("Invalid Input", "Input field is required.", ButtonEnum.Ok)
                     .ShowAsPopupAsync(this);
                 return;
             }
-            StartButton.IsEnabled = false;
 
-            var (isSuccess, message) = _isCashInDrawer ? await authService.SetCashInDrawer(amount)
-                : await authService.SetCashOutDrawer(amount);
+            if (_cashDrawer == "Returned")
+            {
+                if (!long.TryParse(input, out var orderId))
+                {
+                    await MessageBoxManager
+                        .GetMessageBoxStandard("Invalid Input", "Please enter a valid Order ID.", ButtonEnum.Ok)
+                        .ShowAsPopupAsync(this);
+                    return;
+                }
 
-            if (!isSuccess)
+                if (string.IsNullOrWhiteSpace(managerEmail))
+                {
+                    await MessageBoxManager
+                        .GetMessageBoxStandard("Invalid Input", "Manager email is required.", ButtonEnum.Ok)
+                        .ShowAsPopupAsync(this);
+                    return;
+                }
+
+                StartButton.IsEnabled = false;
+
+                var (isSuccess, message) = await orderService.RefundOrder(managerEmail, orderId);
+
+                if (!isSuccess)
+                {
+                    await MessageBoxManager
+                        .GetMessageBoxStandard("Error", message, ButtonEnum.Ok)
+                        .ShowAsPopupAsync(this);
+
+                    StartButton.IsEnabled = true;
+                    return;
+                }
+
+                Close();
+                return;
+            }
+
+            // Default: Cash-In / Cash-Out / Withdraw
+            if (!decimal.TryParse(input, out var amount) || amount < 1000)
             {
                 await MessageBoxManager
-                    .GetMessageBoxStandard(
-                "Error",
-                        message,
-                        ButtonEnum.Ok)
+                    .GetMessageBoxStandard("Invalid Input", "Please enter a valid amount.", ButtonEnum.Ok)
+                    .ShowAsPopupAsync(this);
+                return;
+            }
+
+            if (_cashDrawer == "Withdraw" && string.IsNullOrWhiteSpace(managerEmail))
+            {
+                await MessageBoxManager
+                    .GetMessageBoxStandard("Invalid Input", "Manager email is required.", ButtonEnum.Ok)
+                    .ShowAsPopupAsync(this);
+                return;
+            }
+
+            StartButton.IsEnabled = false;
+
+            var (success, msg) = _cashDrawer switch
+            {
+                "Cash-In" => await authService.SetCashInDrawer(amount),
+                "Cash-Out" => await authService.SetCashOutDrawer(amount),
+                "Withdraw" => await authService.CashWithdrawDrawer(managerEmail!, amount),
+                _ => (false, "Invalid operation")
+            };
+
+            if (!success)
+            {
+                await MessageBoxManager
+                    .GetMessageBoxStandard("Error", msg, ButtonEnum.Ok)
                     .ShowAsPopupAsync(this);
 
                 StartButton.IsEnabled = true;
@@ -80,4 +142,4 @@ namespace EBISX_POS.Views
             Close();
         }
     }
-};
+}

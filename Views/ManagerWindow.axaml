@@ -106,12 +106,12 @@
 
 						<!-- Refund Button -->
 						<Button Classes="myButton"
-                                Grid.Row="0" Grid.Column="2">
+                                Grid.Row="0" Grid.Column="2"
+								Click="Refund_Click">
 							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
 								<TextBlock FontSize="30" Text="Refund"/>
 							</StackPanel>
 						</Button>
-
 						<!-- Cash Track Button -->
 						<Button Classes="myButton"
                                 Click="Cash_Track_Button"
@@ -125,9 +125,9 @@
 						<!-- BIR Summary Report Button -->
 						<Button Classes="myButton"
                                 Grid.Row="1" Grid.Column="0">
-							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-								<TextBlock FontSize="30" Text="BIR Sum"/>
-								<TextBlock FontSize="30" Text="Report"/>
+							<StackPanel VerticalAlignment="Center"  Orientation="Vertical">
+								<TextBlock FontSize="30" Text="Cash" HorizontalAlignment="Center"/>
+								<TextBlock FontSize="30" Text="Pull-Out" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Button>
 
@@ -163,6 +163,20 @@
 					<!-- Keyboard content here -->
 				</Border>
 			</Grid>
+
+
+		</Grid>
+		<Grid Grid.Row="1"
+			  x:Name="LoadingOverlay"
+					  IsVisible="False"
+					  Background="#80000000"
+			  
+				  >
+			<ProgressBar Width="100"
+					  IsIndeterminate="True"
+						  Foreground="White"
+						  HorizontalAlignment="Center"
+						  VerticalAlignment="Center"/>
 		</Grid>
 	</Grid>
 </Window>

@@ -244,6 +244,43 @@ namespace EBISX_POS.Services
                 return (false, "Unexpected error occurred.");
             }
         }
+        public async Task<(bool, string)> CashWithdrawDrawer(string managerEmail, decimal cash)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
+                {
+                    throw new InvalidOperationException("API settings are not properly configured.");
+                }
+
+                // Build URL and create request with JSON body using PUT method
+                var url = $"{_apiSettings.LocalAPI.AuthEndpoint}/CashWithdrawDrawer";
+                var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("cashierEmail", CashierState.CashierEmail)
+                    .AddQueryParameter("managerEmail", managerEmail)
+                    .AddQueryParameter("cash", cash);
+
+
+                var response = await _client.ExecuteAsync(request);
+
+                if (response.IsSuccessful)
+                {
+                    return (true, response.Content ?? string.Empty);
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    // Return the error message provided by the API.
+                    return (false, response.Content ?? string.Empty);
+                }
+
+                return (false, $"LogOut failed. Status Code: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unexpected Error: {ex.Message}");
+                return (false, "Unexpected error occurred.");
+            }
+        }
         public async Task<bool> IsCashedDrawer()
         {
             try

@@ -48,12 +48,32 @@ namespace EBISX_POS.Views
         public ManagerWindow() : this(App.Current.Services.GetRequiredService<IServiceProvider>())
         {
             // This constructor is required for Avalonia to instantiate the view in XAML.
-        }
-
+       
         private void SalesReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var reportWindow = _serviceProvider?.GetRequiredService<SalesHistoryWindow>();
             reportWindow?.Show();
+
+        private void ShowLoader(bool show)
+        {
+            LoadingOverlay.IsVisible = show;
+        }
+
+        private async void SummaryReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            //var reportWindow = _serviceProvider?.GetRequiredService<DailySalesReportView>();
+            //reportWindow?.Show();
+
+            var swipeManager = new ManagerSwipeWindow(header: "Z Reading", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
+            bool isSwiped = await swipeManager.ShowDialogAsync(this);
+
+            if (isSwiped)
+            {
+                ShowLoader(true);
+                ReceiptPrinterUtil.PrintZReading(_serviceProvider!);
+                ShowLoader(false);
+            }
+
         }
 
         private void TransactionLog(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -71,6 +91,7 @@ namespace EBISX_POS.Views
             //}
 
 
+            ShowLoader(true);
             var reportService = App.Current.Services.GetRequiredService<ReportService>();
 
             var (CashInDrawer, CurrentCashDrawer) = await reportService.CashTrack();
@@ -94,9 +115,10 @@ namespace EBISX_POS.Views
                 ";
 
             reportContent = string.Join("\n", reportContent.Split("\n").Select(line => line.Trim()));
-            File.WriteAllText(filePath, reportContent); 
-            
+            File.WriteAllText(filePath, reportContent);
+
             Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
+            ShowLoader(false);
         }
 
         private void Back_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -108,7 +130,18 @@ namespace EBISX_POS.Views
             mainWindow.Show();
 
             Close();
+        }
 
+        private async void CashPullOut_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var setCashDrawer = new SetCashDrawerWindow("Withdraw");
+            await setCashDrawer.ShowDialog(this);
+        }
+
+        private async void Refund_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var refundOrder = new SetCashDrawerWindow("Returned");
+            await refundOrder.ShowDialog(this);
         }
 
         private async void LogOut_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -120,7 +153,7 @@ namespace EBISX_POS.Views
                     new MessageBoxStandardParams
                     {
                         ContentHeader = $"Error",
-                        ContentMessage = "Unable to log out – there is a pending order.",
+                        ContentMessage = "Unable to log out â€“ there is a pending order.",
                         ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         CanResize = false,
@@ -153,7 +186,8 @@ namespace EBISX_POS.Views
             {
                 case ButtonResult.Ok:
 
-                    var setCashDrawer = new SetCashDrawerWindow(false);
+                    ShowLoader(true);
+                    var setCashDrawer = new SetCashDrawerWindow("Cash-Out");
                     await setCashDrawer.ShowDialog(this);
 
                     ReceiptPrinterUtil.PrintXReading(_serviceProvider!);
@@ -170,9 +204,9 @@ namespace EBISX_POS.Views
 
                         var logInWindow = new LogInWindow();
                         logInWindow.Show();
+                        ShowLoader(false);
                         Close();
                     }
-                    Debug.WriteLineIf(!isSuccess, Message);
                     return;
                 case ButtonResult.Cancel:
                     return;
@@ -182,6 +216,6 @@ namespace EBISX_POS.Views
 
         }
 
-      
+
     }
 }

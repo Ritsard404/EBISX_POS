@@ -45,6 +45,7 @@ namespace EBISX_POS.Services.DTO.Report
         public Payment Payments { get; set; }
         public string VoidAmount { get; set; }
         public string Refund { get; set; }
+        public string Withdrawal { get; set; }
         public TransactionSummary TransactionSummary { get; set; }
         public string ShortOver { get; set; }
     }

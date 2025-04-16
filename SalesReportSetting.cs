@@ -10,6 +10,7 @@ namespace EBISX_POS
     {
         public required  string DailySalesReport { get; set; }
         public required  string XInvoiceReport { get; set; }
+        public required  string ZInvoiceReport { get; set; }
         public required  string CashTrackReport { get; set; }
         public required  string TransactionLogs { get; set; }
     }
