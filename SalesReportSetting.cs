@@ -8,6 +8,8 @@ namespace EBISX_POS
 {
     public class SalesReport
     {
+        public required  string Reciepts { get; set; }
+        public required  string SearchedInvoice { get; set; }
         public required  string DailySalesReport { get; set; }
         public required  string XInvoiceReport { get; set; }
         public required  string ZInvoiceReport { get; set; }

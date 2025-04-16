@@ -62,6 +62,36 @@ namespace EBISX_POS.Services
             }
         }
 
+        public async Task<List<InvoiceDTO>> GetInvoicesByDateRange(DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                // Build URL and create a GET request
+                var url = $"{_apiSettings.LocalAPI.ReportEndpoint}/GetInvoicesByDateRange";
+                var request = new RestRequest(url, Method.Get)
+                    .AddQueryParameter("fromDate", fromDate.ToString("yyyy-MM-dd"))
+                    .AddQueryParameter("toDate", toDate.ToString("yyyy-MM-dd"));
+
+
+                var response = await _restClient.ExecuteAsync<List<InvoiceDTO>>(request);
+
+
+                if (!response.IsSuccessful || response.Data == null)
+                {
+                    return new List<InvoiceDTO>();
+                }
+
+                return (
+                    response.Data
+                );
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return new List<InvoiceDTO>();
+            }
+        }
+
         public async Task<ZInvoiceDTO> ZInvoiceReport() // Fixed return type
         {
             try
@@ -214,6 +244,31 @@ namespace EBISX_POS.Services
                     },
                     ShortOver = string.Empty
                 };
+            }
+        }
+
+        public async Task<InvoiceDetailsDTO> GetInvoiceById(long invId)
+        {
+            try
+            {
+                // Build URL and create a GET request
+                var url = $"{_apiSettings.LocalAPI.ReportEndpoint}/GetInvoiceById";
+                var request = new RestRequest(url, Method.Get)
+                    .AddQueryParameter("invId", invId.ToString());
+
+                var response = await _restClient.ExecuteAsync<InvoiceDetailsDTO>(request);
+                if (!response.IsSuccessful || response.Data == null)
+                {
+                    return InvoiceDetailsDTO.CreateEmpty();
+                }
+                return (
+                    response.Data
+                );
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return InvoiceDetailsDTO.CreateEmpty();
             }
         }
     }

@@ -46,20 +46,15 @@ namespace EBISX_POS.Views
         }
 
         public ManagerWindow() : this(App.Current.Services.GetRequiredService<IServiceProvider>())
-        {
-            // This constructor is required for Avalonia to instantiate the view in XAML.
-       
-        private void SalesReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            var reportWindow = _serviceProvider?.GetRequiredService<SalesHistoryWindow>();
-            reportWindow?.Show();
+        { }
+        // This constructor is required for Avalonia to instantiate the view in XAML.
 
         private void ShowLoader(bool show)
         {
             LoadingOverlay.IsVisible = show;
         }
 
-        private async void SummaryReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private async void SalesReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             //var reportWindow = _serviceProvider?.GetRequiredService<DailySalesReportView>();
             //reportWindow?.Show();
@@ -78,8 +73,8 @@ namespace EBISX_POS.Views
 
         private void TransactionLog(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var transactionWindow = _serviceProvider.GetRequiredService<TransactionView>();
-            transactionWindow.Show();
+            var reportWindow = _serviceProvider?.GetRequiredService<SalesHistoryWindow>();
+            reportWindow?.ShowDialog(this);
         }
 
         private async void Cash_Track_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

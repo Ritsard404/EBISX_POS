@@ -18,6 +18,8 @@ using System.Threading.Tasks;
 using System;
 using System.Globalization;
 using System.Collections.Generic;
+using EBISX_POS.Util;
+using Microsoft.Extensions.Options;
 
 namespace EBISX_POS.Views
 {
@@ -281,29 +283,25 @@ namespace EBISX_POS.Views
 
         private async Task GenerateAndPrintReceiptAsync(FinalizeOrderResponseDTO finalizeOrder)
         {
+            var reportOptions = App.Current.Services.GetRequiredService<IOptions<SalesReport>>();
+
             // Define target folder and file paths.
-            string folderPath = @"C:\POS\Reciepts";
+            string folderPath = reportOptions.Value.Reciepts;
             string fileName = $"Receipt-{DateTimeOffset.UtcNow.ToString("MMMM-dd-yyyy-HH-mm-ss")}.txt";
             string filePath = Path.Combine(folderPath, fileName);
 
             try
             {
-                // Ensure the target directory exists.
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
+                //// Ensure the target directory exists.
+                //if (!Directory.Exists(folderPath))
+                //{
+                //    Directory.CreateDirectory(folderPath);
+                //}
 
                 // Write receipt content to file.
-                WriteReceiptContent(filePath, finalizeOrder);
-
-                //// Notify the user if the file was created.
-                //if (File.Exists(filePath))
-                //{
-                //    await MessageBoxManager
-                //        .GetMessageBoxStandard("Notification", "Printing Receipt...", ButtonEnum.Ok)
-                //        .ShowAsPopupAsync(this);
-                //}
+                //WriteReceiptContent(filePath, finalizeOrder);
+                ReceiptPrinterUtil.PrintInvoice(folderPath, filePath, finalizeOrder);
+                TenderState.ElligiblePWDSCDiscount?.Clear();
 
                 // Open the receipt file automatically.
                 Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
@@ -435,7 +433,6 @@ namespace EBISX_POS.Views
                     }
                 }
 
-                TenderState.ElligiblePWDSCDiscount?.Clear();
                 //foreach (var order in OrderState.CurrentOrder.Where(i => i.IsPwdDiscounted || i.IsSeniorDiscounted))
                 //{
                 //    // Signature section
