@@ -41,6 +41,7 @@ namespace EBISX_POS.Views
 
         private async void EnterButton_Click(object? sender, RoutedEventArgs e)
         {
+            ShowLoader(true);
             var orderService = App.Current.Services.GetRequiredService<OrderService>();
             var paymentService = App.Current.Services.GetRequiredService<PaymentService>();
 
@@ -75,6 +76,7 @@ namespace EBISX_POS.Views
                 TenderState.tenderOrder.Reset();
 
                 Close();
+                ShowLoader(false);
                 return;
             }
 
@@ -90,6 +92,8 @@ namespace EBISX_POS.Views
                 ShowInCenter = true,
                 Icon = MsBox.Avalonia.Enums.Icon.Warning
             }).ShowAsPopupAsync(this);
+
+            ShowLoader(false);
         }
 
         //private async void PwdScDiscount_Click(object? sender, RoutedEventArgs e)
@@ -319,143 +323,11 @@ namespace EBISX_POS.Views
                     .ShowAsPopupAsync(this);
             }
         }
-        private void WriteReceiptContent(string filePath, FinalizeOrderResponseDTO finalizeOrder)
+        private void ShowLoader(bool show)
         {
-            int receiptWidth = 50; // Adjust as necessary for formatting
-            var pesoCulture = new CultureInfo("en-PH");
-
-            // Local helper to center text.
-            string CenterText(string text) =>
-                text.PadLeft((receiptWidth + text.Length) / 2).PadRight(receiptWidth);
-
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                // Header
-                writer.WriteLine(new string('=', receiptWidth));
-                writer.WriteLine(CenterText("Customer Invoice Receipt"));
-                writer.WriteLine(new string('=', receiptWidth));
-                writer.WriteLine(CenterText(finalizeOrder.RegisteredName));
-                writer.WriteLine(CenterText(finalizeOrder.Address));
-                writer.WriteLine(CenterText($"TIN: {finalizeOrder.VatTinNumber}"));
-                writer.WriteLine(CenterText($"MIN: {finalizeOrder.MinNumber}"));
-                writer.WriteLine(new string('-', receiptWidth));
-                writer.WriteLine();
-
-                // Invoice details
-                writer.WriteLine($"Invoice No: {finalizeOrder.InvoiceNumber}".PadRight(receiptWidth - 10));
-                writer.WriteLine(CenterText(TenderState.tenderOrder.OrderType));
-                writer.WriteLine($"Date: {finalizeOrder.InvoiceDate:d}".PadRight(receiptWidth - 10));
-                writer.WriteLine($"Cashier: {CashierState.CashierName}".PadRight(receiptWidth - 10));
-                writer.WriteLine(new string('-', receiptWidth));
-
-                // Items header// Items header
-                writer.WriteLine($"{"Qty",-5} {"Description",-30} {"Amount",10}");
-                writer.WriteLine(new string('-', receiptWidth));
-                writer.WriteLine();
-
-                // Invoice items
-                foreach (var order in OrderState.CurrentOrder)
-                {
-                    foreach (var item in order.DisplaySubOrders)
-                    {
-                        // Simulate the grid column widths.
-                        // Column 0: Fixed width (5 characters). Only show quantity if opacity is 1.
-                        string quantityColumn = item.Opacity < 1.0
-                            ? new string(' ', 5)
-                            : $"{item.Quantity,-5}";
-
-                        // Column 1: DisplayName in a left-aligned, fixed-width field (30 characters).
-                        string displayNameColumn = $"{item.DisplayName,-30}";
-
-                        // Column 2: Price string, right-aligned with 10 characters.
-                        string priceColumn = item.IsUpgradeMeal ? $"{item.ItemPriceString,10}" : string.Empty;
-
-                        // Write out the formatted line simulating the grid.
-                        writer.WriteLine($"{quantityColumn}{displayNameColumn}{priceColumn}");
-                    }
-
-                    writer.WriteLine();
-                }
-                writer.WriteLine(new string('-', receiptWidth));
-
-                // Totals
-                writer.WriteLine(CenterText($"{"Total Amount:",-20}{TenderState.tenderOrder.TotalAmount.ToString("C", pesoCulture),20}"));
-                if (TenderState.tenderOrder.HasOrderDiscount)
-                {
-                    writer.WriteLine(CenterText($"{"Discount Amount:",-20}{TenderState.tenderOrder.DiscountAmount.ToString("C", pesoCulture),20}"));
-                }
-                writer.WriteLine(CenterText($"{"Due Amount:",-20}{TenderState.tenderOrder.AmountDue.ToString("C", pesoCulture),20}"));
-
-                if (TenderState.tenderOrder.HasOtherPayments && TenderState.tenderOrder.OtherPayments != null)
-                {
-                    foreach (var payment in TenderState.tenderOrder.OtherPayments)
-                    {
-                        writer.WriteLine(CenterText($"{payment.SaleTypeName + ":",-20}{payment.Amount.ToString("C", pesoCulture),20}"));
-                    }
-                }
-                writer.WriteLine(CenterText($"{"Cash Tendered:",-20}{TenderState.tenderOrder.CashTenderAmount.ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"Total Tendered:",-20}{TenderState.tenderOrder.TenderAmount.ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"Change:",-20}{TenderState.tenderOrder.ChangeAmount.ToString("C", pesoCulture),20}"));
-                writer.WriteLine();
-
-                writer.WriteLine(CenterText($"{"Vat Zero Sales:",-20}{0.ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"Vat Exempt Sales:",-20}{(TenderState.tenderOrder.VatExemptSales).ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"Vatables Sales:",-20}{(TenderState.tenderOrder.VatSales).ToString("C", pesoCulture),20}"));
-                writer.WriteLine(CenterText($"{"VAT Amount:",-20}{(TenderState.tenderOrder.VatAmount).ToString("C", pesoCulture),20}"));
-                writer.WriteLine();
-
-
-                if (TenderState.ElligiblePWDSCDiscount == null || !TenderState.ElligiblePWDSCDiscount.Any())
-                {
-                    // Print the signature section once if no eligible discount state is available.
-                    writer.WriteLine(CenterText("Name:____________________________"));
-                    writer.WriteLine(CenterText("Address:_________________________"));
-                    writer.WriteLine(CenterText("TIN: _____________________________"));
-                    writer.WriteLine(CenterText("Signature: _______________________"));
-                    writer.WriteLine();
-                }
-                else
-                {
-                    var names = (TenderState.ElligiblePWDSCDiscount?.Any() == true)
-                        ? TenderState.ElligiblePWDSCDiscount
-                        : new List<string> { string.Empty };
-
-                    foreach (var pwdSc in names)
-                    {
-                        // Build the centered name text.
-                        string nameText = $"Name: {pwdSc.ToUpper()}________";
-                        writer.WriteLine(nameText);
-                        // Create an underline using dashes; using the trimmed length of the nameText ensures a matching underline.
-                        writer.WriteLine("Address: ___________________________");
-                        writer.WriteLine("TIN: _____________________________");
-                        writer.WriteLine("Signature: _______________________");
-                        writer.WriteLine();
-                    }
-                }
-
-                //foreach (var order in OrderState.CurrentOrder.Where(i => i.IsPwdDiscounted || i.IsSeniorDiscounted))
-                //{
-                //    // Signature section
-                //    writer.WriteLine(CenterText("Name:____________________________"));
-                //    writer.WriteLine(CenterText("Address:_________________________"));
-                //    writer.WriteLine(CenterText("TIN: _____________________________"));
-                //    writer.WriteLine(CenterText("Signature: _______________________"));
-                //    writer.WriteLine();
-                //}
-
-                // Footer
-                writer.WriteLine(CenterText("This Serve as Sales Invoice"));
-                writer.WriteLine(CenterText("Arsene Software Solutions"));
-                writer.WriteLine(CenterText("Labangon St. Cebu City, Cebu"));
-                writer.WriteLine(CenterText($"VAT Reg TIN: {finalizeOrder.VatTinNumber}"));
-                writer.WriteLine(CenterText($"Date Issue: {finalizeOrder.DateIssued:d}"));
-                writer.WriteLine(CenterText($"Valid Until: {finalizeOrder.ValidUntil:d}"));
-                writer.WriteLine();
-                writer.WriteLine(new string('=', receiptWidth));
-                writer.WriteLine(CenterText("Thank you for your purchase!"));
-                writer.WriteLine(new string('=', receiptWidth));
-                writer.WriteLine();
-            }
+            var overlay = this.FindControl<Grid>("LoadingOverlay");
+            if (overlay != null)
+                overlay.IsVisible = show;
         }
     }
 };

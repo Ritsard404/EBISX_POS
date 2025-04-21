@@ -36,6 +36,10 @@ namespace EBISX_POS
             // Configure and build the DI container.
             Services = ConfigureServices();
 
+            // Kick off the connectivity loop a single time
+            var connectivity = Services.GetRequiredService<ConnectivityViewModel>();
+            _ = connectivity.StartMonitoringCommand.ExecuteAsync(null);
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -103,6 +107,7 @@ namespace EBISX_POS
             services.AddTransient<ManagerWindow>();
             services.AddTransient<TenderOrderViewModel>(); // Register your ViewModel
             services.AddTransient<TenderOrderWindow>(); // Register the window
+            services.AddTransient<ConnectivityViewModel>(); // Register the window
             
          
 

@@ -500,6 +500,19 @@
 					</Button>
 				</StackPanel>
 			</Grid>
+
+			<Grid Grid.Row="1"
+				  x:Name="LoadingOverlay"
+						  IsVisible="False"
+						  Background="#80000000"
+			  
+				  >
+				<ProgressBar Width="100"
+						  IsIndeterminate="True"
+							  Foreground="White"
+							  HorizontalAlignment="Center"
+							  VerticalAlignment="Center"/>
+			</Grid>
 		</Grid>
 	</Border>
 </Window>

@@ -30,11 +30,15 @@ namespace EBISX_POS.ViewModels
             _menuService = menuService;
             OrderSummaryViewModel = new OrderSummaryViewModel(); // Initialize it
             ItemListViewModel = new ItemListViewModel(menuService); // Initialize it
+
             _connectivity = App.Current.Services.GetRequiredService<ConnectivityViewModel>();
+
+
+            // Prime and subscribe to online/offline
+            StartConnectivityTracking();
 
             _ = LoadCategories();
             _ = LoadPendingOrder();
-            _ = StartConnectivityMonitoringAsync();
 
         }
 
@@ -111,18 +115,20 @@ namespace EBISX_POS.ViewModels
             }
         }
 
-        private async Task StartConnectivityMonitoringAsync()
+        private void StartConnectivityTracking()
         {
+            // 1) prime
+            IsOnline = _connectivity.IsOnline;
+
+            // 2) subscribe
             _connectivity.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(ConnectivityViewModel.IsOnline))
-                {
                     IsOnline = _connectivity.IsOnline;
-                }
             };
 
-            // Kick off the monitoring loop
-            await _connectivity.StartMonitoringCommand.ExecuteAsync(null);
+            // 3) start monitoring (guarded inside ConnectivityViewModel)
+            _ = _connectivity.StartMonitoringCommand.ExecuteAsync(null);
         }
 
         public async Task LoadMenusAsync(int categoryId)
