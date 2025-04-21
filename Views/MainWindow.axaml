@@ -21,21 +21,36 @@
 	<Grid RowDefinitions="Auto, *">
 		<!-- Header -->
 		<Border BorderBrush="Orange" BorderThickness="0,0,0,3">
-			<Grid Grid.Row="0" Height="70" ColumnDefinitions="Auto, *, Auto">
+			<Grid Grid.Row="0" Height="70" ColumnDefinitions="Auto, Auto, *, Auto">
 				<!-- Title -->
-				<TextBlock Grid.Column="0" Text="Point of Sale"
-                           VerticalAlignment="Center"
-                           FontSize="20" FontWeight="Bold"
-                           Margin="20,0,0,0"/>
-				<!-- Filler Column (Expands Automatically) -->
+				<TextBlock Grid.Column="0"
+						   Text="Point of Sale"
+						   VerticalAlignment="Center"
+						   FontSize="20"
+						   FontWeight="Bold"
+						   Margin="20,0,0,0" />
+
+				<!-- Connection Status -->
+				<TextBlock Grid.Column="1"
+						   Text="{Binding IsOnline, Converter={StaticResource BoolToOnlineOfflineText}}"
+						   Foreground="{Binding IsOnline, Converter={StaticResource BoolToBrush}}"
+						   VerticalAlignment="Center"
+						   FontSize="14"
+						   FontWeight="SemiBold"
+						   Margin="10,0,0,0" />
+
+				<!-- Filler Column -->
+
 				<!-- User Name -->
-				<TextBlock Grid.Column="2"
-                           Text="{Binding CashierName}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Right"
-                           FontSize="15" FontWeight="SemiBold"
-                           Margin="0,0,20,0"/>
+				<TextBlock Grid.Column="3"
+						   Text="{Binding CashierName}"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Right"
+						   FontSize="15"
+						   FontWeight="SemiBold"
+						   Margin="0,0,20,0"/>
 			</Grid>
+
 		</Border>
 
 		<!-- Main Content -->

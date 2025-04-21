@@ -91,6 +91,8 @@ namespace EBISX_POS
             services.AddSingleton<ManagerWindow>();
             services.AddSingleton<CookieContainer>();
 
+            services.AddSingleton<ConnectivityViewModel>();
+
 
             // Register ViewModels
             services.AddTransient<LogInWindowViewModel>();

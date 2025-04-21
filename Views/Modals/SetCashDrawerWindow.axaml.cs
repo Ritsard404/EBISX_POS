@@ -45,8 +45,12 @@ namespace EBISX_POS.Views
                 Interval = TimeSpan.FromSeconds(5)
             };
             _autoCloseTimer.Tick += AutoCloseTimer_Tick;
-            _autoCloseTimer.Start();
 
+
+            if (_cashDrawer != "Cash-In" && _cashDrawer != "Cash-Out")
+            {
+                _autoCloseTimer.Start();
+            }
 
             CashInDrawer.AddHandler(TextInputEvent, OnUserActivity, RoutingStrategies.Tunnel);
             ManagerEmail.AddHandler(TextInputEvent, OnUserActivity, RoutingStrategies.Tunnel);

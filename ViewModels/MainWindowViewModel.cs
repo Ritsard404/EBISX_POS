@@ -14,8 +14,12 @@ namespace EBISX_POS.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        private readonly MenuService _menuService;
+        private readonly MenuService _menuService; 
+        private readonly ConnectivityViewModel _connectivity;
 
+
+        [ObservableProperty]
+        private bool isOnline;
 
         public ObservableCollection<Category> ButtonList { get; } = new();
         public OrderSummaryViewModel OrderSummaryViewModel { get; } // Add this property
@@ -26,10 +30,11 @@ namespace EBISX_POS.ViewModels
             _menuService = menuService;
             OrderSummaryViewModel = new OrderSummaryViewModel(); // Initialize it
             ItemListViewModel = new ItemListViewModel(menuService); // Initialize it
+            _connectivity = App.Current.Services.GetRequiredService<ConnectivityViewModel>();
 
             _ = LoadCategories();
             _ = LoadPendingOrder();
-
+            _ = StartConnectivityMonitoringAsync();
 
         }
 
@@ -106,6 +111,19 @@ namespace EBISX_POS.ViewModels
             }
         }
 
+        private async Task StartConnectivityMonitoringAsync()
+        {
+            _connectivity.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(ConnectivityViewModel.IsOnline))
+                {
+                    IsOnline = _connectivity.IsOnline;
+                }
+            };
+
+            // Kick off the monitoring loop
+            await _connectivity.StartMonitoringCommand.ExecuteAsync(null);
+        }
 
         public async Task LoadMenusAsync(int categoryId)
         {
