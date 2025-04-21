@@ -110,26 +110,12 @@ namespace EBISX_POS
             services.AddTransient<MainWindow>(); // Register MainWindow
             services.AddTransient<OrderSummaryView>();
             services.AddTransient<ItemListView>(provider => new ItemListView(provider.GetRequiredService<MenuService>())); // Register ItemListView
-                                                                                                                           // Sales report
-            services.AddTransient<DailySalesReportView>(provider =>
-            {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                return new DailySalesReportView(configuration);
-            });
-
+                     
             // SalesHistoryWindow
             services.AddTransient<SalesHistoryWindow>(provider =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 return new SalesHistoryWindow(configuration);
-            });
-
-
-            // T logs view
-            services.AddTransient<TransactionView>(provider =>
-            {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                return new TransactionView(configuration);
             });
 
             var configuration = new ConfigurationBuilder()

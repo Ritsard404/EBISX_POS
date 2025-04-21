@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -7,11 +7,15 @@ using Microsoft.Extensions.DependencyInjection;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
 using System.Text.RegularExpressions;
+using Avalonia.Threading;
+using System;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace EBISX_POS.Views
 {
     public partial class SetCashDrawerWindow : Window
     {
+        private readonly DispatcherTimer _autoCloseTimer;
         private string _cashDrawer;
 
         public SetCashDrawerWindow(string cashDrawer)
@@ -34,6 +38,31 @@ namespace EBISX_POS.Views
                 CashInDrawer.Watermark = "Enter Invoice ID";
 
             CashInDrawer.AddHandler(TextInputEvent, AmountTextBox_OnTextInput, RoutingStrategies.Tunnel);
+
+            // Close the dialog automatically after 5 seconds if no action is taken
+            _autoCloseTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _autoCloseTimer.Tick += AutoCloseTimer_Tick;
+            _autoCloseTimer.Start();
+
+
+            CashInDrawer.AddHandler(TextInputEvent, OnUserActivity, RoutingStrategies.Tunnel);
+            ManagerEmail.AddHandler(TextInputEvent, OnUserActivity, RoutingStrategies.Tunnel);
+        }
+
+        private void AutoCloseTimer_Tick(object? sender, EventArgs e)
+        {
+            _autoCloseTimer.Stop();
+            Close(false);
+        }
+
+        private void OnUserActivity(object? sender, TextInputEventArgs e)
+        {
+            // user started typing ⇒ cancel auto‑close
+            if (_autoCloseTimer.IsEnabled)
+                _autoCloseTimer.Stop();
         }
 
         private void AmountTextBox_OnTextInput(object sender, TextInputEventArgs e)
