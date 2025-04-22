@@ -227,6 +227,30 @@ namespace EBISX_POS.Services
                 return (false, "An unexpected error occurred.");
             }
         }
+        
+        public async Task<(bool, string)> AddOtherDiscount(AddOtherDiscountDTO addOtherDiscount)
+        {
+            try
+            {
+                ValidateOrderEndpoint(); // Validate API endpoint configuration
+
+                // Build URL and create request with JSON body using PUT method
+                var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/AddOtherDiscount";
+                var request = new RestRequest(url, Method.Put).AddJsonBody(addOtherDiscount);
+
+                // Execute the request and return the result
+                var result = await ExecuteRequestAsync(request); 
+
+                return result.Item1
+                    ? (true, result.Item2 ?? "Order voided successfully.")
+                    : result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($" Error: {ex.Message}");
+                return (false, "An unexpected error occurred.");
+            }
+        }
 
         public async Task<(bool, string)> PromoDiscount(string managerEmail, string promoCode)
         {
