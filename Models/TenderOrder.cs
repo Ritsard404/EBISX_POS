@@ -1,11 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using EBISX_POS.API.Services.DTO.Payment;
 using EBISX_POS.State;
-using iTextSharp.text;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 
 namespace EBISX_POS.Models
@@ -20,15 +17,18 @@ namespace EBISX_POS.Models
         [ObservableProperty] private decimal tenderAmount = 0m;
         [ObservableProperty] private decimal cashTenderAmount = 0m;
         [ObservableProperty] private decimal discountAmount = 0m;
+        [ObservableProperty] private int discountPercent = 0;
         [ObservableProperty] private decimal promoDiscountAmount = 0m;
         [ObservableProperty] private decimal promoDiscountPercent = 0m;
         [ObservableProperty] private decimal changeAmount = 0m;
         [ObservableProperty] private decimal amountDue = 0m;
+
         [ObservableProperty] private bool hasPromoDiscount;
         [ObservableProperty] private bool hasCouponDiscount;
         [ObservableProperty] private bool hasPwdDiscount;
         [ObservableProperty] private bool hasScDiscount;
         [ObservableProperty] private bool hasOrderDiscount;
+        [ObservableProperty] private bool hasOtherDiscount;
 
         [ObservableProperty] private bool hasOtherPayments;
 
@@ -41,6 +41,7 @@ namespace EBISX_POS.Models
         partial void OnTenderAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnCashTenderAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnDiscountAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
+        partial void OnDiscountPercentChanged(int oldValue, int newValue) => UpdateComputedValues();
         partial void OnPromoDiscountAmountChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnPromoDiscountPercentChanged(decimal oldValue, decimal newValue) => UpdateComputedValues();
         partial void OnHasPwdDiscountChanged(bool oldValue, bool newValue) => UpdateComputedValues();
@@ -71,7 +72,7 @@ namespace EBISX_POS.Models
                 .Where(d => !d.IsPwdDiscounted && !d.IsSeniorDiscounted)
                 .Sum(orderItem => orderItem.TotalPrice) / 1.12m);
             VatAmount = (!HasOrderDiscount ? TotalAmount - (TotalAmount / 1.12m) : VatSales - (VatSales / 1.12m));
-            
+
             UpdateComputedValues();
             return TotalAmount <= 0;
         }
@@ -81,7 +82,9 @@ namespace EBISX_POS.Models
             HasPromoDiscount = PromoDiscountAmount > 0 || PromoDiscountPercent > 0;
             HasCouponDiscount = OrderState.CurrentOrder
                 .Any(orderItem => orderItem.CouponCode != null);
-            HasOrderDiscount = HasPromoDiscount || HasScDiscount || HasPwdDiscount || HasCouponDiscount;
+            HasOtherDiscount = OrderState.CurrentOrder
+                .Any(orderItem => orderItem.HasDiscount);
+            HasOrderDiscount = HasPromoDiscount || HasScDiscount || HasPwdDiscount || HasCouponDiscount || HasOtherDiscount;
             HasOtherPayments = OtherPayments != null && OtherPayments.Count > 0;
 
             if (HasPromoDiscount)
@@ -92,7 +95,17 @@ namespace EBISX_POS.Models
             {
                 DiscountAmount = OrderState.CurrentOrder
                         .Sum(orderItem => orderItem.TotalDiscountPrice);
+            }
+            else if (HasOtherDiscount)
+            {
+                DiscountPercent = OrderState.CurrentOrder
+                    .Where(orderItem => orderItem.HasDiscount)
+                    .SelectMany(orderItem => orderItem.SubOrders)
+                    .Where(sub => sub.IsOtherDisc)
+                    .Sum(sub => (int)sub.ItemPrice);
 
+                var baseAmt = TotalAmount >= 500m ? 500m : TotalAmount;
+                DiscountAmount = Math.Round(baseAmt * DiscountPercent / 100m, 2);
             }
             else
             {

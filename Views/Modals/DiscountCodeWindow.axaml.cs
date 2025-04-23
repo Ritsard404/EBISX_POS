@@ -147,6 +147,7 @@ namespace EBISX_POS.Views
                             Size = s.Size,
                             Quantity = s.Quantity,
                             IsFirstItem = s.IsFirstItem,
+                            IsOtherDisc = s.IsOtherDisc
                         })
                     );
 

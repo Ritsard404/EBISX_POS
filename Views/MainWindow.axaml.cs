@@ -367,6 +367,52 @@ namespace EBISX_POS.Views
             }
 
         }
+        private async void OtherDiscount_Click(object sender, RoutedEventArgs e)
+        {
+            if (OrderState.CurrentOrder.Any(d => d.HasDiscount) || OrderState.CurrentOrder.Any(d => d.CouponCode != null))
+            {
+
+                var dbox = MessageBoxManager.GetMessageBoxStandard(
+                    new MessageBoxStandardParams
+                    {
+                        ContentHeader = $"Discounted already!",
+                        ContentMessage = "The order has discounted already!",
+                        ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        CanResize = false,
+                        SizeToContent = SizeToContent.WidthAndHeight,
+                        Width = 400,
+                        ShowInCenter = true,
+                        Icon = MsBox.Avalonia.Enums.Icon.Error
+                    });
+
+                var dresult = await dbox.ShowAsPopupAsync(this);
+                switch (dresult)
+                {
+                    case ButtonResult.Ok:
+                        return;
+                    default:
+                        return;
+                }
+            }
+
+            var swipeManager = new ManagerSwipeWindow(header: "Other Discount", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
+            bool isSwiped = await swipeManager.ShowDialogAsync(this);
+
+            if (isSwiped)
+            {
+                string managerEmail = "user1@example.com";
+                var otherDiscount = new OtherDiscountWindow(managerEmail);
+                await otherDiscount.ShowDialog((Window)this.VisualRoot);
+
+                if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+                {
+                    desktopLifetime.MainWindow?.Close();
+                }
+                return;
+            }
+
+        }
         private async void Manager_Click(object sender, RoutedEventArgs e)
         {
 

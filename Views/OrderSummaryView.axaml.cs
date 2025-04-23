@@ -19,7 +19,7 @@ namespace EBISX_POS.Views
 {
     public partial class OrderSummaryView : UserControl
     {
-        private readonly OrderService _orderService; 
+        private readonly OrderService _orderService;
 
         public OrderSummaryView(OrderService orderService)
         {
@@ -42,7 +42,7 @@ namespace EBISX_POS.Views
                     DataContext = new OrderItemEditWindowViewModel(SelectedCurrentOrderItem)
                 };
 
-                if (SelectedCurrentOrderItem.CouponCode != null)
+                if (SelectedCurrentOrderItem.CouponCode != null || SelectedCurrentOrderItem.SubOrders.Any(s => s.IsOtherDisc))
                     return;
 
                 await detailsWindow.ShowDialog((Window)this.VisualRoot);

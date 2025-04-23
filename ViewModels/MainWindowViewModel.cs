@@ -80,6 +80,7 @@ namespace EBISX_POS.ViewModels
                         Size = s.Size,
                         Quantity = s.Quantity,
                         IsFirstItem = s.IsFirstItem,
+                        IsOtherDisc = s.IsOtherDisc
                     })
                 );
 
