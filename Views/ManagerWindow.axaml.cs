@@ -17,6 +17,7 @@ using EBISX_POS.API.Services.DTO.Report;
 using System.Globalization;
 using EBISX_POS.Util;
 using EBISX_POS.Views.Manager;
+using EBISX_POS.ViewModels.Manager;
 
 namespace EBISX_POS.Views
 {
@@ -131,6 +132,18 @@ namespace EBISX_POS.Views
         {
             var setCashDrawer = new SetCashDrawerWindow("Withdraw");
             await setCashDrawer.ShowDialog(this);
+        }
+        private async void ManagerLog_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var managerLog = new UserLogsWindow();
+            managerLog.DataContext = new UserLogsViewModel(true);
+            await managerLog.ShowDialog(this);
+        }
+        private async void CashierLog_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var managerLog = new UserLogsWindow();
+            managerLog.DataContext = new UserLogsViewModel(false);
+            await managerLog.ShowDialog(this);
         }
 
         private async void Refund_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

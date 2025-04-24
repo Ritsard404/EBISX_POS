@@ -132,7 +132,27 @@
 							</StackPanel>
 						</Button>
 
-						<!-- Log Out Summary Report Button -->
+						<!-- Manager Logs Button -->
+						<Button Classes="myButton"
+                                Grid.Row="1" Grid.Column="1"
+								Click="ManagerLog_Click">
+							<StackPanel VerticalAlignment="Center"  Orientation="Vertical">
+								<TextBlock FontSize="30" Text="Manager" HorizontalAlignment="Center"/>
+								<TextBlock FontSize="30" Text="Logs" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Button>
+
+						<!-- Cashier Logs Button -->
+						<Button Classes="myButton"
+                                Grid.Row="1" Grid.Column="2"
+								Click="CashierLog_Click">
+							<StackPanel VerticalAlignment="Center"  Orientation="Vertical">
+								<TextBlock FontSize="30" Text="Cashier" HorizontalAlignment="Center"/>
+								<TextBlock FontSize="30" Text="Logs" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Button>
+
+						<!-- Log Out Button -->
 						<Button Classes="myButton"
                                 Grid.Row="1" Grid.Column="3"
                                 Click="LogOut_Button">
