@@ -23,7 +23,7 @@ namespace EBISX_POS.Util
             text.PadLeft((ReceiptWidth + text.Length) / 2).PadRight(ReceiptWidth);
 
         private static string AlignText(string left, string right) =>
-            left.PadRight(ReceiptWidth - right.Length) + right;
+            left.PadRight(ReceiptWidth - (right ?? "0").Length) + (right ?? "0");
 
         public static async void PrintXReading(IServiceProvider serviceProvider)
         {
