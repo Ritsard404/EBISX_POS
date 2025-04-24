@@ -211,6 +211,5 @@ namespace EBISX_POS.Views
 
         }
 
-
     }
 }

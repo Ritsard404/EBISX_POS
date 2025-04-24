@@ -301,6 +301,7 @@ namespace EBISX_POS.Views
                         ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         CanResize = false,
+
                         SizeToContent = SizeToContent.WidthAndHeight,
                         Width = 400,
                         ShowInCenter = true,
@@ -415,6 +416,27 @@ namespace EBISX_POS.Views
         }
         private async void Manager_Click(object sender, RoutedEventArgs e)
         {
+            if (OrderState.CurrentOrder.Count() > 1)
+            {
+
+                var dbox = MessageBoxManager.GetMessageBoxStandard(
+                    new MessageBoxStandardParams
+                    {
+                        ContentHeader = "Action Blocked",
+                        ContentMessage = "There is a pending order that must be completed before proceeding.",
+                        ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        CanResize = false,
+
+                        SizeToContent = SizeToContent.WidthAndHeight,
+                        Width = 400,
+                        ShowInCenter = true,
+                        Icon = MsBox.Avalonia.Enums.Icon.Error
+                    });
+
+                var dresult = await dbox.ShowAsPopupAsync(this);
+                return;
+            }
 
             var swipeManager = new ManagerSwipeWindow(header: "Manager", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
             bool isSwiped = await swipeManager.ShowDialogAsync(this);

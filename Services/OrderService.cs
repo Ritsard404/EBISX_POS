@@ -261,6 +261,7 @@ namespace EBISX_POS.Services
                 // Build URL and create request with JSON body using PUT method
                 var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/PromoDiscount";
                 var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("cashierEmail", CashierState.CashierEmail)
                     .AddQueryParameter("managerEmail", managerEmail)
                     .AddQueryParameter("promoCode", promoCode);
 
@@ -292,6 +293,7 @@ namespace EBISX_POS.Services
                 // Build URL and create request with JSON body using PUT method
                 var url = $"{_apiSettings.LocalAPI.OrderEndpoint}/AvailCoupon";
                 var request = new RestRequest(url, Method.Put)
+                    .AddQueryParameter("cashierEmail", CashierState.CashierEmail)
                     .AddQueryParameter("managerEmail", managerEmail)
                     .AddQueryParameter("couponCode", couponCode);
 
