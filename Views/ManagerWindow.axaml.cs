@@ -44,6 +44,7 @@ namespace EBISX_POS.Views
 
 
             _cashTrackReportPath = reportOptions.Value.CashTrackReport;
+
         }
 
         public ManagerWindow() : this(App.Current.Services.GetRequiredService<IServiceProvider>())
@@ -59,6 +60,8 @@ namespace EBISX_POS.Views
         {
             //var reportWindow = _serviceProvider?.GetRequiredService<DailySalesReportView>();
             //reportWindow?.Show();
+            if (!string.IsNullOrWhiteSpace(CashierState.CashierEmail))
+                return;
 
             var swipeManager = new ManagerSwipeWindow(header: "Z Reading", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
             bool isSwiped = await swipeManager.ShowDialogAsync(this);
