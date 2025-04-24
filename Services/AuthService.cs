@@ -171,7 +171,44 @@ namespace EBISX_POS.Services
                 return (false, "Unexpected error occurred.", "");
             }
         }
+        public class MessageResult
+        {
+            public string Message { get; set; } = string.Empty;
+        }
 
+        public async Task<(bool Success, string Message)> LoadDataAsync()
+        {
+            if (string.IsNullOrEmpty(_apiSettings.LocalAPI.AuthEndpoint))
+                throw new InvalidOperationException("API settings are not configured.");
+
+            var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/LoadData", Method.Post);
+            var response = await _client.ExecuteAsync<MessageResult>(request);
+
+            if (response.IsSuccessful && response.Data != null)
+                return (true, response.Data.Message);
+
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+                return (false, response.Content ?? "Bad request.");
+
+            return (false, response.ErrorMessage ?? $"Error {response.StatusCode}");
+        }
+
+        public async Task<(bool Success, string Message)> CheckData()
+        {
+            if (string.IsNullOrEmpty(_apiSettings.LocalAPI.AuthEndpoint))
+                throw new InvalidOperationException("API settings are not configured.");
+
+            var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/CheckData", Method.Get);
+            var response = await _client.ExecuteAsync<MessageResult>(request);
+
+            if (response.IsSuccessful && response.Data != null)
+                return (true, response.Data.Message);
+
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+                return (false, response.Content ?? "Bad request.");
+
+            return (false, response.ErrorMessage ?? $"Error {response.StatusCode}");
+        }
         public async Task<(bool, string)> SetCashInDrawer(decimal cash)
         {
             try
