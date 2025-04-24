@@ -161,7 +161,7 @@ namespace EBISX_POS.Models
         IsOtherDisc
             ? $"{ItemPrice:0}%"                                                   // 1) explicit “other” → percent
             : (MenuId == null && DrinkId == null && AddOnId == null)
-                ? $"- ₱{ItemSubTotal:G29}"                                         // 2) pure‑discount & not other → negative ₱
+                ? $" ₱{ItemSubTotal:G29}"                                         // 2) pure‑discount & not other → negative ₱
                 : IsFirstItem
                     ? $"₱{ItemSubTotal:G29}"                                      // 3) first item → positive ₱
                     : IsUpgradeMeal

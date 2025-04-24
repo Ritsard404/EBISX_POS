@@ -1,0 +1,17 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="500"
+        Width="900" Height="500"
+        x:Class="EBISX_POS.UserLogsWindow"
+	    xmlns:vm="using:EBISX_POS.ViewModels.Manager"
+		x:DataType="vm:UserLogsViewModel"
+        Title="UserLogsWindow"
+		WindowStartupLocation="CenterScreen"
+		SystemDecorations="None"
+		CornerRadius="10">
+	<Border BorderThickness="15"  CornerRadius="10" BorderBrush="Orange" Padding="10">
+		
+	</Border>
+</Window>

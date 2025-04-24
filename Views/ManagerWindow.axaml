@@ -124,7 +124,8 @@
 
 						<!-- BIR Summary Report Button -->
 						<Button Classes="myButton"
-                                Grid.Row="1" Grid.Column="0">
+                                Grid.Row="1" Grid.Column="0"
+								Click="CashPullOut_Click">
 							<StackPanel VerticalAlignment="Center"  Orientation="Vertical">
 								<TextBlock FontSize="30" Text="Cash" HorizontalAlignment="Center"/>
 								<TextBlock FontSize="30" Text="Pull-Out" HorizontalAlignment="Center"/>

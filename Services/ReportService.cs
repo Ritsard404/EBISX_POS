@@ -91,6 +91,36 @@ namespace EBISX_POS.Services
                 return new List<InvoiceDTO>();
             }
         }
+        public async Task<List<UserActionLogDTO>> UserActionLog(bool isManagerLog, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                // Build URL and create a GET request
+                var url = $"{_apiSettings.LocalAPI.ReportEndpoint}/UserActionLog";
+                var request = new RestRequest(url, Method.Get)
+                    .AddQueryParameter("isManagerLog", isManagerLog)
+                    .AddQueryParameter("fromDate", fromDate.ToString("yyyy-MM-dd"))
+                    .AddQueryParameter("toDate", toDate.ToString("yyyy-MM-dd"));
+
+
+                var response = await _restClient.ExecuteAsync<List<UserActionLogDTO>>(request);
+
+
+                if (!response.IsSuccessful || response.Data == null)
+                {
+                    return new List<UserActionLogDTO>();
+                }
+
+                return (
+                    response.Data
+                );
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+                return new List<UserActionLogDTO>();
+            }
+        }
 
         public async Task<ZInvoiceDTO> ZInvoiceReport() // Fixed return type
         {

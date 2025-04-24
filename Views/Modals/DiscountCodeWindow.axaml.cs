@@ -69,12 +69,12 @@ namespace EBISX_POS.Views
             if (DiscountType == "PROMO")
             {
                 // For demo purposes, using a placeholder manager email.
-                result = await orderService.PromoDiscount(managerEmail: "manager@example.com", promoCode: trimmedCode);
+                result = await orderService.PromoDiscount(managerEmail: "user1@example.com", promoCode: trimmedCode);
             }
             else if (DiscountType == "COUPON")
             {
                 // For coupon, assume we use the AvailCoupon method.
-                result = await orderService.AvailCoupon(managerEmail: "manager@example.com", couponCode: trimmedCode);
+                result = await orderService.AvailCoupon(managerEmail: "user1@example.com", couponCode: trimmedCode);
             }
             else
             {
