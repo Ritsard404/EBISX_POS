@@ -13,11 +13,10 @@ using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Extensions.Options;
-using EBISX_POS.API.Services.DTO.Report;
-using System.Globalization;
 using EBISX_POS.Util;
 using EBISX_POS.Views.Manager;
 using EBISX_POS.ViewModels.Manager;
+using EBISX_POS.API.Models;
 
 namespace EBISX_POS.Views
 {
@@ -42,9 +41,13 @@ namespace EBISX_POS.Views
             var reportOptions = _serviceProvider.GetRequiredService<IOptions<SalesReport>>();
             _cashTrackReportPath = reportOptions.Value.CashTrackReport;
 
-
             _cashTrackReportPath = reportOptions.Value.CashTrackReport;
 
+            if (string.IsNullOrEmpty(CashierState.CashierEmail) && string.IsNullOrEmpty(CashierState.ManagerEmail))
+            {
+                ButtonOverlay.IsVisible = true;
+                BackButton.IsVisible = false;
+            }
         }
 
         public ManagerWindow() : this(App.Current.Services.GetRequiredService<IServiceProvider>())
@@ -148,6 +151,60 @@ namespace EBISX_POS.Views
             managerLog.DataContext = new UserLogsViewModel(false);
             await managerLog.ShowDialog(this);
         }
+        private async void LoadData_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            ShowLoader(true);
+
+            // Network check
+            if (!await NetworkHelper.IsOnlineAsync())
+            {
+                await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+                {
+                    ContentHeader = "No Internet Connection",
+                    ContentMessage = "Please check your network and try again.",
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    Width = 400,
+                    ShowInCenter = true
+                }).ShowWindowDialogAsync(this);
+
+                ShowLoader(false);
+                return;
+            }
+
+            // Attempt to load data
+            var (isSuccess, message) = await _authService.LoadDataAsync();
+
+            if (!isSuccess)
+            {
+                // Show the service-returned message on failure
+                await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+                {
+                    ContentHeader = "Load Failed",
+                    ContentMessage = string.IsNullOrWhiteSpace(message)
+                                            ? "An unknown error occurred."
+                                            : message,
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    Width = 400,
+                    ShowInCenter = true
+                }).ShowWindowDialogAsync(this);
+
+                ShowLoader(false);
+                return;
+            }
+
+            // Success → navigate
+            ShowLoader(false);
+            var loginWindow= new LogInWindow();
+            loginWindow.Show();
+            Close();
+        }
+
 
         private async void Refund_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {

@@ -13,6 +13,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Avalonia;
 
 namespace EBISX_POS.ViewModels
 {
@@ -43,6 +44,7 @@ namespace EBISX_POS.ViewModels
             _menuService = menuService;
 
             // Fire-and-forget async calls
+            _ = CheckData();
             _ = LoadCashiersAsync();
             _ = CheckPendingOrderAsync();
         }
@@ -52,6 +54,8 @@ namespace EBISX_POS.ViewModels
             try
             {
                 IsLoading = true;
+
+
                 var cashiers = await _authService.GetCashiersAsync();
                 Cashiers.Clear();
                 foreach (var cashier in cashiers)
@@ -70,9 +74,44 @@ namespace EBISX_POS.ViewModels
             }
         }
 
+        private async Task CheckData()
+        {
+            try
+            {
+                IsLoading = true;
+                var (isSuccess, message) = await _authService.CheckData();
+                if (isSuccess)
+                {
+                    var owner = GetCurrentWindow();
+                    if (owner == null)
+                        return;
+
+                    var managerWindow = new ManagerWindow();
+
+                    if (Application.Current.ApplicationLifetime
+                        is IClassicDesktopStyleApplicationLifetime desktop)
+                    {
+                        desktop.MainWindow = managerWindow;
+                    }
+
+                    managerWindow.Show();
+                    owner.Close();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading cashiers: {ex.Message}");
+                NotificationService.NetworkIssueMessage();
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
         private async Task CheckPendingOrderAsync()
         {
-
             try
             {
                 IsLoading = true;

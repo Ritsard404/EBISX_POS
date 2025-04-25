@@ -31,4 +31,18 @@ public static class CashierState
             }
         }
     }
+
+    private static string? _managerEmail;
+    public static string? ManagerEmail
+    {
+        get => _managerEmail;
+        set
+        {
+            if (_managerEmail != value)
+            {
+                _managerEmail = value;
+                OnCashierStateChanged?.Invoke();
+            }
+        }
+    }
 }
