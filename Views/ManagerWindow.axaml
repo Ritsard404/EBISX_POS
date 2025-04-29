@@ -88,7 +88,8 @@
 						<Button Classes="myButton"
                                 Click="SalesReport_Button"
                                 Grid.Row="0" Grid.Column="0"
-                                VerticalContentAlignment="Center">
+                                VerticalContentAlignment="Center"
+								x:Name="SalesReport">
 							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
 								<TextBlock FontSize="30" Text="Sales"/>
 								<TextBlock FontSize="30" Text="Report"/>
@@ -156,7 +157,8 @@
 						<!-- Log Out Button -->
 						<Button Classes="myButton"
                                 Grid.Row="1" Grid.Column="3"
-                                Click="LogOut_Button">
+                                Click="LogOut_Button"
+								x:Name="LogOut">
 							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
 								<TextBlock FontSize="30" Text="Log Out"/>
 								<TextBlock FontSize="30" Text="Cashier"/>

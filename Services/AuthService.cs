@@ -58,11 +58,17 @@ namespace EBISX_POS.Services
 
         public class LoginResponseDTO
         {
+            public bool isManager { get; set; }
+            public string email { get; set; } = string.Empty;
+            public string name { get; set; } = string.Empty;
+        }
+        public class HasPendingResponseDTO
+        {
             public string CashierEmail { get; set; } = string.Empty;
             public string CashierName { get; set; } = string.Empty;
         }
 
-        public async Task<(bool, string, string)> LogInAsync(LogInDTO logInDTO)
+        public async Task<(bool, bool, string, string)> LogInAsync(LogInDTO logInDTO)
         {
             try
             {
@@ -71,27 +77,27 @@ namespace EBISX_POS.Services
                     throw new InvalidOperationException("API settings are not properly configured.");
                 }
 
-                var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/login", Method.Post)
+                var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/LogIn", Method.Post)
                     .AddJsonBody(logInDTO);
 
                 var response = await _client.ExecuteAsync<LoginResponseDTO>(request);
 
                 if (response.IsSuccessful && response.Data != null)
                 {
-                    return (true, response.Data.CashierName, response.Data.CashierEmail);
+                    return (true, response.Data.isManager, response.Data.name, response.Data.email);
                 }
 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    return (false, "Invalid credentials. Please try again.", "");
+                    return (false, false, "Invalid credentials. Please try again.", "");
                 }
 
-                return (false, $"Login failed. Status Code: {response.StatusCode}", "");
+                return (false, false, $"Login failed. Status Code: {response.StatusCode}", "");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Unexpected Error: {ex.Message}");
-                return (false, "Unexpected error occurred.", "");
+                return (false, false, "Unexpected error occurred.", "");
             }
         }
         public class LogOutResponseDTO
@@ -146,7 +152,7 @@ namespace EBISX_POS.Services
                 }
 
                 var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/HasPendingOrder", Method.Get);
-                var response = await _client.ExecuteAsync<LoginResponseDTO>(request);
+                var response = await _client.ExecuteAsync<HasPendingResponseDTO>(request);
 
                 if (response.IsSuccessful && response.Data != null)
                 {

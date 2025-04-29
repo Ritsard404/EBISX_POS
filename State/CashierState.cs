@@ -45,4 +45,11 @@ public static class CashierState
             }
         }
     }
+
+    public static void CashierStateReset()
+    {
+        CashierName = null;
+        CashierEmail = null;
+        ManagerEmail = null;
+    }
 }

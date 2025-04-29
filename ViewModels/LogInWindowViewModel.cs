@@ -156,32 +156,48 @@ namespace EBISX_POS.ViewModels
         {
             try
             {
+                CashierState.CashierStateReset();
+
                 var owner = GetCurrentWindow();
                 ErrorMessage = string.Empty;
                 IsLoading = true;
 
-                if (SelectedCashier == null)
-                {
-                    ErrorMessage = "Please select a cashier.";
-                    OnPropertyChanged(nameof(HasError));
-                    return;
-                }
+                //if (SelectedCashier == null)
+                //{
+                //    ErrorMessage = "Please select a cashier.";
+                //    OnPropertyChanged(nameof(HasError));
+                //    return;
+                //}
 
                 var logInDTO = new LogInDTO
                 {
-                    CashierEmail = SelectedCashier.Email,
+                    CashierEmail = SelectedCashier?.Email ?? "",
                     ManagerEmail = ManagerEmail
                 };
 
-                var (success, cashierName, cashierEmail) = await _authService.LogInAsync(logInDTO);
+                var (success, isManager, name, email) = await _authService.LogInAsync(logInDTO);
                 if (!success)
                 {
-                    ErrorMessage = cashierName;
+                    ErrorMessage = name;
                     OnPropertyChanged(nameof(HasError));
                     return;
                 }
 
-                NavigateToMainWindow(cashierEmail: cashierEmail, cashierName: cashierName);
+                if (isManager)
+                {
+                    CashierState.ManagerEmail = email;
+                    owner.Close();
+                    var managerWindow = new ManagerWindow();
+                    if (Application.Current.ApplicationLifetime
+                        is IClassicDesktopStyleApplicationLifetime desktop)
+                    {
+                        desktop.MainWindow = managerWindow;
+                    }
+                    managerWindow.Show();
+                    return;
+                }
+
+                NavigateToMainWindow(cashierEmail: email, cashierName: name);
                 owner.Close();
             }
             catch (Exception ex)
