@@ -58,6 +58,7 @@ namespace EBISX_POS.Views
 
             // enable SalesReport only for managers
             SalesReport.IsEnabled = hasManager;
+            CashPullOut.IsEnabled = !hasManager;
 
             DataLayout.IsVisible = hasManager || !(hasManager || hasCashier);
 

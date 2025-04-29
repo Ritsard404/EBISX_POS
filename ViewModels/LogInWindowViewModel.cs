@@ -63,6 +63,9 @@ namespace EBISX_POS.ViewModels
 
                 var cashiers = await _authService.GetCashiersAsync();
                 Cashiers.Clear();
+
+                Cashiers.Add(new CashierDTO { Name = string.Empty, Email = string.Empty });
+
                 foreach (var cashier in cashiers)
                 {
                     Cashiers.Add(cashier);
