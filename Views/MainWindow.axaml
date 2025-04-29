@@ -100,7 +100,7 @@
 					<ProgressBar Name="IsLoadCtgry"
 								 IsIndeterminate="True"
 								 HorizontalAlignment="Center"
-								 Width="150"
+								 Width="100"
 								 VerticalAlignment="Center"/>
 				</Grid>
 			</Border>

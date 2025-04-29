@@ -444,6 +444,12 @@ namespace EBISX_POS.Views
             if (isSwiped)
             {
                 var managerView = new ManagerWindow();
+
+                if (Application.Current.ApplicationLifetime
+                    is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    desktop.MainWindow = managerView;
+                }
                 managerView.Show();
                 Close();
             }

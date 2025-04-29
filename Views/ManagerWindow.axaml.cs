@@ -147,11 +147,18 @@ namespace EBISX_POS.Views
 
             // Pick which window to open
             Window nextWindow = isManager
-                ? (Window)new LogInWindow()
+                ? new LogInWindow()
                 : new MainWindow(_menuService, _authService)
                 {
                     DataContext = new MainWindowViewModel(_menuService)
                 };
+
+
+            if (Application.Current.ApplicationLifetime
+                is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = nextWindow;
+            }
 
             nextWindow.Show();
             Close();
@@ -225,9 +232,10 @@ namespace EBISX_POS.Views
                        CanResize = false,
                        SizeToContent = SizeToContent.WidthAndHeight,
                        Width = 400,
-                       ShowInCenter = true
+                       ShowInCenter = true,
+                       
                    })
-                   .ShowWindowDialogAsync(this);
+                   .ShowAsPopupAsync(this);
 
                 if (result != ButtonResult.Ok)
                     return;
@@ -329,6 +337,11 @@ namespace EBISX_POS.Views
                         TenderState.tenderOrder.Reset();
 
                         var logInWindow = new LogInWindow();
+                        if (Application.Current.ApplicationLifetime
+                            is IClassicDesktopStyleApplicationLifetime desktop)
+                        {
+                            desktop.MainWindow = logInWindow;
+                        }
                         logInWindow.Show();
                         ShowLoader(false);
                         Close();

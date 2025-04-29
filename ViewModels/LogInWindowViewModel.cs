@@ -34,6 +34,9 @@ namespace EBISX_POS.ViewModels
         [ObservableProperty]
         private string managerEmail;
 
+        private bool _hasNavigated = false;
+
+
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
         public ObservableCollection<CashierDTO> Cashiers { get; } = new();
@@ -42,11 +45,13 @@ namespace EBISX_POS.ViewModels
         {
             _authService = authService;
             _menuService = menuService;
-
-            // Fire-and-forget async calls
-            _ = CheckData();
-            _ = LoadCashiersAsync();
-            _ = CheckPendingOrderAsync();
+            InitializeAsync();
+        }
+        public async void InitializeAsync()
+        {
+            await CheckData(); // this might navigate and close
+            await LoadCashiersAsync();
+            await CheckPendingOrderAsync();
         }
 
         private async Task LoadCashiersAsync()
@@ -78,13 +83,16 @@ namespace EBISX_POS.ViewModels
         {
             try
             {
+
                 IsLoading = true;
                 var (isSuccess, message) = await _authService.CheckData();
                 if (isSuccess)
                 {
+
                     var owner = GetCurrentWindow();
                     if (owner == null)
                         return;
+
 
                     var managerWindow = new ManagerWindow();
 
@@ -112,31 +120,38 @@ namespace EBISX_POS.ViewModels
 
         private async Task CheckPendingOrderAsync()
         {
+            if (_hasNavigated) return;
             try
             {
+
                 IsLoading = true;
                 var (success, cashierName, cashierEmail) = await _authService.HasPendingOrder();
                 if (success)
                 {
+                    if (_hasNavigated) return;
+
                     var owner = GetCurrentWindow();
+
+                    _hasNavigated = true;
 
                     var alertBox = MessageBoxManager.GetMessageBoxStandard(
                         new MessageBoxStandardParams
                         {
                             ContentHeader = "Cashier Session Restored",
-                            ContentMessage = "Your previous session has been successfully restored after an unexpected closure. Please review your cashier data and continue. If you experience further issues, verify your network connection.",
+                            ContentMessage = "Your previous session has been successfully restored after an unexpected closure. Please review your cashier data and continue.",
                             ButtonDefinitions = ButtonEnum.Ok,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
                             CanResize = false,
                             SizeToContent = SizeToContent.WidthAndHeight,
                             Width = 400,
-                            ShowInCenter = true
+                            ShowInCenter = true,
+                            SystemDecorations = SystemDecorations.None,
                         });
 
-                    await alertBox.ShowWindowDialogAsync(owner);
+                    await alertBox.ShowAsPopupAsync(owner);
 
-                    NavigateToMainWindow(cashierEmail: cashierEmail, cashierName: cashierName);
-                    owner.Close();
+                    NavigateToMainWindow(cashierEmail: cashierEmail, cashierName: cashierName, owner);
+                    //owner.Close();
                 }
                 IsLoading = false;
                 return;
@@ -186,12 +201,13 @@ namespace EBISX_POS.ViewModels
                         desktop.MainWindow = managerWindow;
                     }
                     managerWindow.Show();
+
                     owner.Close();
                     return;
                 }
 
-                NavigateToMainWindow(cashierEmail: email, cashierName: name);
-                owner.Close();
+                NavigateToMainWindow(cashierEmail: email, cashierName: name, owner);
+                //owner.Close();
             }
             catch (Exception ex)
             {
@@ -214,7 +230,7 @@ namespace EBISX_POS.ViewModels
             return null;
         }
 
-        private void NavigateToMainWindow(string cashierEmail, string cashierName)
+        private void NavigateToMainWindow(string cashierEmail, string cashierName, Window owner)
         {
             CashierState.CashierEmail = cashierEmail;
             CashierState.CashierName = cashierName;
@@ -223,7 +239,15 @@ namespace EBISX_POS.ViewModels
             {
                 DataContext = new MainWindowViewModel(_menuService)
             };
+
             mainWindow.Show();
+            owner.Close();
+
+            //if (Application.Current.ApplicationLifetime
+            //    is IClassicDesktopStyleApplicationLifetime desktop)
+            //{
+            //    desktop.MainWindow = mainWindow;
+            //}
         }
     }
 }

@@ -92,7 +92,7 @@ namespace EBISX_POS.Services
                     return (false, false, "Invalid credentials. Please try again.", "");
                 }
 
-                return (false, false, $"Login failed. Status Code: {response.StatusCode}", "");
+                return (false, false, $"Login failed.", "");
             }
             catch (Exception ex)
             {
