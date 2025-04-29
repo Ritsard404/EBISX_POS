@@ -162,13 +162,6 @@ namespace EBISX_POS.ViewModels
                 ErrorMessage = string.Empty;
                 IsLoading = true;
 
-                //if (SelectedCashier == null)
-                //{
-                //    ErrorMessage = "Please select a cashier.";
-                //    OnPropertyChanged(nameof(HasError));
-                //    return;
-                //}
-
                 var logInDTO = new LogInDTO
                 {
                     CashierEmail = SelectedCashier?.Email ?? "",
@@ -186,7 +179,6 @@ namespace EBISX_POS.ViewModels
                 if (isManager)
                 {
                     CashierState.ManagerEmail = email;
-                    owner.Close();
                     var managerWindow = new ManagerWindow();
                     if (Application.Current.ApplicationLifetime
                         is IClassicDesktopStyleApplicationLifetime desktop)
@@ -194,6 +186,7 @@ namespace EBISX_POS.ViewModels
                         desktop.MainWindow = managerWindow;
                     }
                     managerWindow.Show();
+                    owner.Close();
                     return;
                 }
 

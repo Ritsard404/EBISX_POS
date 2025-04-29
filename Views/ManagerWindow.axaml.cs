@@ -16,9 +16,10 @@ using Microsoft.Extensions.Options;
 using EBISX_POS.Util;
 using EBISX_POS.Views.Manager;
 using EBISX_POS.ViewModels.Manager;
-using EBISX_POS.API.Models;
-using static Avalonia.Media.Transformation.TransformOperation;
 using System.Threading.Tasks;
+using iTextSharp.text;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia;
 
 namespace EBISX_POS.Views
 {
@@ -52,7 +53,6 @@ namespace EBISX_POS.Views
             // show overlay & hide BackButton only if nobody is signed in
             var overlayOn = !(hasManager || hasCashier);
             ButtonOverlay.IsVisible = overlayOn;
-            ButtonOverlay.IsHitTestVisible = overlayOn;
 
             BackButton.IsVisible = (hasManager || hasCashier);
 
@@ -177,60 +177,93 @@ namespace EBISX_POS.Views
         }
         private async void LoadData_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
+            ShowLoader(true);
             try
             {
-                ShowLoader(true);
-
                 if (!await NetworkHelper.IsOnlineAsync())
                 {
-                    await ShowMessageBoxAsync("No Internet Connection", "Please check your network and try again.");
-                    return;
+                    await ShowMessageAsync("No Internet Connection",
+                                           "Please check your network and try again.");
+                    return;  // loader will be hidden, window stays open
                 }
 
                 var (isSuccess, message) = await _authService.LoadDataAsync();
-
                 if (!isSuccess)
                 {
-                    await ShowMessageBoxAsync("Load Failed",
-                        string.IsNullOrWhiteSpace(message) ? "An unknown error occurred." : message);
+                    await ShowMessageAsync("Load Failed",
+                                           string.IsNullOrWhiteSpace(message)
+                                               ? "An unknown error occurred."
+                                               : message);
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(CashierState.ManagerEmail))
-                {
-                    var result = await ShowMessageBoxAsync("Data Updated!",
-                        "Data loaded successfully. Click Ok if you want to log in cashier.");
-
-                    if (result == ButtonResult.Ok)
-                    {
-                        new LogInWindow().Show();
-                    }
-                }
-                else
-                {
-                    new LogInWindow().Show();
-                }
+                await PostLoadFlowAsync();
+            }
+            catch (Exception ex)
+            {
+                // log or report ex
+                await ShowMessageAsync("Error", "Sorry, something went wrong.");
             }
             finally
             {
                 ShowLoader(false);
-                Close();
             }
         }
-        private async Task<ButtonResult> ShowMessageBoxAsync(string header, string message)
+
+        private async Task PostLoadFlowAsync()
         {
-            return await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+            // if manager email is set, ask if they want to log in as cashier
+            if (!string.IsNullOrWhiteSpace(CashierState.ManagerEmail))
             {
-                ContentHeader = header,
-                ContentMessage = message,
-                ButtonDefinitions = ButtonEnum.Ok,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                CanResize = false,
-                SizeToContent = SizeToContent.WidthAndHeight,
-                Width = 400,
-                ShowInCenter = true
-            }).ShowWindowDialogAsync(this);
+                var result = await MessageBoxManager
+                   .GetMessageBoxStandard(new MessageBoxStandardParams
+                   {
+                       ContentHeader = "Data Updated!",
+                       ContentMessage = "Data loaded successfully. Log in as cashier now?",
+                       ButtonDefinitions = ButtonEnum.OkCancel,
+                       WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                       CanResize = false,
+                       SizeToContent = SizeToContent.WidthAndHeight,
+                       Width = 400,
+                       ShowInCenter = true
+                   })
+                   .ShowWindowDialogAsync(this);
+
+                if (result != ButtonResult.Ok)
+                    return;
+                CashierState.CashierStateReset();
+            }
+
+            ShowLoginAndClose();
         }
+
+        private void ShowLoginAndClose()
+        {
+            var loginWin = new LogInWindow();
+            if (Application.Current.ApplicationLifetime
+                is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = loginWin;
+            }
+            loginWin.Show();
+            this.Close();
+        }
+
+        private Task<ButtonResult> ShowMessageAsync(string header, string message)
+            => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
+                {
+                    ContentHeader = header,
+                    ContentMessage = message,
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    Width = 400,
+                    ShowInCenter = true
+                })
+                .ShowWindowDialogAsync(this);
+
         private async void Refund_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var refundOrder = new SetCashDrawerWindow("Returned");
