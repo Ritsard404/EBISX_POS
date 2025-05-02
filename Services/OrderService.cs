@@ -177,7 +177,7 @@ namespace EBISX_POS.Services
             }
         }
 
-        public async Task<(bool, string)> RefundOrder(string managerEmail, long orderId)
+        public async Task<(bool, string)> RefundOrder(string managerEmail, long invoiceNumber)
         {
             try
             {
@@ -188,7 +188,7 @@ namespace EBISX_POS.Services
 
                 // Create request using PUT method
                 var request = new RestRequest(url, Method.Put)
-                    .AddQueryParameter("orderId", orderId)
+                    .AddQueryParameter("invoiceNumber", invoiceNumber)
                     .AddQueryParameter("managerEmail", managerEmail);
 
                 // Execute the request and return the result
