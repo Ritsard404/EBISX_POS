@@ -3,7 +3,7 @@
 			 xmlns:vm="using:EBISX_POS.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="EBISX_POS.Views.LogInWindow"
              x:DataType="vm:LogInWindowViewModel"
 			 WindowState="Maximized"
@@ -11,6 +11,13 @@
 			 SystemDecorations="None">
 
 	<Grid RowDefinitions="Auto, *">
+		<TextBlock HorizontalAlignment="Right"
+				   Margin="0, 5, 5, 0"
+				   FontFamily="{StaticResource NunitoFont}"
+				   FontWeight="Black"
+				   FontSize="18"
+				   Foreground="Blue"
+				   IsVisible="{Binding HasTrainMode}">Training Mode</TextBlock>
 		<Border Grid.Row="1"
 				Width="300"
 				VerticalAlignment="Center"

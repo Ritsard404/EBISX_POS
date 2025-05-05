@@ -348,5 +348,31 @@ namespace EBISX_POS.Services
                 return false;
             }
         }
+        // DTO for train‐mode responses
+        private class TrainModeResponseDTO
+        {
+            public bool isTrainMode { get; set; }
+        }
+
+        // GET /IsTrainMode
+        public async Task<bool> IsTrainModeAsync()
+        {
+            var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/IsTrainMode", Method.Get);
+            var response = await _client.ExecuteAsync<TrainModeResponseDTO>(request);
+            if (response.IsSuccessful && response.Data != null)
+                return response.Data.isTrainMode;
+            throw new InvalidOperationException($"Failed to get train mode: {response.StatusCode} {response.ErrorMessage}");
+        }
+
+        // PUT /ChangeMode?managerEmail={managerEmail}
+        public async Task<bool> ChangeModeAsync(string managerEmail)
+        {
+            var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/ChangeMode", Method.Put)
+                .AddQueryParameter("managerEmail", managerEmail);
+            var response = await _client.ExecuteAsync<TrainModeResponseDTO>(request);
+            if (response.IsSuccessful && response.Data != null)
+                return response.Data.isTrainMode;
+            throw new InvalidOperationException($"Failed to change mode: {response.StatusCode} {response.ErrorMessage}");
+        }
     }
 }

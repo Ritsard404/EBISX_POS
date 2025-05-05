@@ -40,6 +40,14 @@
 						   Margin="10,0,0,0" />
 
 				<!-- Filler Column -->
+				<TextBlock Grid.Column="2"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Center"
+						   FontFamily="{StaticResource NunitoFont}"
+						   FontWeight="Black"
+						   FontSize="18"
+						   Foreground="Blue"
+						   IsVisible="{Binding IsTrainMode}">Training Mode</TextBlock>
 
 				<!-- User Name -->
 				<TextBlock Grid.Column="3"

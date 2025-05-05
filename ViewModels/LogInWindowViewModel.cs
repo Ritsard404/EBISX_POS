@@ -36,6 +36,9 @@ namespace EBISX_POS.ViewModels
 
         private bool _hasNavigated = false;
 
+        [ObservableProperty]
+        private bool hasTrainMode = false;
+
 
         public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
@@ -45,11 +48,13 @@ namespace EBISX_POS.ViewModels
         {
             _authService = authService;
             _menuService = menuService;
+
             InitializeAsync();
         }
         public async void InitializeAsync()
         {
             await CheckData(); // this might navigate and close
+            await CheckMode();
             await LoadCashiersAsync();
             await CheckPendingOrderAsync();
         }
@@ -113,6 +118,31 @@ namespace EBISX_POS.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading cashiers: {ex.Message}");
+                NotificationService.NetworkIssueMessage();
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async Task CheckMode()
+        {
+            try
+            {
+
+                IsLoading = true;
+                var isSuccess = await _authService.IsTrainModeAsync();
+                if (isSuccess)
+                {
+                    CashierState.IsTrainMode = true;
+                    HasTrainMode = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error checking mode: {ex.Message}");
                 NotificationService.NetworkIssueMessage();
             }
             finally

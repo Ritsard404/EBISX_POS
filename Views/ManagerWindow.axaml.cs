@@ -60,6 +60,9 @@ namespace EBISX_POS.Views
             SalesReport.IsEnabled = hasManager;
             CashPullOut.IsEnabled = !hasManager;
 
+            Mode.IsEnabled = hasManager;
+            Mode.IsChecked = CashierState.IsTrainMode;
+
             DataLayout.IsVisible = hasManager || !(hasManager || hasCashier);
 
             // disable LogOut for managers (since they’d go back to login instead)
@@ -234,7 +237,7 @@ namespace EBISX_POS.Views
                        SizeToContent = SizeToContent.WidthAndHeight,
                        Width = 400,
                        ShowInCenter = true,
-                       
+
                    })
                    .ShowAsPopupAsync(this);
 
@@ -355,6 +358,34 @@ namespace EBISX_POS.Views
             }
 
         }
+        private async void ChangeMode_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            ShowLoader(true);
+            if (string.IsNullOrWhiteSpace(CashierState.ManagerEmail))
+            {
+                await MessageBoxManager.GetMessageBoxStandard(
+                    new MessageBoxStandardParams
+                    {
+                        ContentHeader = $"Error",
+                        ContentMessage = "Unable to change mode – invalid credential.",
+                        ButtonDefinitions = ButtonEnum.Ok, // Defines the available buttons
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        CanResize = false,
+                        SizeToContent = SizeToContent.WidthAndHeight,
+                        Width = 400,
+                        ShowInCenter = true,
+                        Icon = MsBox.Avalonia.Enums.Icon.Error,
+                        SystemDecorations = SystemDecorations.None
+                    }).ShowAsPopupAsync(this);
+                return;
+            }
+
+            var isTrainMode = await _authService.ChangeModeAsync(CashierState.ManagerEmail);
+            CashierState.IsTrainMode = isTrainMode;
+            Mode.IsChecked = CashierState.IsTrainMode;
+            ShowLoader(false);
+        }
+
 
     }
 }

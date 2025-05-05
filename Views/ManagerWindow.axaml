@@ -11,18 +11,36 @@
         SystemDecorations="None">
 
 	<Window.Styles>
+		<!-- Your existing Button.myButton -->
 		<Style Selector="Button.myButton">
-			<Setter Property="Width" Value="170"/>
-			<Setter Property="Height" Value="120"/>
-			<Setter Property="BorderThickness" Value="2"/>
-			<Setter Property="CornerRadius" Value="10"/>
-			<Setter Property="Padding" Value="10"/>
-			<Setter Property="Margin" Value="5"/>
+			<Setter Property="Width"                 Value="170"/>
+			<Setter Property="Height"                Value="120"/>
+			<Setter Property="BorderThickness"       Value="2"/>
+			<Setter Property="CornerRadius"          Value="10"/>
+			<Setter Property="Padding"               Value="10"/>
+			<Setter Property="Margin"                Value="5"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
-			<Setter Property="VerticalContentAlignment" Value="Center"/>
-			<Setter Property="FontFamily" Value="{StaticResource NunitoFont}"/>
+			<Setter Property="VerticalContentAlignment"   Value="Center"/>
+			<Setter Property="FontFamily"            Value="{StaticResource NunitoFont}"/>
+		</Style>
+
+		<!-- ToggleButton: default unchecked -->
+		<Style Selector="ToggleButton TextBlock.training">
+			<Setter Property="IsVisible" Value="False"/>
+		</Style>
+		<Style Selector="ToggleButton TextBlock.live">
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+
+		<!-- ToggleButton: checked -->
+		<Style Selector="ToggleButton:checked TextBlock.training">
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+		<Style Selector="ToggleButton:checked TextBlock.live">
+			<Setter Property="IsVisible" Value="False"/>
 		</Style>
 	</Window.Styles>
+
 
 	<Grid RowDefinitions="Auto, *">
 		<!-- Header -->
@@ -181,6 +199,28 @@
 				<!-- Bottom Keyboard -->
 				<Border Grid.Row="1" BorderBrush="Orange" Height="150" BorderThickness="0,0,3,0">
 					<!-- Keyboard content here -->
+					<StackPanel Orientation="Vertical" HorizontalAlignment="Center"  VerticalAlignment="Center">
+						<ToggleButton Classes="myButton" 
+										   Height="70"
+										   Width="170"
+										   FontSize="18"
+									  x:Name="Mode"
+									  Click="ChangeMode_Button">
+							<Grid>
+								<TextBlock Classes="training"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center"
+										   FontWeight="Bold"
+										   Text="Training Mode"
+										   Foreground="Blue"/>
+								<TextBlock Classes="live"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center"
+										   FontWeight="Bold"
+										   Text="Live Mode"/>
+							</Grid>
+						</ToggleButton>
+					</StackPanel>
 				</Border>
 			</Grid>
 

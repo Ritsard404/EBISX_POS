@@ -21,6 +21,9 @@ namespace EBISX_POS.ViewModels
         [ObservableProperty]
         private bool isOnline;
 
+        [ObservableProperty]
+        private bool isTrainMode = CashierState.IsTrainMode;
+
         public ObservableCollection<Category> ButtonList { get; } = new();
         public OrderSummaryViewModel OrderSummaryViewModel { get; } // Add this property
         public ItemListViewModel ItemListViewModel { get; } // Add this property

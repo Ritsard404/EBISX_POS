@@ -25,7 +25,8 @@ namespace EBISX_POS.Services
                     CanResize = false,
                     SizeToContent = SizeToContent.WidthAndHeight,
                     Width = 400,
-                    ShowInCenter = true
+                    ShowInCenter = true,
+                    SystemDecorations = SystemDecorations.None,
                 });
             Debug.WriteLine("Imong Api Goy Taronga!");
 

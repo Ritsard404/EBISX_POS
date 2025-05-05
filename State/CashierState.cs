@@ -3,6 +3,7 @@
 public static class CashierState
 {
     public static event Action? OnCashierStateChanged;
+    public static event Action<bool>? OnTrainingModeChanged;
 
     private static string? _cashierName;
     public static string? CashierName
@@ -42,6 +43,20 @@ public static class CashierState
             {
                 _managerEmail = value;
                 OnCashierStateChanged?.Invoke();
+            }
+        }
+    }
+
+    private static bool _isTrainMode = false;
+    public static bool IsTrainMode
+    {
+        get => _isTrainMode;
+        set
+        {
+            if (_isTrainMode != value)
+            {
+                _isTrainMode = value;
+                OnTrainingModeChanged?.Invoke(value);
             }
         }
     }
