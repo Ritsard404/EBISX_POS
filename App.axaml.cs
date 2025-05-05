@@ -3,18 +3,15 @@ using System.Linq;
 using System.Net;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using EBISX_POS.Services;
-using EBISX_POS.State;
 using EBISX_POS.ViewModels;
 using EBISX_POS.Views;
 using EBISX_POS.Views.Manager;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace EBISX_POS
 {
