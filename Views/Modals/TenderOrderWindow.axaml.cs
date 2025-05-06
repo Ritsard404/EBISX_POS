@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using EBISX_POS.API.Models;
@@ -42,59 +42,97 @@ namespace EBISX_POS.Views
         private async void EnterButton_Click(object? sender, RoutedEventArgs e)
         {
             ShowLoader(true);
-            var orderService = App.Current.Services.GetRequiredService<OrderService>();
-            var paymentService = App.Current.Services.GetRequiredService<PaymentService>();
-
-            // Check if the tendered amount is sufficient
-            if (TenderState.tenderOrder.TenderAmount >= TenderState.tenderOrder.AmountDue && TenderState.tenderOrder.TenderAmount > 0 && TenderState.tenderOrder.TotalAmount > 0)
+            try
             {
-                var finalOrder = new FinalizeOrderDTO()
+                // calculate totals up front
+                var order = TenderState.tenderOrder;
+                var paidWithAlter = order.CashTenderAmount + order.OtherPayments.Sum(x => x.Amount);
+                var paid = order.CashTenderAmount;
+                var due = order.AmountDue;
+
+                // guard: no negative or zero tenders
+                if (order.TenderAmount <= 0)
                 {
-                    TotalAmount = TenderState.tenderOrder.TotalAmount,
-                    CashTendered = TenderState.tenderOrder.CashTenderAmount,
-                    OrderType = TenderState.tenderOrder.OrderType,
-                    DiscountAmount = TenderState.tenderOrder.DiscountAmount,
-                    ChangeAmount = TenderState.tenderOrder.ChangeAmount,
-                    DueAmount = TenderState.tenderOrder.AmountDue,
-                    VatExempt = TenderState.tenderOrder.VatExemptSales,
-                    VatAmount = TenderState.tenderOrder.VatAmount,
-                    VatSales = TenderState.tenderOrder.VatSales,
-                    TotalTendered = TenderState.tenderOrder.TenderAmount,
+                    await ShowWarningAsync("Invalid Tender",
+                        "Please enter an amount greater than zero.");
+                    return;
+                }
+
+                // guard: not enough
+                if (paid < due)
+                {
+                    await ShowWarningAsync("Insufficient Funds",
+                        $"Tendered ₱{paid:N2} is less than the amount due ₱{due:N2}.");
+                    return;
+                }
+
+                // guard: to enough
+                if (paidWithAlter > due)
+                {
+                    await ShowWarningAsync("Excess Payment",
+                        $"Total tendered ₱{paidWithAlter:N2} exceeds the amount due ₱{due:N2}. " +
+                        "Please adjust cash or other payment amounts.");
+                    return;
+                }
+
+                // prepare your DTO
+                var finalizeDto = new FinalizeOrderDTO
+                {
+                    TotalAmount = order.TotalAmount,
+                    CashTendered = order.CashTenderAmount,
+                    OrderType = order.OrderType,
+                    DiscountAmount = order.DiscountAmount,
+                    ChangeAmount = order.ChangeAmount,
+                    DueAmount = due,
+                    VatExempt = order.VatExemptSales,
+                    VatAmount = order.VatAmount,
+                    VatSales = order.VatSales,
+                    TotalTendered = order.TenderAmount,
                     CashierEmail = CashierState.CashierEmail ?? ""
-
                 };
-                await paymentService.AddAlternativePayments(TenderState.tenderOrder.OtherPayments);
 
-                var posInfo = await orderService.FinalizeOrder(finalOrder);
+                // services
+                var paymentSvc = App.Current.Services.GetRequiredService<PaymentService>();
+                var orderSvc = App.Current.Services.GetRequiredService<OrderService>();
 
-                // Kick off the asynchronous receipt generation task.
+                // record other payments, finalize, print
+                await paymentSvc.AddAlternativePayments(order.OtherPayments);
+                var posInfo = await orderSvc.FinalizeOrder(finalizeDto);
                 await GenerateAndPrintReceiptAsync(posInfo.Response);
 
-                OrderState.CurrentOrderItem = new OrderItemState();
+                // reset
+                OrderState.CurrentOrderItem = new();
                 OrderState.CurrentOrder.Clear();
                 OrderState.CurrentOrderItem.RefreshDisplaySubOrders();
                 TenderState.tenderOrder.Reset();
 
                 Close();
-                ShowLoader(false);
-                return;
             }
-
-            await MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
+            finally
             {
-                ContentHeader = "Insufficient Tender Amount",
-                ContentMessage = "Input appropriate tender amount.",
-                ButtonDefinitions = ButtonEnum.Ok,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                CanResize = false,
-                SizeToContent = SizeToContent.WidthAndHeight,
-                Width = 400,
-                ShowInCenter = true,
-                Icon = MsBox.Avalonia.Enums.Icon.Warning
-            }).ShowAsPopupAsync(this);
-
-            ShowLoader(false);
+                ShowLoader(false);
+            }
         }
+
+        /// Centralized warning dialog for insufficient/invalid tenders.
+        private Task ShowWarningAsync(string header, string message)
+        {
+            return MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
+                {
+                    ContentHeader = header,
+                    ContentMessage = message,
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    Width = 400,
+                    ShowInCenter = true,
+                    Icon = MsBox.Avalonia.Enums.Icon.Warning
+                })
+                .ShowAsPopupAsync(this);
+        }
+
 
         //private async void PwdScDiscount_Click(object? sender, RoutedEventArgs e)
         //{
