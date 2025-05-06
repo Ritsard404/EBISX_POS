@@ -82,9 +82,12 @@ namespace EBISX_POS.Util
             writer.WriteLine(CenterText("PAYMENTS RECEIVED"));
             writer.WriteLine();
             writer.WriteLine(AlignText("CASH", rpt.Payments.CashString));
-            foreach (var p in rpt.Payments.OtherPayments)
+            if (rpt.Payments.OtherPayments != null)
             {
-                writer.WriteLine(AlignText(p.Name.ToUpper(), p.AmountString));
+                foreach (var p in rpt.Payments.OtherPayments)
+                {
+                    writer.WriteLine(AlignText(p.Name.ToUpper(), p.AmountString));
+                }
             }
             writer.WriteLine(AlignText("Total Payments:", rpt.Payments.Total));
             writer.WriteLine(new string('=', ReceiptWidth));
