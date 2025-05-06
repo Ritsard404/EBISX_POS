@@ -63,6 +63,7 @@
 
   <ItemGroup>
     <Folder Include="Services\API\" />
+    <Folder Include="Services\API\" />
   </ItemGroup>
 
   <ItemGroup>
