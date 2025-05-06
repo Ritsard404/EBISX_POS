@@ -43,14 +43,14 @@ namespace EBISX_POS.Views
         {
             ShowLoader(true);
             try
-            {
-                // calculate totals up front
+            {// calculate totals up front
                 var order = TenderState.tenderOrder;
-                var paidWithAlter = order.CashTenderAmount + order.OtherPayments.Sum(x => x.Amount);
-                var paid = order.CashTenderAmount;
+                var cash = order.CashTenderAmount;
+                var otherSum = order.OtherPayments?.Sum(x => x.Amount) ?? 0m;
+                var paidWithAlter = cash + otherSum;
                 var due = order.AmountDue;
 
-                // guard: no negative or zero tenders
+                // no zero or negative tender at all
                 if (order.TenderAmount <= 0)
                 {
                     await ShowWarningAsync("Invalid Tender",
@@ -58,20 +58,20 @@ namespace EBISX_POS.Views
                     return;
                 }
 
-                // guard: not enough
-                if (paid < due)
+                // insufficient total tender
+                if (order.TenderAmount < due)
                 {
                     await ShowWarningAsync("Insufficient Funds",
-                        $"Tendered ₱{paid:N2} is less than the amount due ₱{due:N2}.");
+                        $"Total tendered ₱{order.TenderAmount:N2} is less than the amount due ₱{due:N2}.");
                     return;
                 }
 
-                // guard: to enough
-                if (paidWithAlter > due)
+                // if and only if there are alternative payments, block any overpay
+                if ((order.OtherPayments?.Any() ?? false) && paidWithAlter > due)
                 {
                     await ShowWarningAsync("Excess Payment",
-                        $"Total tendered ₱{paidWithAlter:N2} exceeds the amount due ₱{due:N2}. " +
-                        "Please adjust cash or other payment amounts.");
+                        $"Combined payments ₱{paidWithAlter:N2} exceed the amount due ₱{due:N2}. " +
+                        "Please adjust your cash or other payment amounts.");
                     return;
                 }
 
