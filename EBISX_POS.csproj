@@ -63,7 +63,7 @@
 		<AvaloniaResource Update="Assets\Icons.axaml">
 			<SubType>Designer</SubType>
 		</AvaloniaResource>
-		<None Update="appsettings.json">
+		<None Update="posappsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

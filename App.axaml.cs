@@ -132,7 +132,7 @@ namespace EBISX_POS
             // Add configuration
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("posappsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
             services.AddSingleton<IConfiguration>(configuration);

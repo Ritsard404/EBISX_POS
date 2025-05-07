@@ -150,7 +150,6 @@ namespace EBISX_POS.Views
                     .GetMessageBoxStandard("Invalid Input", "Please enter a valid amount.", ButtonEnum.Ok)
                     .ShowAsPopupAsync(this);
 
-                Close();
                 return;
             }
 
