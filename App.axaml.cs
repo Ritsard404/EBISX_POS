@@ -3,66 +3,112 @@ using System.Linq;
 using System.Net;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using EBISX_POS.Services;
-using EBISX_POS.State;
 using EBISX_POS.ViewModels;
 using EBISX_POS.Views;
 using EBISX_POS.Views.Manager;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using EBISX_POS.API.Data;
+using Microsoft.EntityFrameworkCore;
+using EBISX_POS.Settings;
+using EBISX_POS.API.Extensions;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 namespace EBISX_POS
 {
     public partial class App : Application
     {
-        // Provides a strongly-typed access to the current instance of App.
         public new static App Current => (App)Application.Current!;
-
-        // The DI container
         public IServiceProvider Services { get; private set; } = null!;
 
         public override void Initialize()
         {
+            Debug.WriteLine($"Application Base Directory: {AppContext.BaseDirectory}");
             AvaloniaXamlLoader.Load(this);
         }
 
-        public override void OnFrameworkInitializationCompleted()
+        public override async void OnFrameworkInitializationCompleted()
         {
-            // Configure and build the DI container.
             Services = ConfigureServices();
 
-            // Kick off the connectivity loop a single time
-            var connectivity = Services.GetRequiredService<ConnectivityViewModel>();
-            _ = connectivity.StartMonitoringCommand.ExecuteAsync(null);
-
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            try
             {
-                // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-                // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
-                DisableAvaloniaDataAnnotationValidation();
-
-                //desktop.MainWindow = Services.GetRequiredService<MainWindow>();
-                //desktop.MainWindow = Services.GetRequiredService<LogInWindow>();
-                //desktop.MainWindow = Services.GetRequiredService<ManagerWindow>();
-
-                // Dynamically switch between LogInWindow and MainWindow based on CashierState.
-                CashierState.OnCashierStateChanged += () =>
+                // Ensure required directories exist
+                var filePaths = Services.GetRequiredService<IOptions<FilePaths>>().Value;
+                if (!Directory.Exists(filePaths.ImagePath))
                 {
+                    Directory.CreateDirectory(filePaths.ImagePath);
+                }
+                if (!Directory.Exists(filePaths.BackUp))
+                {
+                    Directory.CreateDirectory(filePaths.BackUp);
+                }
+
+                // Ensure report directories exist
+                var salesReport = Services.GetRequiredService<IOptions<SalesReport>>().Value;
+                var reportDirectories = new[]
+                {
+                    salesReport.Receipts,
+                    salesReport.SearchedInvoice,
+                    salesReport.DailySalesReport,
+                    salesReport.XInvoiceReport,
+                    salesReport.ZInvoiceReport,
+                    salesReport.CashTrackReport,
+                    salesReport.TransactionLogs
+                };
+
+                foreach (var directory in reportDirectories)
+                {
+                    if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+                }
+
+                // Ensure database directory exists
+                var dbSettings = Services.GetRequiredService<IOptions<DatabaseSettings>>().Value;
+                //var dbDirectory = Path.GetDirectoryName(dbSettings.PosConnectionString.Replace("Data Source=", ""));
+                //if (!string.IsNullOrEmpty(dbDirectory) && !Directory.Exists(dbDirectory))
+                //{
+                //    Directory.CreateDirectory(dbDirectory);
+                //}
+
+                // Initialize databases
+                var dbInitializer = Services.GetRequiredService<IDatabaseInitializerService>();
+                await dbInitializer.InitializeAsync();
+
+                // Start connectivity monitoring
+                var connectivity = Services.GetRequiredService<ConnectivityViewModel>();
+                _ = connectivity.StartMonitoringCommand.ExecuteAsync(null);
+
+                if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    DisableAvaloniaDataAnnotationValidation();
+
+                    CashierState.OnCashierStateChanged += () =>
+                    {
+                        desktop.MainWindow = !string.IsNullOrEmpty(CashierState.CashierName)
+                            ? Services.GetRequiredService<MainWindow>()
+                            : Services.GetRequiredService<LogInWindow>();
+                    };
+
                     desktop.MainWindow = !string.IsNullOrEmpty(CashierState.CashierName)
                         ? Services.GetRequiredService<MainWindow>()
                         : Services.GetRequiredService<LogInWindow>();
-                };
-
-                // Set the initial window based on CashierState.
-                desktop.MainWindow = !string.IsNullOrEmpty(CashierState.CashierName) 
-                    ? Services.GetRequiredService<MainWindow>() 
-                    : Services.GetRequiredService<LogInWindow>();
-
+                }
+            }
+            catch (Exception ex)
+            {
+                var logger = Services.GetRequiredService<ILogger<App>>();
+                logger.LogError(ex, "Failed to initialize application");
+                throw;
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -70,11 +116,9 @@ namespace EBISX_POS
 
         private void DisableAvaloniaDataAnnotationValidation()
         {
-            // Get an array of plugins to remove
             var dataValidationPluginsToRemove =
                 BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
 
-            // remove each entry found
             foreach (var plugin in dataValidationPluginsToRemove)
             {
                 BindingPlugins.DataValidators.Remove(plugin);
@@ -85,60 +129,69 @@ namespace EBISX_POS
         {
             var services = new ServiceCollection();
 
-            // Register services
-            services.AddSingleton<AuthService>();
-            services.AddSingleton<MenuService>(); // Register MenuService
-            services.AddSingleton<OrderService>();
-            services.AddSingleton<PaymentService>();
-            services.AddSingleton<ReportService>();
-
-            services.AddSingleton<ManagerWindow>();
-            services.AddSingleton<CookieContainer>();
-
-            services.AddSingleton<ConnectivityViewModel>();
-
-
-            // Register ViewModels
-            services.AddTransient<LogInWindowViewModel>();
-            services.AddTransient<MainViewModel>(); // Register MainViewModel
-            services.AddTransient<ItemListViewModel>(); // Register ItemListViewModel
-            services.AddTransient<OrderSummaryViewModel>();
-            services.AddTransient<SubItemWindowViewModel>();
-            services.AddTransient<ManagerWindow>();
-            services.AddTransient<TenderOrderViewModel>(); // Register your ViewModel
-            services.AddTransient<TenderOrderWindow>(); // Register the window
-            services.AddTransient<ConnectivityViewModel>(); // Register the window
-            
-         
-
-
-            // Register Views
-            services.AddTransient<LogInWindow>();
-            services.AddTransient<MainWindow>(); // Register MainWindow
-            services.AddTransient<OrderSummaryView>();
-            services.AddTransient<ItemListView>(provider => new ItemListView(provider.GetRequiredService<MenuService>())); // Register ItemListView
-                     
-            // SalesHistoryWindow
-            services.AddTransient<SalesHistoryWindow>(provider =>
-            {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                return new SalesHistoryWindow(configuration);
-            });
-
+            // Add configuration
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("posappsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
             services.AddSingleton<IConfiguration>(configuration);
 
-            // Correct way to register ApiSettings from appsettings.json
-            services.Configure<ApiSettings>(configuration);
-            services.Configure<SalesReport>(
-                configuration.GetSection("SalesReport")
-            );
-            // Register logging
-            services.AddLogging(configure => configure.AddConsole());
+            // Configure database settings
+            services.Configure<DatabaseSettings>(configuration.GetSection("Database"));
+            var dbSettings = configuration.GetSection("Database").Get<DatabaseSettings>() ?? new DatabaseSettings();
+
+            // Configure file paths
+            services.Configure<FilePaths>(configuration.GetSection("FilePaths"));
+
+            // Configure sales report paths
+            services.Configure<SalesReport>(configuration.GetSection("SalesReport"));
+
+            // Add logging
+            services.AddLogging(configure =>
+            {
+                configure.AddConsole();
+                configure.AddDebug();
+            });
+
+            // Add database contexts with configured connection strings
+            services.AddDbContext<DataContext>(options =>
+                options.UseSqlite(dbSettings.PosConnectionString));
+            services.AddDbContext<JournalContext>(options =>
+                options.UseSqlite(dbSettings.JournalConnectionString));
+
+            // Add database initializer and backup service
+            services.AddSingleton<IDatabaseInitializerService, DatabaseInitializerService>();
+            services.AddSingleton<IDatabaseBackupService, DatabaseBackupService>();
+
+            // Register repositories
+            services.AddAvaloniaApplicationServices(configuration);
+
+            // Register services
+            services.AddSingleton<AuthService>();
+            services.AddSingleton<MenuService>();
+            services.AddSingleton<OrderService>();
+            services.AddSingleton<PaymentService>();
+            services.AddSingleton<ReportService>();
+            services.AddSingleton<CookieContainer>();
+            services.AddSingleton<ConnectivityViewModel>();
+
+            // Register ViewModels
+            services.AddTransient<LogInWindowViewModel>();
+            services.AddTransient<MainViewModel>();
+            services.AddTransient<ItemListViewModel>();
+            services.AddTransient<OrderSummaryViewModel>();
+            services.AddTransient<SubItemWindowViewModel>();
+            services.AddTransient<TenderOrderViewModel>();
+
+            // Register Views
+            services.AddTransient<LogInWindow>();
+            services.AddTransient<MainWindow>();
+            services.AddTransient<OrderSummaryView>();
+            services.AddTransient<ItemListView>();
+            services.AddTransient<ManagerWindow>();
+            services.AddTransient<TenderOrderWindow>();
+            services.AddTransient<SalesHistoryWindow>();
 
             return services.BuildServiceProvider();
         }

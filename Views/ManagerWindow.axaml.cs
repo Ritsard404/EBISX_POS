@@ -17,7 +17,6 @@ using EBISX_POS.Util;
 using EBISX_POS.Views.Manager;
 using EBISX_POS.ViewModels.Manager;
 using System.Threading.Tasks;
-using iTextSharp.text;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia;
 
@@ -77,22 +76,22 @@ namespace EBISX_POS.Views
             LoadingOverlay.IsVisible = show;
         }
 
-        private async void SalesReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void SalesReport_Button(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             //var reportWindow = _serviceProvider?.GetRequiredService<DailySalesReportView>();
             //reportWindow?.Show();
-            if (!string.IsNullOrWhiteSpace(CashierState.CashierEmail))
-                return;
+            //if (!string.IsNullOrWhiteSpace(CashierState.CashierEmail))
+            //    return;
 
-            var swipeManager = new ManagerSwipeWindow(header: "Z Reading", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
-            bool isSwiped = await swipeManager.ShowDialogAsync(this);
+            //var swipeManager = new ManagerSwipeWindow(header: "Z Reading", message: "Please ask the manager to swipe.", ButtonName: "Swipe");
+            //bool isSwiped = await swipeManager.ShowDialogAsync(this);
 
-            if (isSwiped)
-            {
-                ShowLoader(true);
-                ReceiptPrinterUtil.PrintZReading(_serviceProvider!);
-                ShowLoader(false);
-            }
+            //if (isSwiped)
+            //{
+            ShowLoader(true);
+            ReceiptPrinterUtil.PrintZReading(_serviceProvider!);
+            ShowLoader(false);
+            //}
 
         }
 

@@ -1,6 +1,8 @@
 ﻿using EBISX_POS.API.Models;
+using EBISX_POS.API.Services.Interfaces;
 using EBISX_POS.Models; // Ensure this is added
 using EBISX_POS.Services.DTO.Menu;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,7 @@ namespace EBISX_POS.Services
     {
         private readonly ApiSettings _apiSettings;
         private readonly HttpClient _httpClient;
+        private readonly IMenu _menu;
 
         /// <summary>
         /// Initializes a new instance of the MenuService
@@ -30,6 +33,8 @@ namespace EBISX_POS.Services
         {
             _apiSettings = apiSettings.Value;
             _httpClient = httpClient ?? new HttpClient(new HttpClientHandler { UseCookies = true });
+            _menu = App.Current.Services.GetRequiredService<IMenu>();
+
         }
 
         /// <summary>
@@ -39,6 +44,7 @@ namespace EBISX_POS.Services
         /// <exception cref="InvalidOperationException">Thrown if API settings are misconfigured</exception>
         public async Task<List<Category>> GetCategoriesAsync()
         {
+            return await _menu.Categories();
             try
             {
                 if (_apiSettings?.LocalAPI?.BaseUrl == null || _apiSettings.LocalAPI.AuthEndpoint == null)
@@ -83,6 +89,19 @@ namespace EBISX_POS.Services
         /// <exception cref="InvalidOperationException">Thrown if API settings are misconfigured</exception>
         public async Task<List<ItemMenu>> GetMenusAsync(int ctgryId)
         {
+            var menusSer = await _menu.Menus(ctgryId);
+            return menusSer.Select(menu => new ItemMenu
+            {
+                Id = menu.Id,
+                ItemName = menu.MenuName ?? "Unknown",
+                Price = menu.MenuPrice,
+                ImagePath = menu.MenuImagePath ?? string.Empty,
+                Size = menu.Size?.ToString() ?? string.Empty,
+                HasSize = menu.Size != null,
+                IsSolo = !menu.HasDrink && menu.DrinkType == null && menu.IsAddOn == false,
+                IsAddOn = menu.AddOnType != null || menu.IsAddOn,
+                IsDrink = menu.DrinkType != null
+            }).ToList();
             try
             {
                 if (_apiSettings?.LocalAPI?.BaseUrl == null || _apiSettings.LocalAPI.AuthEndpoint == null)
@@ -141,6 +160,30 @@ namespace EBISX_POS.Services
         /// <exception cref="InvalidOperationException">Thrown if API settings are misconfigured</exception>
         public async Task<List<AddOnTypeDTO>> GetAddOns(int menuId)
         {
+            var apiTypes = await _menu.AddOns(menuId);
+
+            // Map into your client-side DTOs
+            var clientTypes = apiTypes
+                .Select(apiType => new AddOnTypeDTO
+                {
+                    AddOnTypeId = apiType.AddOnTypeId,
+                    AddOnTypeName = apiType.AddOnTypeName,
+                    AddOns = apiType.AddOns
+                        .Select(a => new AddOnDetailDTO
+                        {
+                            MenuId = a.MenuId,
+                            MenuName = a.MenuName,
+                            Size = a.Size,
+                            HasSize = !string.IsNullOrEmpty(a.Size),
+                            Price = a.Price ?? 0m,
+                            MenuImagePath = a.MenuImagePath,
+                            // The client property IsUpgradeMeal is computed automatically
+                        })
+                        .ToList()
+                })
+                .ToList();
+
+            return clientTypes;
             try
             {
                 if (_apiSettings?.LocalAPI?.BaseUrl == null || _apiSettings.LocalAPI.AuthEndpoint == null)
@@ -185,6 +228,34 @@ namespace EBISX_POS.Services
         /// <exception cref="InvalidOperationException">Thrown if API settings are misconfigured</exception>
         public async Task<DrinksDTO> GetDrinks(int menuId)
         {
+            var apiDrinks = await _menu.Drinks(menuId);
+            
+            // Map the API response to client DTOs
+            var drinkTypesWithDrinks = apiDrinks.Item1.Select(drinkType => new EBISX_POS.Services.DTO.Menu.DrinkTypeDTO
+            {
+                DrinkTypeId = drinkType.DrinkTypeId,
+                DrinkTypeName = drinkType.DrinkTypeName,
+                SizesWithPrices = drinkType.SizesWithPrices?.Select(sizeWithPrice => new EBISX_POS.Services.DTO.Menu.SizesWithPricesDTO
+                {
+                    Size = sizeWithPrice.Size,
+                    Drinks = sizeWithPrice.Drinks?.Select(drink => new EBISX_POS.Services.DTO.Menu.DrinkDetailDTO
+                    {
+                        MenuId = drink.MenuId,
+                        MenuName = drink.MenuName,
+                        MenuPrice = drink.MenuPrice,
+                        Size = drink.Size,
+                        MenuImagePath = drink.MenuImagePath
+                    }).ToList()
+                }).ToList()
+            }).ToList();
+
+            return new EBISX_POS.Services.DTO.Menu.DrinksDTO
+            {
+                DrinkTypesWithDrinks = drinkTypesWithDrinks,
+                Sizes = apiDrinks.Item2
+            };
+
+            /* Original API call implementation
             try
             {
                 if (_apiSettings?.LocalAPI?.BaseUrl == null || _apiSettings.LocalAPI.AuthEndpoint == null)
@@ -219,7 +290,6 @@ namespace EBISX_POS.Services
             {
                 Debug.WriteLine($"Unexpected Error: {ex.Message}");
                 NotificationService.NetworkIssueMessage();
-
             }
 
             // In case of an error, return an empty DrinksDTO
@@ -228,6 +298,7 @@ namespace EBISX_POS.Services
                 DrinkTypesWithDrinks = new List<DrinkTypeDTO>(),
                 Sizes = new List<string>()
             };
+            */
         }
 
     }

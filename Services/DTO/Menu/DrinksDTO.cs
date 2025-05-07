@@ -41,10 +41,23 @@ namespace EBISX_POS.Services.DTO.Menu
         /// <summary>
         /// List of drink options in this category
         /// </summary>
-        //public List<DrinkDetailDTO> Drinks { get; set; }
-
-
         public List<SizesWithPricesDTO>? SizesWithPrices { get; set; } = new List<SizesWithPricesDTO>();
+    }
+
+    /// <summary>
+    /// Represents size options with their associated drinks
+    /// </summary>
+    public class SizesWithPricesDTO
+    {
+        /// <summary>
+        /// The size identifier (e.g., "R", "L")
+        /// </summary>
+        public string Size { get; set; }
+
+        /// <summary>
+        /// List of drinks available in this size
+        /// </summary>
+        public List<DrinkDetailDTO>? Drinks { get; set; }
     }
 
     /// <summary>
@@ -99,6 +112,5 @@ namespace EBISX_POS.Services.DTO.Menu
                 return null;
             }
         }
-
     }
 }

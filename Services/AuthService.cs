@@ -1,4 +1,6 @@
 ﻿using EBISX_POS.API.Services.DTO.Auth;
+using EBISX_POS.API.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RestSharp;
 using System;
@@ -14,18 +16,19 @@ namespace EBISX_POS.Services
     {
         private readonly ApiSettings _apiSettings;
         private readonly RestClient _client;
-        private readonly CookieContainer _cookieContainer;
-        public AuthService(IOptions<ApiSettings> apiSettings, CookieContainer cookieContainer)
+        private readonly IAuth _auth;
+        public AuthService(IOptions<ApiSettings> apiSettings)
         {
             _apiSettings = apiSettings.Value;
-            _cookieContainer = cookieContainer; // ✅ Use shared cookie container
 
-            var options = new RestClientOptions(_apiSettings.LocalAPI.BaseUrl)
-            {
-                CookieContainer = _cookieContainer
-            };
+            //var options = new RestClientOptions(_apiSettings.LocalAPI.BaseUrl)
+            //{
+            //    CookieContainer = _cookieContainer
+            //};
 
-            _client = new RestClient(options);
+            //_client = new RestClient(options);
+            _client = new RestClient();
+            _auth = App.Current.Services.GetRequiredService<IAuth>();
         }
 
 
@@ -33,21 +36,25 @@ namespace EBISX_POS.Services
         {
             try
             {
-                if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
-                {
-                    throw new InvalidOperationException("API settings are not properly configured.");
-                }
+                var cashiers = await _auth.Cashiers();
+                Debug.WriteLine(cashiers);
+                return await _auth.Cashiers();
 
-                var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/Cashiers", Method.Get);
-                var response = await _client.ExecuteAsync<List<CashierDTO>>(request);
+                //if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
+                //{
+                //    throw new InvalidOperationException("API settings are not properly configured.");
+                //}
 
-                if (response.IsSuccessful && response.Data != null)
-                {
-                    return response.Data;
-                }
+                //var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/Cashiers", Method.Get);
+                //var response = await _client.ExecuteAsync<List<CashierDTO>>(request);
 
-                Debug.WriteLine($"HTTP Error: {response.ErrorMessage}");
-                return new List<CashierDTO>();
+                //if (response.IsSuccessful && response.Data != null)
+                //{
+                //    return response.Data;
+                //}
+
+                //Debug.WriteLine($"HTTP Error: {response.ErrorMessage}");
+                //return new List<CashierDTO>();
             }
             catch (Exception ex)
             {
@@ -68,10 +75,13 @@ namespace EBISX_POS.Services
             public string CashierName { get; set; } = string.Empty;
         }
 
-        public async Task<(bool, bool, string, string)> LogInAsync(LogInDTO logInDTO)
+        public async Task<(bool sucess, bool isManager, string email, string name)> LogInAsync(LogInDTO logInDTO)
         {
             try
             {
+                var logIn = await _auth.LogIn(logInDTO);
+                return (logIn.success, logIn.isManager, logIn.email, logIn.name);  // Fixed order
+
                 if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
                 {
                     throw new InvalidOperationException("API settings are not properly configured.");
@@ -109,6 +119,13 @@ namespace EBISX_POS.Services
         {
             try
             {
+
+                return await _auth.LogOut(new LogInDTO
+                {
+                    ManagerEmail = managerEmail,
+                    CashierEmail = CashierState.CashierEmail,
+                });
+                
                 if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
                 {
                     throw new InvalidOperationException("API settings are not properly configured.");
@@ -146,6 +163,8 @@ namespace EBISX_POS.Services
         {
             try
             {
+                return await _auth.HasPendingOrder();
+
                 if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
                 {
                     throw new InvalidOperationException("API settings are not properly configured.");
@@ -184,6 +203,7 @@ namespace EBISX_POS.Services
 
         public async Task<(bool Success, string Message)> LoadDataAsync()
         {
+            return await _auth.LoadData();
             if (string.IsNullOrEmpty(_apiSettings.LocalAPI.AuthEndpoint))
                 throw new InvalidOperationException("API settings are not configured.");
 
@@ -201,24 +221,31 @@ namespace EBISX_POS.Services
 
         public async Task<(bool Success, string Message)> CheckData()
         {
-            if (string.IsNullOrEmpty(_apiSettings.LocalAPI.AuthEndpoint))
-                throw new InvalidOperationException("API settings are not configured.");
+            var (success, message) = await _auth.CheckData();
+            Debug.WriteLine($"CheckData → Success={success}, Message={message}");
+            return (success, message);
 
-            var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/CheckData", Method.Get);
-            var response = await _client.ExecuteAsync<MessageResult>(request);
+            //if (string.IsNullOrEmpty(_apiSettings.LocalAPI.AuthEndpoint))
+            //    throw new InvalidOperationException("API settings are not configured.");
 
-            if (response.IsSuccessful && response.Data != null)
-                return (true, response.Data.Message);
+            //var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/CheckData", Method.Get);
+            //var response = await _client.ExecuteAsync<MessageResult>(request);
 
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-                return (false, response.Content ?? "Bad request.");
+            //if (response.IsSuccessful && response.Data != null)
+            //    return (true, response.Data.Message);
 
-            return (false, response.ErrorMessage ?? $"Error {response.StatusCode}");
+            //if (response.StatusCode == HttpStatusCode.BadRequest)
+            //    return (false, response.Content ?? "Bad request.");
+
+            //return (false, response.ErrorMessage ?? $"Error {response.StatusCode}");
         }
         public async Task<(bool, string)> SetCashInDrawer(decimal cash)
         {
             try
             {
+                Debug.WriteLine($"Setting cash in drawer for cashier: {CashierState.CashierEmail}");
+                return await _auth.SetCashInDrawer(CashierState.CashierEmail, cash);
+
                 if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
                 {
                     throw new InvalidOperationException("API settings are not properly configured.");
@@ -253,6 +280,7 @@ namespace EBISX_POS.Services
         }
         public async Task<(bool, string)> SetCashOutDrawer(decimal cash)
         {
+            return await _auth.SetCashOutDrawer(CashierState.CashierEmail, cash);
             try
             {
                 if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
@@ -289,6 +317,7 @@ namespace EBISX_POS.Services
         }
         public async Task<(bool, string)> CashWithdrawDrawer(string managerEmail, decimal cash)
         {
+            return await _auth.CashWithdrawDrawer(CashierState.CashierEmail, managerEmail, cash);
             try
             {
                 if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
@@ -326,6 +355,7 @@ namespace EBISX_POS.Services
         }
         public async Task<bool> IsCashedDrawer()
         {
+            return await _auth.IsCashedDrawer(CashierState.CashierEmail);
             try
             {
                 if (string.IsNullOrEmpty(_apiSettings?.LocalAPI?.AuthEndpoint))
@@ -357,6 +387,7 @@ namespace EBISX_POS.Services
         // GET /IsTrainMode
         public async Task<bool> IsTrainModeAsync()
         {
+            return await _auth.IsTrainMode();
             var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/IsTrainMode", Method.Get);
             var response = await _client.ExecuteAsync<TrainModeResponseDTO>(request);
             if (response.IsSuccessful && response.Data != null)
@@ -367,6 +398,7 @@ namespace EBISX_POS.Services
         // PUT /ChangeMode?managerEmail={managerEmail}
         public async Task<bool> ChangeModeAsync(string managerEmail)
         {
+            return await _auth.ChangeMode(managerEmail);
             var request = new RestRequest($"{_apiSettings.LocalAPI.AuthEndpoint}/ChangeMode", Method.Put)
                 .AddQueryParameter("managerEmail", managerEmail);
             var response = await _client.ExecuteAsync<TrainModeResponseDTO>(request);
