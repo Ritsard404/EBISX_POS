@@ -14,6 +14,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia;
+using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace EBISX_POS.ViewModels
 {
@@ -48,15 +50,26 @@ namespace EBISX_POS.ViewModels
         {
             _authService = authService;
             _menuService = menuService;
-
+            
             InitializeAsync();
         }
         public async void InitializeAsync()
         {
-            await CheckData(); // this might navigate and close
-            await CheckMode();
-            await LoadCashiersAsync();
-            await CheckPendingOrderAsync();
+            try
+            {
+                // Wait for database initialization to complete
+                await Task.Delay(1000); // Give time for database initialization
+                
+                await CheckData(); // this might navigate and close
+                await CheckMode();
+                await LoadCashiersAsync();
+                await CheckPendingOrderAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in InitializeAsync: {ex.Message}");
+                NotificationService.NetworkIssueMessage();
+            }
         }
 
         private async Task LoadCashiersAsync()
@@ -91,33 +104,31 @@ namespace EBISX_POS.ViewModels
         {
             try
             {
-
                 IsLoading = true;
                 var (isSuccess, message) = await _authService.CheckData();
+                Debug.WriteLine($"CheckData → Success={isSuccess}, Message={message}");
                 if (isSuccess)
                 {
-
-                    var owner = GetCurrentWindow();
-                    if (owner == null)
-                        return;
-
-
-                    var managerWindow = new ManagerWindow();
-
-                    if (Application.Current.ApplicationLifetime
-                        is IClassicDesktopStyleApplicationLifetime desktop)
+                    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        desktop.MainWindow = managerWindow;
-                    }
-
-                    managerWindow.Show();
-                    owner.Close();
-
+                        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                        {
+                            var managerWindow = new ManagerWindow();
+                            desktop.MainWindow = managerWindow;
+                            managerWindow.Show();
+                            
+                            // Close the LoginWindow
+                            if (desktop.Windows.FirstOrDefault(w => w is LogInWindow) is LogInWindow loginWindow)
+                            {
+                                loginWindow.Close();
+                            }
+                        }
+                    });
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error loading cashiers: {ex.Message}");
+                Debug.WriteLine($"Error in CheckData: {ex.Message}");
                 NotificationService.NetworkIssueMessage();
             }
             finally
@@ -158,7 +169,7 @@ namespace EBISX_POS.ViewModels
             {
 
                 IsLoading = true;
-                var (success, cashierName, cashierEmail) = await _authService.HasPendingOrder();
+                var (success, cashierEmail, cashierName ) = await _authService.HasPendingOrder();
                 if (success)
                 {
                     if (_hasNavigated) return;
@@ -216,17 +227,17 @@ namespace EBISX_POS.ViewModels
                     ManagerEmail = ManagerEmail
                 };
 
-                var (success, isManager, name, email) = await _authService.LogInAsync(logInDTO);
-                if (!success)
+                var result = await _authService.LogInAsync(logInDTO);
+                if (!result.sucess)
                 {
-                    ErrorMessage = name;
+                    ErrorMessage = result.name;
                     OnPropertyChanged(nameof(HasError));
                     return;
                 }
 
-                if (isManager)
+                if (result.isManager)
                 {
-                    CashierState.ManagerEmail = email;
+                    CashierState.ManagerEmail = result.email;
                     var managerWindow = new ManagerWindow();
                     if (Application.Current.ApplicationLifetime
                         is IClassicDesktopStyleApplicationLifetime desktop)
@@ -239,7 +250,7 @@ namespace EBISX_POS.ViewModels
                     return;
                 }
 
-                NavigateToMainWindow(cashierEmail: email, cashierName: name, owner);
+                NavigateToMainWindow(cashierEmail: result.email, cashierName: result.name, owner);
                 //owner.Close();
             }
             catch (Exception ex)

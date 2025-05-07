@@ -1,5 +1,8 @@
-﻿using EBISX_POS.API.Models;
+﻿using Avalonia.Controls;
+using EBISX_POS.API.Models;
 using EBISX_POS.API.Services.DTO.Order;
+using EBISX_POS.API.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
@@ -15,21 +18,16 @@ namespace EBISX_POS.Services
     {
         private readonly ApiSettings _apiSettings;
         private readonly RestClient _restClient; // Use RestClient instead of HttpClient
-        private readonly CookieContainer _cookieContainer;
+        private readonly IOrder _order;
 
 
         // Constructor to initialize RestClient and validate API configuration
-        public OrderService(IOptions<ApiSettings> apiSettings, CookieContainer cookieContainer)
+        public OrderService(IOptions<ApiSettings> apiSettings)
         {
             _apiSettings = apiSettings.Value;
-            _cookieContainer = cookieContainer; // ✅ Use shared cookie container
 
-            var options = new RestClientOptions(_apiSettings.LocalAPI.BaseUrl)
-            {
-                CookieContainer = _cookieContainer
-            };
-
-            _restClient = new RestClient(options);
+            _restClient = new RestClient();
+            _order = App.Current.Services.GetRequiredService<IOrder>();
         }
 
         // Validates that the OrderEndpoint is configured in the API settings
@@ -65,6 +63,7 @@ namespace EBISX_POS.Services
         // Calls the AddCurrentOrderVoid endpoint to void the current order
         public async Task<(bool, string)> AddCurrentOrderVoid(AddCurrentOrderVoidDTO voidOrder)
         {
+            return await _order.AddCurrentOrderVoid(voidOrder);
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -86,6 +85,7 @@ namespace EBISX_POS.Services
         // Calls the AddOrderItem endpoint to add a new order item
         public async Task<(bool, string)> AddOrderItem(AddOrderDTO addOrder)
         {
+            return await _order.AddOrderItem(addOrder);
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -107,6 +107,7 @@ namespace EBISX_POS.Services
         // Calls the EditQtyOrderItem endpoint to edit the quantity of an order item
         public async Task<(bool, string)> EditQtyOrderItem(EditOrderItemQuantityDTO editOrder)
         {
+            return await _order.EditQtyOrderItem(editOrder);
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -128,6 +129,7 @@ namespace EBISX_POS.Services
         // Calls the VoidOrderItem endpoint to void a specific order item
         public async Task<(bool, string)> VoidOrderItem(VoidOrderItemDTO voidOrder)
         {
+            return await _order.VoidOrderItem(voidOrder);
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -152,6 +154,7 @@ namespace EBISX_POS.Services
         // Calls the VoidOrderItem endpoint to void a specific order item
         public async Task<(bool, string)> CancelCurrentOrder(string managerEmail)
         {
+            return await _order.CancelCurrentOrder(CashierState.CashierEmail, managerEmail);
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -179,6 +182,7 @@ namespace EBISX_POS.Services
 
         public async Task<(bool, string)> RefundOrder(string managerEmail, long invoiceNumber)
         {
+            return await _order.RefundOrder(managerEmail, invoiceNumber);
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -206,6 +210,7 @@ namespace EBISX_POS.Services
 
         public async Task<(bool, string)> AddPwdScDiscount(AddPwdScDiscountDTO addPwdScDiscount)
         {
+            return await _order.AddPwdScDiscount(addPwdScDiscount);
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -215,7 +220,7 @@ namespace EBISX_POS.Services
                 var request = new RestRequest(url, Method.Put).AddJsonBody(addPwdScDiscount);
 
                 // Execute the request and return the result
-                var result = await ExecuteRequestAsync(request); 
+                var result = await ExecuteRequestAsync(request);
 
                 return result.Item1
                     ? (true, result.Item2 ?? "Order voided successfully.")
@@ -227,9 +232,11 @@ namespace EBISX_POS.Services
                 return (false, "An unexpected error occurred.");
             }
         }
-        
+
         public async Task<(bool, string)> AddOtherDiscount(AddOtherDiscountDTO addOtherDiscount)
         {
+            return await _order.AddOtherDiscount(addOtherDiscount);
+
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -239,7 +246,7 @@ namespace EBISX_POS.Services
                 var request = new RestRequest(url, Method.Put).AddJsonBody(addOtherDiscount);
 
                 // Execute the request and return the result
-                var result = await ExecuteRequestAsync(request); 
+                var result = await ExecuteRequestAsync(request);
 
                 return result.Item1
                     ? (true, result.Item2 ?? "Order voided successfully.")
@@ -254,6 +261,8 @@ namespace EBISX_POS.Services
 
         public async Task<(bool, string)> PromoDiscount(string managerEmail, string promoCode)
         {
+            return await _order.PromoDiscount(cashierEmail: CashierState.CashierEmail, managerEmail: managerEmail, promoCode: promoCode);
+
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -286,6 +295,8 @@ namespace EBISX_POS.Services
 
         public async Task<(bool, string)> AvailCoupon(string managerEmail, string couponCode)
         {
+            return await _order.AvailCoupon(cashierEmail: CashierState.CashierEmail, managerEmail: managerEmail, couponCode: couponCode);
+
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -319,6 +330,8 @@ namespace EBISX_POS.Services
         // Calls the FinalizeOrder endpoint to void a specific order item
         public async Task<(bool, string, FinalizeOrderResponseDTO Response)> FinalizeOrder(FinalizeOrderDTO finalizeOrder)
         {
+            return await _order.FinalizeOrder(finalizeOrder);
+
             try
             {
                 // Validate the API endpoint configuration
@@ -355,6 +368,8 @@ namespace EBISX_POS.Services
         // Calls the GetCurrentOrderItems endpoint to retrieve the current order items
         public async Task<List<GetCurrentOrderItemsDTO>> GetCurrentOrderItems()
         {
+            return await _order.GetCurrentOrderItems(cashierEmail: CashierState.CashierEmail);
+
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration
@@ -373,9 +388,11 @@ namespace EBISX_POS.Services
                 return new List<GetCurrentOrderItemsDTO>();
             }
         }
-        
+
         public async Task<List<string>> GetElligiblePWDSCDiscount()
         {
+            return await _order.GetElligiblePWDSCDiscount(cashierEmail: CashierState.CashierEmail);
+
             try
             {
                 ValidateOrderEndpoint(); // Validate API endpoint configuration

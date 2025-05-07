@@ -134,6 +134,8 @@ namespace EBISX_POS.Views
                         .ShowAsPopupAsync(this);
 
                     StartButton.IsEnabled = true;
+
+                    Close();
                     return;
                 }
 

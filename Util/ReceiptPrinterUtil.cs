@@ -25,20 +25,31 @@ namespace EBISX_POS.Util
         private static string AlignText(string left, string right) =>
             left.PadRight(ReceiptWidth - (right ?? "0").Length) + (right ?? "0");
 
+        private static void EnsureDirectoryExists(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path), "Report directory path cannot be null or empty");
+            }
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+
         public static async void PrintXReading(IServiceProvider serviceProvider)
         {
             var reportOptions = serviceProvider.GetRequiredService<IOptions<SalesReport>>();
             var reportService = serviceProvider.GetRequiredService<ReportService>();
 
             var rpt = await reportService.XInvoiceReport();
+            var reportPath = reportOptions.Value.XInvoiceReport;
+
+            EnsureDirectoryExists(reportPath);
 
             string fileName = $"XInvoice-{DateTimeOffset.UtcNow.ToString("MMMM-dd-yyyy-HH-mm-ss")}.txt";
-            var filePath = Path.Combine(reportOptions.Value.XInvoiceReport, fileName);
-
-            if (!Directory.Exists(reportOptions.Value.XInvoiceReport))
-            {
-                Directory.CreateDirectory(reportOptions.Value.XInvoiceReport);
-            }
+            var filePath = Path.Combine(reportPath, fileName);
 
             using var writer = new StreamWriter(filePath);
 
@@ -123,14 +134,12 @@ namespace EBISX_POS.Util
             var reportService = serviceProvider.GetRequiredService<ReportService>();
 
             var rpt = await reportService.ZInvoiceReport(); // You should implement this accordingly
+            var reportPath = reportOptions.Value.ZInvoiceReport;
+
+            EnsureDirectoryExists(reportPath);
 
             string fileName = $"ZInvoice-{DateTimeOffset.UtcNow:MMMM-dd-yyyy-HH-mm-ss}.txt";
-            var filePath = Path.Combine(reportOptions.Value.ZInvoiceReport, fileName);
-
-            if (!Directory.Exists(reportOptions.Value.ZInvoiceReport))
-            {
-                Directory.CreateDirectory(reportOptions.Value.ZInvoiceReport);
-            }
+            var filePath = Path.Combine(reportPath, fileName);
 
             using var writer = new StreamWriter(filePath);
 
@@ -234,14 +243,19 @@ namespace EBISX_POS.Util
             Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
         }
 
-        public static void PrintInvoice(string folderPath,string filePath, FinalizeOrderResponseDTO finalizeOrder)
+        public static void PrintInvoice(string folderPath, string filePath, FinalizeOrderResponseDTO finalizeOrder)
         {
-            // Ensure the target directory exists.
-            if (!Directory.Exists(folderPath))
+            if (string.IsNullOrEmpty(folderPath))
             {
-                Directory.CreateDirectory(folderPath);
+                throw new ArgumentNullException(nameof(folderPath), "Receipt folder path cannot be null or empty");
             }
 
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentNullException(nameof(filePath), "Receipt file path cannot be null or empty");
+            }
+
+            EnsureDirectoryExists(folderPath);
 
             using var writer = new StreamWriter(filePath);
 
@@ -365,11 +379,17 @@ namespace EBISX_POS.Util
 
         public static void PrintSearchedInvoice(string folderPath, string filePath, InvoiceDetailsDTO invoice)
         {
-            // Ensure the target directory exists.
-            if (!Directory.Exists(folderPath))
+            if (string.IsNullOrEmpty(folderPath))
             {
-                Directory.CreateDirectory(folderPath);
+                throw new ArgumentNullException(nameof(folderPath), "Searched invoice folder path cannot be null or empty");
             }
+
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentNullException(nameof(filePath), "Searched invoice file path cannot be null or empty");
+            }
+
+            EnsureDirectoryExists(folderPath);
 
             using var writer = new StreamWriter(filePath);
 

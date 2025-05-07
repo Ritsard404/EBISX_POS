@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using EBISX_POS.Util;
 using Microsoft.Extensions.Options;
+using EBISX_POS.API.Services.DTO.Payment;
 
 namespace EBISX_POS.Views
 {
@@ -96,7 +97,11 @@ namespace EBISX_POS.Views
                 var orderSvc = App.Current.Services.GetRequiredService<OrderService>();
 
                 // record other payments, finalize, print
-                await paymentSvc.AddAlternativePayments(order.OtherPayments);
+
+                var otherPayments = order.OtherPayments?.ToList()
+                                    ?? new List<AddAlternativePaymentsDTO>();
+
+                await paymentSvc.AddAlternativePayments(otherPayments);
                 var posInfo = await orderSvc.FinalizeOrder(finalizeDto);
                 await GenerateAndPrintReceiptAsync(posInfo.Response);
 
@@ -328,17 +333,19 @@ namespace EBISX_POS.Views
             var reportOptions = App.Current.Services.GetRequiredService<IOptions<SalesReport>>();
 
             // Define target folder and file paths.
-            string folderPath = reportOptions.Value.Reciepts;
+            string folderPath = reportOptions.Value.Receipts;
             string fileName = $"Receipt-{DateTimeOffset.UtcNow.ToString("MMMM-dd-yyyy-HH-mm-ss")}.txt";
+
+            //// Ensure the target directory exists.
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
             string filePath = Path.Combine(folderPath, fileName);
 
             try
             {
-                //// Ensure the target directory exists.
-                //if (!Directory.Exists(folderPath))
-                //{
-                //    Directory.CreateDirectory(folderPath);
-                //}
 
                 // Write receipt content to file.
                 //WriteReceiptContent(filePath, finalizeOrder);
